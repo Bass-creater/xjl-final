@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Swal from "sweetalert2";
@@ -51,128 +51,6 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     navigate("/login");
   };
 
-  const validateFile = (file) => {
-    // Check if file is Excel
-    const allowedTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
-    ];
-    
-    // Also check file extension for .xlxs files
-    const fileName = file.name.toLowerCase();
-    const isExcelFile = allowedTypes.includes(file.type) || 
-                       fileName.endsWith('.xlsx') || 
-                       fileName.endsWith('.xls') || 
-                       fileName.endsWith('.xlxs');
-    
-    if (!isExcelFile) {
-      Swal.fire({
-        title: "Invalid File",
-        text: "Please select an Excel file (.xlsx, .xls or .xlxs)",
-        icon: "error",
-      });
-      return false;
-    }
-    
-    return true;
-  };
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && validateFile(file)) {
-      setSelectedFile(file);
-    }
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = (e) => {
-    e.preventDefault();
-    setIsDragOver(false);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragOver(false);
-    
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      const file = files[0];
-      if (validateFile(file)) {
-        setSelectedFile(file);
-      }
-    }
-  };
-
-  const handleImportExcel = async () => {
-    if (!selectedFile) {
-      Swal.fire({
-        title: "Please Select File",
-        text: "Please select an Excel file to import",
-        icon: "info",
-      });
-      return;
-    }
-
-    setImportLoading(true);
-
-    try {
-      const formData = new FormData();
-      formData.append('excelFile', selectedFile);
-
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        "http://localhost:1000/api/import-excel",
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            'authorization': token
-          }
-        }
-      );
-
-      if (response.status === 200) {
-        const { batch_uuid, imported_count, errors } = response.data;
-        
-        let message = `Import Successful!\n`;
-        message += `Batch UUID: ${batch_uuid}\n`;
-        message += `Imported Records: ${imported_count}\n`;
-        
-        if (errors && errors.length > 0) {
-          message += `\nErrors:\n${errors.join('\n')}`;
-        }
-
-        Swal.fire({
-          title: "Import Successful",
-          text: message,
-          icon: "success",
-        }).then(() => {
-          setSelectedFile(null);
-          // Reset file input for China side
-          const fileInput = document.getElementById('excelFileInputChina');
-          if (fileInput) {
-            fileInput.value = '';
-          }
-          // Reload page to show new data
-          window.location.reload();
-        });
-      }
-    } catch (error) {
-      console.error("Import Error:", error);
-      Swal.fire({
-        title: "Import Failed",
-        text: error?.response?.data?.message || "An error occurred while importing the file",
-        icon: "error",
-      });
-    } finally {
-      setImportLoading(false);
-    }
-  };
-
   const sidebarLinkStyle = (page) => ({
     display: "block",
     color: "white",
@@ -201,6 +79,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     weight: "",
     amount: "",
     price: "",
+    discount: "0", // เพิ่ม discount field
   });
   // const [detailsData, setDetailsData] = useState({});
 
@@ -208,10 +87,6 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     setParcelData(data);
   };
   const [loading, setLoading] = useState(false);
-  const [importLoading, setImportLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [isDragOver, setIsDragOver] = useState(false);
-  const prevDetailsDataRef = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -236,13 +111,13 @@ const DistributionDashboard = ({ onDetailsChange }) => {
 
     try {
       const checkCredit = await axios.post(
-        "http://localhost:1000/api/checkcredit",
+        "https://kyelao.com/api/checkcredit",
         { branch: parcelData.branch }
       );
 
       const userCredit = checkCredit.data.credit;
 
-      if (userCredit < parseInt(detailsData.price.replace(/,/g, ""), 10)) {
+      if (userCredit < calculateDiscountedPrice()) {
         Swal.fire({
           title: "ບໍ່ພຽງພໍ",
           text: `ຍອດສິນເຊື່ອໃນສາຂາ ${parcelData.branch} ບໍ່ພຽງພໍບໍ?`,
@@ -257,11 +132,13 @@ const DistributionDashboard = ({ onDetailsChange }) => {
         detail: {
           ...detailsData,
           price: parseInt(detailsData.price.replace(/,/g, ""), 10),
+          discount: parseInt(detailsData.discount, 10),
+          finalPrice: calculateDiscountedPrice(), // เพิ่มราคาหลังหักส่วนลด
         },
       };
       console.log("Sending data", fullData);
       const response = await axios.post(
-        "http://localhost:1000/api/saveData",
+        "https://kyelao.com/api/saveData",
         fullData
       );
 
@@ -305,7 +182,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/api/rate");
+        const response = await axios.get("https://kyelao.com/api/rate");
         setRateChina(response.data.china);
         setRateThai(response.data.thai);
       } catch (error) {
@@ -320,29 +197,60 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     setDetailsData((prevData) => ({
       ...prevData,
       price,
+      discount: "0", // รีเซ็ต discount เมื่อราคาเปลี่ยน
     }));
   };
+
   const formatPrice = () => {
     setDetailsData((prevData) => ({
       ...prevData,
       price: Number(prevData.price).toLocaleString("en-US"),
     }));
   };
+
+  // เพิ่ม function สำหรับจัดการ discount
+  const handleDiscountChange = (e) => {
+    const discount = e.target.value;
+    setDetailsData((prevData) => ({
+      ...prevData,
+      discount,
+    }));
+  };
+
+  // คำนวณราคาหลังหักส่วนลด
+  const calculateDiscountedPrice = () => {
+    const originalPrice = parseFloat(detailsData.price.replace(/,/g, "")) || 0;
+    const discountPercent = parseFloat(detailsData.discount) || 0;
+    
+    if (originalPrice === 0 || discountPercent === 0) {
+      return originalPrice;
+    }
+    
+    const discountAmount = (originalPrice * discountPercent) / 100;
+    return originalPrice - discountAmount;
+  };
+
+  // แสดงราคาหลังหักส่วนลด
+  const getDisplayPrice = () => {
+    const discountedPrice = calculateDiscountedPrice();
+    return discountedPrice.toLocaleString("en-US");
+  };
+
   // console.log("Calculating price with data:", detailsData);
 
-  const calculatePrice = useCallback((data) => {
+  const calculatePrice = useCallback(() => {
     let price = 0;
     let cbm = 0;
-    const width = parseFloat(data.width) || 0;
-    const length = parseFloat(data.length) || 0;
-    const height = parseFloat(data.height) || 0;
-    const weight = parseFloat(data.weight) || 0;
-    const amount = parseFloat(data.amount) || 1;
+    const width = parseFloat(detailsData.width) || 0;
+    const length = parseFloat(detailsData.length) || 0;
+    const height = parseFloat(detailsData.height) || 0;
+    const weight = parseFloat(detailsData.weight) || 0;
+    const amount = parseFloat(detailsData.amount) || 1;
 
     const size = width * length * height;
     const ton = weight / 1000;
 
-    switch (data.typeParcel) {
+    switch (detailsData.typeParcel) {
       case "O":
         price = 25 * rateThai;
         break;
@@ -410,44 +318,15 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     }
 
     price = Math.round(price);
-    const newPrice = (price * amount).toLocaleString("en-US");
 
-    setDetailsData((prevData) => {
-      // Only update if price actually changed
-      if (prevData.price !== newPrice) {
-        return {
-          ...prevData,
-          price: newPrice,
-        };
-      }
-      return prevData;
-    });
-  }, [rateChina, rateThai]);
+    setDetailsData((prevData) => ({
+      ...prevData,
+      price: (price * amount).toLocaleString("en-US"),
+    }));
+  }, [detailsData, rateChina]);
 
   useEffect(() => {
-    // Only calculate if the relevant fields have changed
-    const currentData = {
-      typeParcel: detailsData.typeParcel,
-      weight: detailsData.weight,
-      width: detailsData.width,
-      length: detailsData.length,
-      height: detailsData.height,
-      amount: detailsData.amount,
-    };
-    
-    const prevData = prevDetailsDataRef.current;
-    
-    if (!prevData || 
-        prevData.typeParcel !== currentData.typeParcel ||
-        prevData.weight !== currentData.weight ||
-        prevData.width !== currentData.width ||
-        prevData.length !== currentData.length ||
-        prevData.height !== currentData.height ||
-        prevData.amount !== currentData.amount) {
-      
-      calculatePrice(detailsData);
-      prevDetailsDataRef.current = currentData;
-    }
+    calculatePrice();
   }, [
     detailsData.typeParcel,
     detailsData.weight,
@@ -456,9 +335,8 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     detailsData.height,
     detailsData.amount,
     rateChina,
-    rateThai,
-    calculatePrice,
-    detailsData
+    // rateThai,
+    // calculatePrice
   ]);
 
   useEffect(() => {
@@ -470,26 +348,19 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       style={{
         display: "flex",
         height: "100vh",
-        fontFamily: "Arial, sans-serif",
+        fontFamily: "Inter, Arial, sans-serif",
       }}
     >
       <div>
         {loading ? (
-          <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-            <BarLoader color="#b104e0" loading={loading} size={50} />
-          </div>
-        ) : null}
-        {importLoading ? (
-          <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-            <div style={{ textAlign: "center", color: "white" }}>
-              <BarLoader color="#28a745" loading={importLoading} size={50} />
-              <div style={{ marginTop: "10px", fontSize: "16px" }}>Importing data from Excel...</div>
+          <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl p-8 shadow-2xl">
+              <BarLoader color="#8B5CF6" loading={loading} size={80} />
+              <p className="mt-4 text-gray-600 font-medium">ກຳລັງບັນທຶກຂໍ້ມູນ...</p>
             </div>
           </div>
         ) : null}
       </div>
-
-      {/* <Sidebar/> */}
 
       {/* Sidebar */}
       <aside
@@ -806,61 +677,188 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       </aside>
 
       {/* Main content */}
-      <main style={{ flex: 1, overflow: "auto", padding: "20px" }}>
+      <main style={{ 
+        flex: 1, 
+        overflow: "auto", 
+        padding: "25px",
+        background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+        minHeight: "100vh",
+      }}>
         <header
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "20px",
+            marginBottom: "25px",
+            padding: "25px",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.85) 100%)",
+            borderRadius: "20px",
+            backdropFilter: "blur(20px)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+            boxShadow: "0 15px 35px rgba(0, 0, 0, 0.06), 0 5px 15px rgba(0, 0, 0, 0.04)",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
+          {/* Decorative background elements */}
+          <div style={{
+            position: "absolute",
+            top: "-50%",
+            right: "-20%",
+            width: "150px",
+            height: "150px",
+            background: "radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, rgba(124, 58, 237, 0.03) 100%)",
+            borderRadius: "50%",
+            filter: "blur(30px)",
+          }} />
+          <div style={{
+            position: "absolute",
+            bottom: "-30%",
+            left: "-15%",
+            width: "100px",
+            height: "100px",
+            background: "radial-gradient(circle, rgba(59, 130, 246, 0.04) 0%, rgba(37, 99, 235, 0.02) 100%)",
+            borderRadius: "50%",
+            filter: "blur(25px)",
+          }} />
           <div style={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
               <button
                 onClick={toggleSidebar}
                 style={{
-                  background: "none",
+                  background: "linear-gradient(135deg, #8B5CF6, #A78BFA)",
                   border: "none",
                   fontSize: "24px",
                   cursor: "pointer",
-                  marginRight: "10px",
+                  marginRight: "15px",
+                  padding: "12px",
+                  borderRadius: "12px",
+                  color: "white",
+                  boxShadow: "0 8px 25px rgba(139, 92, 246, 0.3)",
+                  transition: "all 0.3s ease",
                 }}
+                onMouseOver={(e) => (e.target.style.transform = "scale(1.1)")}
+                onMouseOut={(e) => (e.target.style.transform = "scale(1)")}
               >
                 ☰
               </button>
             )}
-            <h1 style={{ fontSize: "24px", margin: "0" }}>ການກະຈາຍພັດດຸ</h1>
+            <div style={{ position: "relative", zIndex: 2 }}>
+            <h1 style={{ 
+                fontSize: "30px", 
+              margin: "0", 
+              fontWeight: "800",
+                background: "linear-gradient(135deg, #1e293b 0%, #475569 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+                textShadow: "0 1px 5px rgba(0, 0, 0, 0.08)",
+                letterSpacing: "-0.3px",
+            }}>
+              🚚 ການກະຈາຍພັດດຸ
+            </h1>
+              <p style={{
+                margin: "6px 0 0 0",
+                fontSize: "14px",
+                color: "#64748b",
+                fontWeight: "500",
+                opacity: "0.7",
+              }}>
+                Distribution Management System
+              </p>
+            </div>
           </div>
           {!isMobile && (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <span style={{ marginRight: "20px" }}>
-                {" "}
-                {new Date().toLocaleDateString("th-TH")}
-              </span>
-              <span style={{ marginRight: "20px" }}>
-                {new Date().toLocaleTimeString("th-TH", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-              <span>
-                {username} | {role}
-              </span>
+            <div style={{ display: "flex", alignItems: "center", gap: "25px", position: "relative", zIndex: 2 }}>
+              <div style={{
+                padding: "14px 20px",
+                background: "linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.75) 100%)",
+                borderRadius: "14px",
+                border: "1px solid rgba(139, 92, 246, 0.12)",
+                backdropFilter: "blur(8px)",
+                boxShadow: "0 6px 20px rgba(139, 92, 246, 0.08)",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "6px 10px",
+                    background: "linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(124, 58, 237, 0.06) 100%)",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(139, 92, 246, 0.15)",
+                  }}>
+                    <span style={{ fontSize: "16px" }}>📅</span>
+                    <span style={{ fontWeight: "600", color: "#475569", fontSize: "13px" }}>
+                      {new Date().toLocaleDateString("th-TH")}
+                </span>
+                  </div>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    padding: "6px 10px",
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.06) 100%)",
+                    borderRadius: "8px",
+                    border: "1px solid rgba(59, 130, 246, 0.15)",
+                  }}>
+                    <span style={{ fontSize: "16px" }}>🕐</span>
+                    <span style={{ fontWeight: "600", color: "#475569", fontSize: "13px" }}>
+                      {new Date().toLocaleTimeString("th-TH", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </span>
+                  </div>
+                </div>
+                <div style={{
+                  marginTop: "10px",
+                  padding: "8px 14px",
+                  background: "linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.09) 100%)",
+                  borderRadius: "10px",
+                  border: "1px solid rgba(139, 92, 246, 0.2)",
+                  textAlign: "center",
+                }}>
+                  <span style={{ fontWeight: "600", color: "#8B5CF6", fontSize: "14px" }}>
+                  👤 {username} | {role}
+                </span>
+                </div>
+              </div>
               <Link
                 to="/"
                 style={{
-                  marginLeft: "20px",
-                  padding: "8px 16px",
-                  backgroundColor: "#4a69bd",
+                  padding: "12px 24px",
+                  background: "linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)",
                   color: "white",
                   border: "none",
-                  borderRadius: "5px",
+                  borderRadius: "12px",
                   textDecoration: "none",
                   cursor: "pointer",
+                  fontWeight: "600",
+                  fontSize: "14px",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 6px 20px rgba(59, 130, 246, 0.25)",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = "translateY(-2px)";
+                  e.target.style.boxShadow = "0 10px 25px rgba(59, 130, 246, 0.3)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 6px 20px rgba(59, 130, 246, 0.25)";
                 }}
               >
-                ໜ້າເເຣກ
+                <span style={{ position: "relative", zIndex: 2 }}>🏠 ໜ້າເເຣກ</span>
+                <div style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "-100%",
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%)",
+                  transition: "left 0.3s ease",
+                }} />
               </Link>
             </div>
           )}
@@ -870,70 +868,270 @@ const DistributionDashboard = ({ onDetailsChange }) => {
           {storedBranch === "LAO Warehouse" ? (
             <>
               <Parcel onParcelChange={handleParcelChange} />
-              {/* <Details onDetailsChange={handleDetailChange} /> */}
-
-              <div>
+              
+              <div style={{ marginTop: "25px" }}>
                 <div
                   id="admin-lao"
                   style={{
-                    borderRadius: "10px",
+                    borderRadius: "24px",
                     overflow: "hidden",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                    boxShadow: "0 20px 40px rgba(0,0,0,0.08), 0 10px 25px rgba(0,0,0,0.06)",
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)",
+                    backdropFilter: "blur(20px)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    position: "relative",
                   }}
                 >
-                  <div style={gradientHeaderStyle("#0031e0", "#0ad5f5")}>
-                    <h2 style={{ margin: 0, color: "white" }}>ຂໍ້ມູນພັດດຸ</h2>
+                  {/* Decorative background pattern */}
+                  <div style={{
+                    position: "absolute",
+                    top: "0",
+                    right: "0",
+                    width: "150px",
+                    height: "150px",
+                    background: "radial-gradient(circle, rgba(139, 92, 246, 0.02) 0%, transparent 70%)",
+                    zIndex: 1,
+                  }} />
+                  
+                  <div style={{
+                    ...gradientHeaderStyle("#8B5CF6", "#A78BFA"),
+                    padding: "25px 30px",
+                    borderRadius: "24px 24px 0 0",
+                    background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                    boxShadow: "0 8px 25px rgba(139, 92, 246, 0.2)",
+                    position: "relative",
+                    zIndex: 2,
+                  }}>
+                    <div style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                    }}>
+                      <div style={{
+                        width: "40px",
+                        height: "40px",
+                        background: "rgba(255, 255, 255, 0.2)",
+                        borderRadius: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backdropFilter: "blur(8px)",
+                      }}>
+                        <span style={{ fontSize: "20px" }}>📦</span>
+                      </div>
+                      <div>
+                    <h2 style={{ 
+                      margin: 0, 
+                      color: "white", 
+                          fontSize: "24px",
+                      fontWeight: "700",
+                          textShadow: "0 1px 5px rgba(0, 0, 0, 0.15)",
+                          letterSpacing: "-0.3px",
+                    }}>
+                          ຂໍ້ມູນພັດດຸ
+                    </h2>
+                        <p style={{
+                          margin: "4px 0 0 0",
+                          color: "rgba(255, 255, 255, 0.85)",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                        }}>
+                          Parcel Information Details
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div style={bodyStyle}>
+                  <div style={{
+                    ...bodyStyle,
+                    padding: "30px",
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.85) 100%)",
+                    position: "relative",
+                    zIndex: 2,
+                  }}>
                     <div
                       style={{
                         display: "grid",
-                        gap: "15px",
-                        gridTemplateColumns:
-                          "repeat(auto-fit, minmax(200px, 1fr))",
+                        gap: "20px",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
                       }}
                     >
-                      <div>
-                        <label style={labelStyle}>ປະເພດ :</label>
+                      <div style={{
+                        padding: "20px",
+                        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.75) 100%)",
+                        borderRadius: "16px",
+                        border: "1px solid rgba(139, 92, 246, 0.1)",
+                        transition: "all 0.3s ease",
+                        boxShadow: "0 6px 20px rgba(139, 92, 246, 0.06)",
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                        e.currentTarget.style.boxShadow = "0 8px 25px rgba(139, 92, 246, 0.1)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(139, 92, 246, 0.06)";
+                      }}>
+                        {/* Decorative accent */}
+                        <div style={{
+                          position: "absolute",
+                          top: "0",
+                          left: "0",
+                          width: "3px",
+                          height: "100%",
+                          background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                          borderRadius: "0 1px 1px 0",
+                        }} />
+                        
+                        <label style={{
+                          ...labelStyle,
+                          fontSize: "15px",
+                          color: "#8B5CF6",
+                          fontWeight: "700",
+                          marginBottom: "12px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}>
+                          <span style={{
+                            width: "28px",
+                            height: "28px",
+                            background: "linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.09) 100%)",
+                            borderRadius: "6px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "16px",
+                          }}>🎯</span>
+                          ປະເພດ Parcel
+                        </label>
                         <select
-                          style={inputStyle}
+                          style={{
+                            ...inputStyle,
+                            background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                            border: "2px solid rgba(139, 92, 246, 0.15)",
+                            borderRadius: "14px",
+                            padding: "18px 20px",
+                            fontSize: "16px",
+                            fontWeight: "500",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 6px 20px rgba(139, 92, 246, 0.08)",
+                            cursor: "pointer",
+                          }}
                           onChange={handleInputChange}
                           value={detailsData.typeParcel}
                           name="typeParcel"
+                          onFocus={(e) => {
+                            e.target.style.border = "2px solid #8B5CF6";
+                            e.target.style.boxShadow = "0 10px 30px rgba(139, 92, 246, 0.15)";
+                            e.target.style.transform = "translateY(-1px)";
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.border = "2px solid rgba(139, 92, 246, 0.15)";
+                            e.target.style.boxShadow = "0 6px 20px rgba(139, 92, 246, 0.08)";
+                            e.target.style.transform = "translateY(0)";
+                          }}
                         >
                           <option value="" disabled>
-                            ເລືອກປະເພດ
+                            🚀 ເລືອກປະເພດ
                           </option>
-                          <option value="O"> O </option>
-                          <option value="A"> A </option>
-                          <option value="2A"> 2A</option>
-                          <option value="B"> B</option>
-                          <option value="C"> C</option>
-                          <option value="D"> D</option>
-                          <option value="E"> E</option>
-                          <option value="F"> F</option>
-                          <option value="G"> G</option>
-                          <option value="H"> H</option>
-                          <option value="I"> I</option>
-                          <option value="Genaral"> ເຄື່ອງໃຊ້ທົ່ວໄປ</option>
-                          <option value="Electrical"> ເຄື່ອງໃຊ້ໄຟຟ້າ</option>
-                          <option value="Big-But-Light">
-                            {" "}
-                            ເຄື່ອງໃຫຍ່ນ້ຳໜັກເບົາ
-                          </option>
-                          <option value="Lots-of-Weight">ນ້ຳໜັກຫຼາຍ</option>
+                          <option value="O"> 📦 O </option>
+                          <option value="A"> 📦 A </option>
+                          <option value="2A"> 📦 2A</option>
+                          <option value="B"> 📦 B</option>
+                          <option value="C"> 📦 C</option>
+                          <option value="D"> 📦 D</option>
+                          <option value="E"> 📦 E</option>
+                          <option value="F"> 📦 F</option>
+                          <option value="G"> 📦 G</option>
+                          <option value="H"> 📦 H</option>
+                          <option value="I"> 📦 I</option>
+                          <option value="Genaral"> 🏠 ເຄື່ອງໃຊ້ທົ່ວໄປ</option>
+                          <option value="Electrical"> ⚡ ເຄື່ອງໃຊ້ໄຟຟ້າ</option>
+                          <option value="Big-But-Light"> 🪶 ເຄື່ອງໃຫຍ່ນ້ຳໜັກເບົາ</option>
+                          <option value="Lots-of-Weight"> ⚖️ ນ້ຳໜັກຫຼາຍ</option>
                         </select>
                       </div>
-                      <div>
-                        <label style={labelStyle}>ຂະໜາດ(cm) :</label>
-                        <div style={{ display: "flex", gap: "5px" }}>
+
+                      <div style={{
+                        padding: "25px",
+                        background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
+                        borderRadius: "20px",
+                        border: "1px solid rgba(59, 130, 246, 0.12)",
+                        transition: "all 0.3s ease",
+                        boxShadow: "0 8px 25px rgba(59, 130, 246, 0.08)",
+                        position: "relative",
+                        overflow: "hidden",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.transform = "translateY(-2px)";
+                        e.currentTarget.style.boxShadow = "0 12px 35px rgba(59, 130, 246, 0.12)";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.transform = "translateY(0)";
+                        e.currentTarget.style.boxShadow = "0 8px 25px rgba(59, 130, 246, 0.08)";
+                      }}>
+                        {/* Decorative accent */}
+                        <div style={{
+                          position: "absolute",
+                          top: "0",
+                          left: "0",
+                          width: "4px",
+                          height: "100%",
+                          background: "linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)",
+                          borderRadius: "0 2px 2px 0",
+                        }} />
+                        
+                        <label style={{
+                          ...labelStyle,
+                          fontSize: "17px",
+                          color: "#3B82F6",
+                          fontWeight: "800",
+                          marginBottom: "15px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                        }}>
+                          <span style={{
+                            width: "32px",
+                            height: "32px",
+                            background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.12) 100%)",
+                            borderRadius: "8px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "18px",
+                          }}>📏</span>
+                          ຂະໜາດ (cm)
+                        </label>
+                        <div style={{ display: "flex", gap: "15px" }}>
                           <input
                             name="width"
                             type="number"
                             onChange={handleInputChange}
                             value={detailsData.width}
                             placeholder="ກວ້າງ"
-                            style={{ ...inputStyle, flex: 1 }}
+                            style={{
+                              ...inputStyle,
+                              flex: 1,
+                              background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                              border: "2px solid rgba(59, 130, 246, 0.15)",
+                              borderRadius: "14px",
+                              padding: "18px 20px",
+                              fontSize: "16px",
+                              fontWeight: "500",
+                              transition: "all 0.3s ease",
+                              boxShadow: "0 6px 20px rgba(59, 130, 246, 0.08)",
+                            }}
+                            onFocus={(e) => {
+                              e.target.style.border = "2px solid #3B82F6";
+                              e.target.style.boxShadow = "0 8px 25px rgba(59, 130, 246, 0.2)";
+                            }}
+                            onBlur={(e) => {
+                              e.target.style.border = "2px solid rgba(59, 130, 246, 0.2)";
+                              e.target.style.boxShadow = "0 4px 15px rgba(59, 130, 246, 0.1)";
+                            }}
                           />
                           <input
                             name="length"
@@ -941,7 +1139,25 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                             onChange={handleInputChange}
                             value={detailsData.length}
                             placeholder="ຍາວ"
-                            style={{ ...inputStyle, flex: 1 }}
+                            style={{
+                              ...inputStyle,
+                              flex: 1,
+                              background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                              border: "2px solid rgba(59, 130, 246, 0.2)",
+                              borderRadius: "12px",
+                              padding: "15px",
+                              fontSize: "16px",
+                              transition: "all 0.3s ease",
+                              boxShadow: "0 4px 15px rgba(59, 130, 246, 0.1)",
+                            }}
+                            onFocus={(e) => {
+                              e.target.style.border = "2px solid #3B82F6";
+                              e.target.style.boxShadow = "0 8px 25px rgba(59, 130, 246, 0.2)";
+                            }}
+                            onBlur={(e) => {
+                              e.target.style.border = "2px solid rgba(59, 130, 246, 0.2)";
+                              e.target.style.boxShadow = "0 4px 15px rgba(59, 130, 246, 0.1)";
+                            }}
                           />
                           <input
                             name="height"
@@ -949,34 +1165,125 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                             onChange={handleInputChange}
                             value={detailsData.height}
                             placeholder="ສູງ"
-                            style={{ ...inputStyle, flex: 1 }}
+                            style={{
+                              ...inputStyle,
+                              flex: 1,
+                              background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                              border: "2px solid rgba(59, 130, 246, 0.2)",
+                              borderRadius: "12px",
+                              padding: "15px",
+                              fontSize: "16px",
+                              transition: "all 0.3s ease",
+                              boxShadow: "0 4px 15px rgba(59, 130, 246, 0.1)",
+                            }}
+                            onFocus={(e) => {
+                              e.target.style.border = "2px solid #3B82F6";
+                              e.target.style.boxShadow = "0 8px 25px rgba(59, 130, 246, 0.2)";
+                            }}
+                            onBlur={(e) => {
+                              e.target.style.border = "2px solid rgba(59, 130, 246, 0.2)";
+                              e.target.style.boxShadow = "0 4px 15px rgba(59, 130, 246, 0.1)";
+                            }}
                           />
                         </div>
                       </div>
-                      <div>
-                        <label style={labelStyle}>ນ້ຳໜັກ(kg) :</label>
+
+                      <div style={{
+                        padding: "20px",
+                        background: "linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(22, 163, 74, 0.03) 100%)",
+                        borderRadius: "16px",
+                        border: "1px solid rgba(34, 197, 94, 0.1)",
+                        transition: "all 0.3s ease",
+                      }}>
+                        <label style={{
+                          ...labelStyle,
+                          fontSize: "16px",
+                          color: "#22C55E",
+                          fontWeight: "700",
+                          marginBottom: "12px",
+                        }}>⚖️ ນ້ຳໜັກ(kg) :</label>
                         <input
                           name="weight"
                           type="number"
                           onChange={handleInputChange}
                           value={detailsData.weight}
                           placeholder="ນ້ຳໜັກ"
-                          style={inputStyle}
+                          style={{
+                            ...inputStyle,
+                            background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                            border: "2px solid rgba(34, 197, 94, 0.2)",
+                            borderRadius: "12px",
+                            padding: "15px",
+                            fontSize: "16px",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 4px 15px rgba(34, 197, 94, 0.1)",
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.border = "2px solid #22C55E";
+                            e.target.style.boxShadow = "0 8px 25px rgba(34, 197, 94, 0.2)";
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.border = "2px solid rgba(34, 197, 94, 0.2)";
+                            e.target.style.boxShadow = "0 4px 15px rgba(34, 197, 94, 0.1)";
+                          }}
                         />
                       </div>
-                      <div>
-                        <label style={labelStyle}>ຈຳນວນ :</label>
+
+                      <div style={{
+                        padding: "20px",
+                        background: "linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.03) 100%)",
+                        borderRadius: "16px",
+                        border: "1px solid rgba(245, 158, 11, 0.1)",
+                        transition: "all 0.3s ease",
+                      }}>
+                        <label style={{
+                          ...labelStyle,
+                          fontSize: "16px",
+                          color: "#F59E0B",
+                          fontWeight: "700",
+                          marginBottom: "12px",
+                        }}>🔢 ຈຳນວນ :</label>
                         <input
                           name="amount"
                           type="number"
                           onChange={handleInputChange}
                           value={detailsData.amount}
                           placeholder="ຈຳນວນ(ຊິ້ນ)"
-                          style={inputStyle}
+                          style={{
+                            ...inputStyle,
+                            background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                            border: "2px solid rgba(245, 158, 11, 0.2)",
+                            borderRadius: "12px",
+                            padding: "15px",
+                            fontSize: "16px",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 4px 15px rgba(245, 158, 11, 0.1)",
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.border = "2px solid #F59E0B";
+                            e.target.style.boxShadow = "0 8px 25px rgba(245, 158, 11, 0.2)";
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.border = "2px solid rgba(245, 158, 11, 0.2)";
+                            e.target.style.boxShadow = "0 4px 15px rgba(245, 158, 11, 0.1)";
+                          }}
                         />
                       </div>
-                      <div>
-                        <label style={labelStyle}>ລາຄາ :</label>
+
+                      <div style={{
+                        padding: "20px",
+                        background: "linear-gradient(135deg, rgba(236, 72, 153, 0.05) 0%, rgba(219, 39, 119, 0.03) 100%)",
+                        borderRadius: "16px",
+                        border: "1px solid rgba(236, 72, 153, 0.1)",
+                        transition: "all 0.3s ease",
+                      }}>
+                        <label style={{
+                          ...labelStyle,
+                          fontSize: "16px",
+                          color: "#EC4899",
+                          fontWeight: "700",
+                          marginBottom: "12px",
+                        }}>💰 ລາຄາ :</label>
                         <input
                           name="price"
                           type="text"
@@ -984,26 +1291,241 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           onBlur={formatPrice}
                           value={detailsData.price}
                           placeholder="ລາຄາ"
-                          style={inputStyle}
+                          style={{
+                            ...inputStyle,
+                            background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                            border: "2px solid rgba(236, 72, 153, 0.2)",
+                            borderRadius: "12px",
+                            padding: "15px",
+                            fontSize: "16px",
+                            transition: "all 0.3s ease",
+                            boxShadow: "0 4px 15px rgba(236, 72, 153, 0.1)",
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.border = "2px solid #EC4899";
+                            e.target.style.boxShadow = "0 8px 25px rgba(236, 72, 153, 0.2)";
+                          }}
                         />
                       </div>
+
+                      <div style={{
+                        padding: "20px",
+                        background: "linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(147, 51, 234, 0.03) 100%)",
+                        borderRadius: "16px",
+                        border: "1px solid rgba(168, 85, 247, 0.1)",
+                        transition: "all 0.3s ease",
+                      }}>
+                        <label style={{
+                          ...labelStyle,
+                          fontSize: "16px",
+                          color: "#A855F7",
+                          fontWeight: "700",
+                          marginBottom: "12px",
+                        }}>🎁 ສ່ວນລດ :</label>
+                        <select
+                          style={detailsData.price ? {
+                            ...selectStyle,
+                            background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+                            border: "2px solid #A855F7",
+                            borderRadius: "12px",
+                            padding: "15px",
+                            fontSize: "16px",
+                            boxShadow: "0 8px 25px rgba(168, 85, 247, 0.2)",
+                          } : {
+                            ...selectDisabledStyle,
+                            background: "linear-gradienหt(135deg, #f1f5f9 0%, #e2e8f0 100%)",
+                            border: "2px solid rgba(168, 85, 247, 0.1)",
+                            borderRadius: "12px",
+                            padding: "15px",
+                            fontSize: "16px",
+                          }}
+                          onChange={handleDiscountChange}
+                          value={detailsData.discount}
+                          name="discount"
+                          disabled={!detailsData.price}
+                        >
+                          <option value="0">🎯 ບໍ່ມີສ່ວນລດ</option>
+                          <option value="5">🎁 ສ່ວນລດ 5%</option>
+                          <option value="10">🎁 ສ່ວນລດ 10%</option>
+                          <option value="15">🎁 ສ່ວນລດ 15%</option>
+                          <option value="20">🎁 ສ່ວນລດ 20%</option>
+                          <option value="25">🎁 ສ່ວນລດ 25%</option>
+                          <option value="30">🎁 ສ່ວນລດ 30%</option>
+                          <option value="35">🎁 ສ່ວນລດ 35%</option>
+                          <option value="40">🎁 ສ່ວນລດ 40%</option>
+                          <option value="45">🎁 ສ່ວນລດ 45%</option>
+                          <option value="50">🎁 ສ່ວນລດ 50%</option>
+                          <option value="55">🎁 ສ່ວນລດ 55%</option>
+                          <option value="60">🎁 ສ່ວນລດ 60%</option>
+                          <option value="65">🎁 ສ່ວນລດ 65%</option>
+                          <option value="70">🎁 ສ່ວນລດ 70%</option>
+                          <option value="75">🎁 ສ່ວນລດ 75%</option>
+                          <option value="80">🎁 ສ່ວນລດ 80%</option>
+                          <option value="85">🎁 ສ່ວນລດ 85%</option>
+                          <option value="90">🎁 ສ່ວນລດ 90%</option>
+                          <option value="95">🎁 ສ່ວນລດ 95%</option>
+                        </select>
+                      </div>
+                      
+                      {/* แสดงราคาหลังหักส่วนลด */}
+                      {detailsData.price && detailsData.discount !== "0" && (
+                        <div style={{
+                          gridColumn: "1 / -1",
+                          padding: "25px",
+                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)",
+                          borderRadius: "20px",
+                          border: "2px solid rgba(34, 197, 94, 0.2)",
+                          marginTop: "20px",
+                          boxShadow: "0 15px 35px rgba(34, 197, 94, 0.1)",
+                        }}>
+                          <h3 style={{
+                            fontSize: "20px",
+                            fontWeight: "700",
+                            color: "#16A34A",
+                            marginBottom: "20px",
+                            textAlign: "center",
+                          }}>
+                            💰 ສรุปລາຄາສ່ວນລດ
+                          </h3>
+                          <div style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                            gap: "20px",
+                          }}>
+                            <div style={{
+                              padding: "20px",
+                              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
+                              borderRadius: "16px",
+                              border: "1px solid rgba(34, 197, 94, 0.2)",
+                              textAlign: "center",
+                            }}>
+                              <div style={{ fontSize: "14px", color: "#6B7280", marginBottom: "8px" }}>ລາຄາເດີມ</div>
+                              <div style={{ fontSize: "24px", fontWeight: "800", color: "#1F2937" }}>
+                                {Number(detailsData.price.replace(/,/g, "")).toLocaleString("en-US")} ກີບ
+                              </div>
+                            </div>
+                            
+                            <div style={{
+                              padding: "20px",
+                              background: "linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%)",
+                              borderRadius: "16px",
+                              border: "1px solid rgba(239, 68, 68, 0.2)",
+                              textAlign: "center",
+                            }}>
+                              <div style={{ fontSize: "14px", color: "#6B7280", marginBottom: "8px" }}>ສ່ວນລດ</div>
+                              <div style={{ fontSize: "24px", fontWeight: "800", color: "#DC2626" }}>
+                                -{detailsData.discount}%
+                              </div>
+                              <div style={{ fontSize: "16px", color: "#DC2626", fontWeight: "600" }}>
+                                ({(Number(detailsData.price.replace(/,/g, "")) * Number(detailsData.discount) / 100).toLocaleString("en-US")} ກີບ)
+                              </div>
+                            </div>
+                            
+                            <div style={{
+                              padding: "20px",
+                              background: "linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%)",
+                              borderRadius: "16px",
+                              border: "2px solid #22C55E",
+                              textAlign: "center",
+                              boxShadow: "0 8px 25px rgba(34, 197, 94, 0.2)",
+                            }}>
+                              <div style={{ fontSize: "14px", color: "#16A34A", marginBottom: "8px", fontWeight: "600" }}>ລາຄາສຸດທ້າຍ</div>
+                              <div style={{ fontSize: "28px", fontWeight: "900", color: "#16A34A" }}>
+                                {getDisplayPrice()} ກີບ
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
 
-
-              <div className="flex align-center justify-end mt-4">
+              <div style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "35px",
+                position: "relative",
+              }}>
+                {/* Decorative background elements */}
+                <div style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "200px",
+                  height: "200px",
+                  background: "radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%)",
+                  filter: "blur(30px)",
+                  zIndex: 1,
+                }} />
+                
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="text-lg font-medium px-14 text-white bg-gradient-to-br from-orange-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                  style={{
+                    padding: "18px 40px",
+                    background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "20px",
+                    fontSize: "18px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    boxShadow: "0 15px 30px rgba(139, 92, 246, 0.25), 0 6px 20px rgba(139, 92, 246, 0.15)",
+                    textShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
+                    position: "relative",
+                    zIndex: 2,
+                    overflow: "hidden",
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.transform = "translateY(-2px) scale(1.02)";
+                    e.target.style.boxShadow = "0 18px 35px rgba(139, 92, 246, 0.3), 0 8px 25px rgba(139, 92, 246, 0.2)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.transform = "translateY(0) scale(1)";
+                    e.target.style.boxShadow = "0 15px 30px rgba(139, 92, 246, 0.25), 0 6px 20px rgba(139, 92, 246, 0.15)";
+                  }}
                 >
-                  Save
+                  <span style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: "12px" }}>
+                    <span style={{ fontSize: "24px" }}>💾</span>
+                    ບັນທຶກຂໍ້ມູນ
+                  </span>
+                  
+                  {/* Animated background overlay */}
+                  <div style={{
+                    position: "absolute",
+                    top: "0",
+                    left: "-100%",
+                    width: "100%",
+                    height: "100%",
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%)",
+                    transition: "left 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+                  }} />
+                  
+                  {/* Loading indicator */}
+                  {loading && (
+                    <div style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      zIndex: 3,
+                    }}>
+                      <BarLoader color="#ffffff" width={60} />
+                    </div>
+                  )}
                 </button>
               </div>
 
-              <hr className="my-6" />
+              <hr style={{
+                margin: "50px 0",
+                border: "none",
+                height: "2px",
+                background: "linear-gradient(90deg, transparent 0%, rgba(139, 92, 246, 0.3) 50%, transparent 100%)",
+              }} />
               <ParcelWait />
             </>
           ) : null}
@@ -1017,117 +1539,6 @@ const DistributionDashboard = ({ onDetailsChange }) => {
           {/* Item Details Section */}
           {storedBranch !== "LAO Warehouse" && storedRole !== "branch" ? (
             <>
-              {/* Excel Import Section for China */}
-              <div className="mt-6 mb-4">
-                <div
-                  style={{
-                    borderRadius: "10px",
-                    overflow: "hidden",
-                    boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                  }}
-                >
-                  <div style={gradientHeaderStyle("#28a745", "#20c997")}>
-                    <h2 style={{ margin: 0, color: "white" }}>Import file Excel</h2>
-                  </div>
-                  <div style={bodyStyle}>
-                    {/* Drag and Drop Area */}
-                    <div
-                      onDragOver={handleDragOver}
-                      onDragLeave={handleDragLeave}
-                      onDrop={handleDrop}
-                      style={{
-                        border: isDragOver ? "2px dashed #28a745" : "2px dashed #ccc",
-                        borderRadius: "10px",
-                        padding: "20px",
-                        textAlign: "center",
-                        backgroundColor: isDragOver ? "#f8f9fa" : "#fff",
-                        transition: "all 0.3s ease",
-                        cursor: "pointer",
-                        marginBottom: "15px"
-                      }}
-                      onClick={() => document.getElementById('excelFileInputChina').click()}
-                    >
-                      <div style={{ fontSize: "24px", marginBottom: "10px" }}>
-                        📁
-                      </div>
-                      <div style={{ fontSize: "16px", fontWeight: "500", marginBottom: "5px" }}>
-                        {isDragOver ? "Drop file here" : "Drag file here or click to select"}
-                      </div>
-                      <div style={{ fontSize: "12px", color: "#666" }}>
-                        Supports .xlsx, .xls, .xlxs files
-                      </div>
-                    </div>
-
-                    {/* Hidden File Input */}
-                    <input
-                      id="excelFileInputChina"
-                      type="file"
-                      accept=".xlsx,.xls,.xlxs"
-                      onChange={handleFileChange}
-                      style={{ display: "none" }}
-                    />
-
-                    {/* Selected File Display */}
-                    {selectedFile && (
-                      <div style={{ 
-                        marginBottom: "15px", 
-                        padding: "10px", 
-                        backgroundColor: "#e8f5e8", 
-                        borderRadius: "5px",
-                        border: "1px solid #28a745"
-                      }}>
-                        <div style={{ fontSize: "14px", fontWeight: "500", color: "#28a745", marginBottom: "5px" }}>
-                          ✓ Selected File
-                        </div>
-                        <div style={{ fontSize: "12px", color: "#666" }}>
-                          {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Import Button */}
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <button
-                        type="button"
-                        onClick={handleImportExcel}
-                        disabled={!selectedFile || importLoading}
-                        style={{
-                          padding: "12px 24px",
-                          backgroundColor: selectedFile && !importLoading ? "#28a745" : "#6c757d",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "8px",
-                          cursor: selectedFile && !importLoading ? "pointer" : "not-allowed",
-                          fontSize: "16px",
-                          fontWeight: "500",
-                          transition: "all 0.3s ease",
-                          minWidth: "150px"
-                        }}
-                        onMouseOver={(e) => {
-                          if (selectedFile && !importLoading) {
-                            e.target.style.backgroundColor = "#218838";
-                            e.target.style.transform = "translateY(-2px)";
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          if (selectedFile && !importLoading) {
-                            e.target.style.backgroundColor = "#28a745";
-                            e.target.style.transform = "translateY(0)";
-                          }
-                        }}
-                      >
-                        {importLoading ? "Importing..." : "Import Excel"}
-                      </button>
-                    </div>
-
-                    {/* Instructions */}
-                    <div style={{ marginTop: "15px", fontSize: "12px", color: "#666", textAlign: "center" }}>
-                      <strong>Note:</strong> The system will read data from column D of the Excel file and create the same UUID for all records in the file
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
               <Spread />
             </>
           ) : null}
@@ -1137,30 +1548,61 @@ const DistributionDashboard = ({ onDetailsChange }) => {
   );
 };
 const gradientHeaderStyle = (color1, color2) => ({
-  background: `linear-gradient(to right, ${color1}, ${color2})`,
-  padding: "15px 20px",
+  background: `linear-gradient(135deg, ${color1} 0%, ${color2} 100%)`,
+  padding: "18px 22px",
   borderRadius: "20px 20px 0 0",
   color: "white",
+  position: "relative",
+  overflow: "hidden",
 });
 
 const bodyStyle = {
-  backgroundColor: "#f9f9f9",
-  padding: "20px",
+  backgroundColor: "transparent",
+  padding: "22px",
+  position: "relative",
 };
 
 const labelStyle = {
   display: "block",
-  marginBottom: "5px",
-  fontWeight: "bold",
-  color: "#333",
+  marginBottom: "6px",
+  fontWeight: "600",
+  color: "#374151",
+  fontSize: "14px",
+  letterSpacing: "-0.02em",
 };
 
 const inputStyle = {
   width: "100%",
-  padding: "8px",
-  borderRadius: "5px",
-  border: "1px solid #ccc",
+  padding: "10px 14px",
+  borderRadius: "10px",
+  border: "2px solid #e5e7eb",
   boxSizing: "border-box",
+  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  fontSize: "14px",
+  fontWeight: "500",
+  color: "#374151",
+  backgroundColor: "#ffffff",
+  boxShadow: "0 1px 6px rgba(0, 0, 0, 0.03)",
+};
+
+const selectStyle = {
+  ...inputStyle,
+  cursor: "pointer",
+  backgroundColor: "#ffffff",
+  border: "2px solid #8B5CF6",
+  color: "#374151",
+  fontWeight: "500",
+  boxShadow: "0 4px 15px rgba(139, 92, 246, 0.1)",
+};
+
+const selectDisabledStyle = {
+  ...inputStyle,
+  cursor: "not-allowed",
+  backgroundColor: "#f9fafb",
+  border: "2px solid #d1d5db",
+  color: "#9ca3af",
+  opacity: 0.7,
+  boxShadow: "none",
 };
 
 export default DistributionDashboard;
