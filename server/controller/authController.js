@@ -218,7 +218,123 @@ exports.rate = async (req, res) => {
     res.status(500).json({ message: "Error fetching rate: " + error.message });
   }
 };
+exports.smallParcels = async (req, res) => {
+  const { parcels_id } = req.body;
+  try {
+    const existingParcel = await Parcel.findOne({
+      where: { id_parcel: parcels_id, status: "accepted" },
+      attributes: ["from"],
+    });
+    if (!existingParcel) {
+      return res.status(404).json({ message: "Parcel not found in OldParcelTable" });
+    }
+    res.status(200).json(existingParcel);
+    
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching small parcels: " + error.message });
+  }
+};
 
+exports.smallParcelsSave = async (req, res) => {
+  try {
+    const { parcels_id, branch } = req.body;
+    console.log("📦 START smallParcelsSave", { parcels_id, branch });
+
+    // ตรวจสอบว่า parcels_id เป็น array หรือไม่
+    if (!Array.isArray(parcels_id)) {
+      return res.status(400).json({ message: "parcels_id ต้องเป็น array" });
+    }
+
+    if (!branch) {
+      return res.status(400).json({ message: "branch ต้องระบุ" });
+    }
+
+    // ตรวจสอบสาขา
+    const userBranch = await User.findOne({ where: { branch } });
+    if (!userBranch) {
+      return res.status(404).json({ message: "ไม่พบสาขานี้ในระบบ" });
+    }
+
+    const results = [];
+
+    // Loop ผ่าน parcels_id และอัปเดตแต่ละ parcel
+    for (const parcelData of parcels_id) {
+      try {
+        // ตรวจสอบว่า parcelData มี id หรือไม่
+        if (!parcelData.id) {
+          console.log("⚠️ parcelData ไม่มี id:", parcelData);
+          results.push({
+            id: parcelData.id || 'unknown',
+            status: "error",
+            message: "ไม่มี id"
+          });
+          continue;
+        }
+
+        const parcelId = parcelData.id;
+        console.log(`🔄 Processing parcel ID: ${parcelId}`);
+
+        // อัปเดต ParcelDetail โดยตรง
+        const updated = await ParcelDetail.update(
+          {
+            status: "201",
+            branch: branch,
+            type: "delivery",
+            time: new Date()
+          },
+          {
+            where: { id_parcel: parcelId }
+          }
+        );
+
+        if (updated && updated[0] > 0) {
+          console.log(`✅ Successfully updated parcel ${parcelId}`);
+          results.push({
+            id: parcelId,
+            status: "success",
+            message: "อัปเดตสำเร็จ"
+          });
+        } else {
+          console.log(`❌ Failed to update parcel ${parcelId} - not found`);
+          results.push({
+            id: parcelId,
+            status: "error",
+            message: "ไม่พบ parcel ในระบบ"
+          });
+        }
+
+      } catch (error) {
+        console.error(`❌ Error processing parcel ${parcelData.id}:`, error);
+        results.push({
+          id: parcelData.id || 'unknown',
+          status: "error",
+          message: error.message
+        });
+      }
+    }
+
+    console.log("✅ smallParcelsSave completed", {
+      totalProcessed: results.length,
+      branch: branch,
+      results: results
+    });
+
+    res.status(200).json({
+      message: "Small parcels processed successfully!",
+      data: {
+        branch: branch,
+        totalProcessed: results.length,
+        results: results
+      }
+    });
+
+  } catch (error) {
+    console.error("❌ Error in smallParcelsSave:", error);
+    res.status(500).json({ 
+      message: "Error processing small parcels: " + error.message 
+    });
+  }
+};
 exports.saveData = async (req, res) => {
   try {
     const { parcel, detail } = req.body;
@@ -1099,11 +1215,16 @@ exports.importExcel = async (req, res) => {
     for (let i = 1; i < jsonData.length; i++) {
       const row = jsonData[i];
       
+      // Skip empty rows completely
+      if (!row || row.length === 0) {
+        continue;
+      }
+      
       // Check if column D exists and has data
-      if (row && row[3]) { // Column D is index 3 (0-based)
+      if (row[3] !== undefined && row[3] !== null && row[3] !== '') { // Column D is index 3 (0-based)
         const idParcel = String(row[3]).trim();
         
-        if (idParcel) {
+        if (idParcel && idParcel !== 'undefined' && idParcel !== 'null') {
           try {
             // Check if parcel already exists
             const existingParcel = await Parcel.findOne({
@@ -1247,14 +1368,26 @@ exports.importExcelToParcelsSave = async (req, res) => {
     for (let i = 1; i < jsonData.length; i++) {
       const row = jsonData[i];
       
-      // Check if columns B, C, D, E exist (indices 1, 2, 3, 4)
-      if (row && row[1] !== undefined && row[2] !== undefined && row[3] !== undefined && row[4] !== undefined) {
+      // Skip empty rows completely
+      if (!row || row.length === 0) {
+        continue;
+      }
+      
+      // Check if columns B, C, D, E exist and have data (indices 1, 2, 3, 4)
+      if (row[1] !== undefined && row[2] !== undefined && row[3] !== undefined && row[4] !== undefined &&
+          row[1] !== null && row[2] !== null && row[3] !== null && row[4] !== null &&
+          row[1] !== '' && row[2] !== '' && row[3] !== '' && row[4] !== '') {
+        
         const branch = String(row[1]).trim();
         const tel = String(row[2]).trim();
         const id_parcel = String(row[3]).trim();
         const weight = String(row[4]).trim();
         
-        if (branch && tel && id_parcel && weight) {
+        if (branch && tel && id_parcel && weight && 
+            branch !== 'undefined' && tel !== 'undefined' && 
+            id_parcel !== 'undefined' && weight !== 'undefined' &&
+            branch !== 'null' && tel !== 'null' && 
+            id_parcel !== 'null' && weight !== 'null') {
           processedData.push({
             row: i + 1, // Actual row number in Excel
             branch,
@@ -1263,9 +1396,9 @@ exports.importExcelToParcelsSave = async (req, res) => {
             weight: parseFloat(weight) || 0
           });
         }
-        // Skip rows with missing data instead of adding errors
+        // Skip rows with empty data without adding to errors
       }
-      // Skip rows with missing columns instead of adding errors
+      // Skip rows with missing columns without adding to errors
     }
     
     if (processedData.length === 0) {
@@ -1316,14 +1449,6 @@ exports.importExcelToParcelsSave = async (req, res) => {
       });
     }
     
-    // Get from value from first parcel
-    const firstParcelData = await Parcel.findOne({
-      where: { id_parcel: processedData[0].id_parcel },
-      attributes: ['from']
-    });
-    
-    const fromValue = firstParcelData ? firstParcelData.from : '202';
-    
     // Bulk insert to parcels_save
     const parcelsSaveData = processedData.map(row => ({
       id_parcel: row.id_parcel,
@@ -1332,18 +1457,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
       weight: row.weight,
       uuid: batchUuid,
       created_at: currentTime,
-      status: 'pending',
-      from: fromValue,
-      type: 'delivery',
-      type_tel: '+856',
-      note: '-',
-      typePacel: '-',
-      width: 0.0,
-      length: 0.0,
-      height: 0.0,
-      amount: 0,
-      price: 0,
-      time: currentTime
+      status: 'pending'
     }));
     
     // Assuming parcels_save table exists, if not we need to create the model

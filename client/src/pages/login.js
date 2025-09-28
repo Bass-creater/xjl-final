@@ -76,7 +76,7 @@ function Login() {
       <Navbar></Navbar>
       {loading && (
         <div className="loading-overlay">
-          <BarLoader color="#7d00d1" size={80} />
+          <BarLoader color="#ff6b35" size={80} />
         </div>
       )}
       <section className="bg-gray-50 pt-14">

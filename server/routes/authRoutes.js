@@ -45,6 +45,8 @@ router.get("/homeAdmin/branch", auth, (req, res) => {
 router.get("/check/:id", authControl.checkIdInTables);
 
 router.post("/update-parcel-status", authControl.updateParcelStatus);
+router.post("/smallParcels", authControl.smallParcels);
+router.post("/smallParcelsSave", authControl.smallParcelsSave);
 
 router.post("/listproduct", authControl.listProduct);
 router.post("/listOrigin", authControl.listProductOrigin);
