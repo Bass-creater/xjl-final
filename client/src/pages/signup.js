@@ -58,14 +58,14 @@ function Signup() {
       <Navbar></Navbar>
       {loading && (
         <div className="loading-overlay">
-          <BarLoader color="#7d00d1" size={80} />
+          <BarLoader color="#ff6b35" size={80} />
         </div>
       )}
       <section className="bg-gray-50 pt-14">
         <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
           <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
             <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <h1 className="text-center text-5xl font-bold leading-tight tracking-tight text-[#7d00d1] md:text-4xl ">
+              <h1 className="text-center text-5xl font-bold leading-tight tracking-tight text-[#ff6b35] md:text-4xl ">
                 SIGN-UP
               </h1>
               <p className="text-red-500">{message}</p>
@@ -132,7 +132,7 @@ function Signup() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full text-white bg-[#7d00d1] hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+                  className="w-full text-white bg-[#ff6b35] hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
                   disabled={loading}
                 >
                   {loading ? "Signing up..." : "Sign in"}
@@ -141,7 +141,7 @@ function Signup() {
                 ມີບັນຊີຢູ່ແລ້ວບໍ??{" "}
                   <Link
                     to="/login"
-                    className="font-medium text-[#7d00d1] hover:underline "
+                    className="font-medium text-[#ff6b35] hover:underline "
                   >
                     ເຂົ້າສູ່ລະບົບ
                   </Link>

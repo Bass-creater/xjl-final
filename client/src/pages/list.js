@@ -69,47 +69,117 @@ const InventoryDashboard = () => {
       }}
     >
       {/* Sidebar */}
-     <aside
-             style={{
-               width: isMobile ? (sidebarOpen ? "100%" : "0") : "250px",
-               height: "100vh",
-               color: "white",
-               padding: sidebarOpen ? "20px" : "0",
-               display: "flex",
-               flexDirection: "column",
-               transition: "all 0.3s",
-               overflow: "hidden",
-               position: isMobile ? "fixed" : "relative",
-               zIndex: 1000,
-               left: isMobile ? (sidebarOpen ? "0" : "-100%") : "0",
-             }}
-             className="bg-gray-800"
-           >
+      <aside
+        style={{
+          width: isMobile ? (sidebarOpen ? "100%" : "0") : "280px",
+          height: "100vh",
+          background: "linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%)",
+          color: "white",
+          padding: sidebarOpen ? "25px" : "0",
+          display: "flex",
+          flexDirection: "column",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+          overflow: "hidden",
+          position: isMobile ? "fixed" : "relative",
+          zIndex: 1000,
+          left: isMobile ? (sidebarOpen ? "0" : "-100%") : "0",
+          boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        {/* Decorative background elements */}
+        <div style={{
+          position: "absolute",
+          top: "0",
+          right: "0",
+          width: "200px",
+          height: "200px",
+          background: "radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)",
+          filter: "blur(50px)",
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          width: "150px",
+          height: "150px",
+          background: "radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }} />
+        
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "20px",
+            marginBottom: "35px",
+            padding: "20px",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(248, 250, 252, 0.08) 100%)",
+            borderRadius: "18px",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(15px)",
+            boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)",
+            position: "relative",
+            zIndex: 2,
           }}
         >
-          <h2 style={{ fontSize: "24px", margin: 0 }}>ການຈັດການ</h2>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+          }}>
+            <div style={{
+              width: "40px",
+              height: "40px",
+              background: "linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)",
+              borderRadius: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(139, 92, 246, 0.4)",
+            }}>
+              <span style={{ fontSize: "18px" }}>📊</span>
+            </div>
+            <h2 style={{ 
+              fontSize: "28px", 
+              margin: 0, 
+              fontWeight: "800", 
+              background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 50%, #C084FC 100%)", 
+              WebkitBackgroundClip: "text", 
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "-0.5px",
+            }}>
+              ການຈັດການ
+            </h2>
+          </div>
           {isMobile && (
             <button
               onClick={toggleSidebar}
               style={{
-                background: "none",
+                background: "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)",
                 border: "none",
                 color: "white",
-                fontSize: "24px",
+                fontSize: "18px",
                 cursor: "pointer",
+                padding: "10px 14px",
+                borderRadius: "14px",
+                transition: "all 0.3s ease",
+                boxShadow: "0 6px 20px rgba(239, 68, 68, 0.3)",
+                fontWeight: "600",
+              }}
+              onMouseOver={(e) => {
+                e.target.style.transform = "scale(1.1) rotate(90deg)";
+                e.target.style.boxShadow = "0 8px 25px rgba(239, 68, 68, 0.4)";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = "scale(1) rotate(0deg)";
+                e.target.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.3)";
               }}
             >
               ✕
             </button>
           )}
         </div>
-        <nav style={{ flex: 1 }}>
+        <nav style={{ flex: 1, position: "relative", zIndex: 2 }}>
           <Link
             to="/homeAdmin/main"
             style={sidebarLinkStyle("inventorystatistics")}
@@ -118,7 +188,16 @@ const InventoryDashboard = () => {
               isMobile && toggleSidebar();
             }}
           >
-            ໜ້າທຳອິດ
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>📊</span>
+              ໜ້າທຳອິດ
+            </span>
           </Link>
           <Link
             to="/homeAdmin/list"
@@ -128,7 +207,16 @@ const InventoryDashboard = () => {
               isMobile && toggleSidebar();
             }}
           >
-            ລາຍການພັດດຸ
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>📦</span>
+              ລາຍການພັດດຸ
+            </span>
           </Link>
           <Link
             to="/homeAdmin/distribution"
@@ -138,7 +226,16 @@ const InventoryDashboard = () => {
               isMobile && toggleSidebar();
             }}
           >
-            ກະຈາຍພັດດຸ
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>🚚</span>
+              ກະຈາຍພັດດຸ
+            </span>
           </Link>
 
           {storedRole !== "branch" ? (
@@ -151,7 +248,16 @@ const InventoryDashboard = () => {
                   isMobile && toggleSidebar();
                 }}
               >
-                ຕິດຕາມພັດສະດຸຈາກຈີນ
+                <span style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                }}>
+                  <span style={{ fontSize: "20px" }}>🌏</span>
+                  ຕິດຕາມພັດສະດຸຈາກຈີນ
+                </span>
               </Link>
             </>
           ) : (
@@ -164,7 +270,16 @@ const InventoryDashboard = () => {
                   isMobile && toggleSidebar();
                 }}
               >
-                ຕິດຕາມພັດສະດຸ
+                <span style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                }}>
+                  <span style={{ fontSize: "20px" }}>📍</span>
+                  ຕິດຕາມພັດສະດຸ
+                </span>
               </Link>
             </>
           )}
@@ -172,19 +287,54 @@ const InventoryDashboard = () => {
         <button
           style={{
             width: "100%",
-            padding: "10px",
-            backgroundColor: "#e74c3c",
+            padding: "18px",
+            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)",
             color: "white",
             border: "none",
-            borderRadius: "5px",
+            borderRadius: "18px",
             cursor: "pointer",
-            transition: "background-color 0.3s",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            fontSize: "17px",
+            fontWeight: "700",
+            boxShadow: "0 10px 30px rgba(239, 68, 68, 0.25)",
+            position: "relative",
+            overflow: "hidden",
+            zIndex: 2,
           }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#c0392b")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "#e74c3c")}
+          onMouseOver={(e) => {
+            e.target.style.transform = "translateY(-3px)";
+            e.target.style.boxShadow = "0 15px 40px rgba(239, 68, 68, 0.35)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 10px 30px rgba(239, 68, 68, 0.25)";
+          }}
           onClick={handleLogout}
         >
-          LOGOUT
+          <span style={{ 
+            position: "relative", 
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+            fontSize: "17px",
+            fontWeight: "700",
+          }}>
+            <span style={{ fontSize: "20px" }}>🚪</span>
+            LOGOUT
+          </span>
+          
+          {/* Animated background overlay */}
+          <div style={{
+            position: "absolute",
+            top: "0",
+            left: "-100%",
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%)",
+            transition: "left 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+          }} />
         </button>
       </aside>
 

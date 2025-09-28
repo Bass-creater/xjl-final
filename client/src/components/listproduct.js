@@ -128,70 +128,18 @@ const Listproduct = () => {
       if (response.status === 200) {
         const { batch_uuid, imported_count, imported_records } = response.data;
         
-        // Create HTML content for the popup
-        let htmlContent = `
-          <div style="text-align: left; font-family: Arial, sans-serif;">
-            <div style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 15px; border-radius: 10px 10px 0 0; margin: -20px -20px 20px -20px;">
-              <h3 style="margin: 0; font-size: 18px;">✅ Import สำเร็จ!</h3>
-            </div>
-            
-            <div style="margin-bottom: 15px;">
-              <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; border-left: 4px solid #28a745;">
-                <strong>📊 สรุปการ Import:</strong><br>
-                • Batch UUID: <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px;">${batch_uuid}</code><br>
-                • จำนวนรายการที่ Import: <strong style="color: #28a745;">${imported_count} รายการ</strong>
-              </div>
-            </div>
-            
-            <div style="max-height: 300px; overflow-y: auto; border: 1px solid #dee2e6; border-radius: 5px;">
-              <table style="width: 100%; border-collapse: collapse; font-size: 12px;">
-                <thead style="background: #f8f9fa; position: sticky; top: 0;">
-                  <tr>
-                    <th style="padding: 8px; border: 1px solid #dee2e6; text-align: left;">ลำดับ</th>
-                    <th style="padding: 8px; border: 1px solid #dee2e6; text-align: left;">ID Parcel</th>
-                    <th style="padding: 8px; border: 1px solid #dee2e6; text-align: left;">สาขา</th>
-                    <th style="padding: 8px; border: 1px solid #dee2e6; text-align: left;">เบอร์โทร</th>
-                    <th style="padding: 8px; border: 1px solid #dee2e6; text-align: right;">น้ำหนัก (kg)</th>
-                  </tr>
-                </thead>
-                <tbody>
-        `;
-        
-        imported_records.forEach((record, index) => {
-          htmlContent += `
-            <tr style="background: ${index % 2 === 0 ? '#ffffff' : '#f8f9fa'};">
-              <td style="padding: 8px; border: 1px solid #dee2e6;">${index + 1}</td>
-              <td style="padding: 8px; border: 1px solid #dee2e6; font-family: monospace; font-weight: bold;">${record.id_parcel}</td>
-              <td style="padding: 8px; border: 1px solid #dee2e6;">${record.branch}</td>
-              <td style="padding: 8px; border: 1px solid #dee2e6;">${record.tel}</td>
-              <td style="padding: 8px; border: 1px solid #dee2e6; text-align: right;">${record.weight}</td>
-            </tr>
-          `;
+        let message = `Import to Parcels Save Successful!\n`;
+        message += `Batch UUID: ${batch_uuid}\n`;
+        message += `Imported Records: ${imported_count}\n`;
+        message += `\nRecords:\n`;
+        imported_records.forEach(record => {
+          message += `- ${record.id_parcel} (${record.branch}, ${record.tel}, ${record.weight}kg)\n`;
         });
-        
-        htmlContent += `
-                </tbody>
-              </table>
-            </div>
-            
-            <div style="margin-top: 15px; padding: 10px; background: #e7f3ff; border-radius: 5px; border-left: 4px solid #007bff;">
-              <small style="color: #0066cc;">
-                💡 <strong>หมายเหตุ:</strong> ข้อมูลทั้งหมดได้ถูกบันทึกลงในระบบเรียบร้อยแล้ว
-              </small>
-            </div>
-          </div>
-        `;
 
         Swal.fire({
-          title: "",
-          html: htmlContent,
+          title: "Import Successful",
+          text: message,
           icon: "success",
-          width: "600px",
-          showConfirmButton: true,
-          confirmButtonText: "ตกลง",
-          confirmButtonColor: "#28a745",
-          allowOutsideClick: false,
-          allowEscapeKey: false
         }).then(() => {
           setSelectedFile(null);
           // Reset file input
@@ -205,70 +153,16 @@ const Listproduct = () => {
       }
     } catch (error) {
       console.error("Import Error:", error);
-      let errorMessage = error?.response?.data?.message || "เกิดข้อผิดพลาดในการ import ไฟล์";
-      let errors = [];
+      let errorMessage = error?.response?.data?.message || "An error occurred while importing the file";
       
       if (error?.response?.data?.errors) {
-        errors = error.response.data.errors;
+        errorMessage += "\n\nErrors:\n" + error.response.data.errors.join('\n');
       }
       
-      // Create HTML content for error popup
-      let htmlContent = `
-        <div style="text-align: left; font-family: Arial, sans-serif;">
-          <div style="background: linear-gradient(135deg, #dc3545, #c82333); color: white; padding: 15px; border-radius: 10px 10px 0 0; margin: -20px -20px 20px -20px;">
-            <h3 style="margin: 0; font-size: 18px;">❌ Import ไม่สำเร็จ!</h3>
-          </div>
-          
-          <div style="margin-bottom: 15px;">
-            <div style="background: #f8d7da; padding: 15px; border-radius: 5px; border-left: 4px solid #dc3545;">
-              <strong style="color: #721c24;">🚨 ข้อผิดพลาด:</strong><br>
-              <span style="color: #721c24;">${errorMessage}</span>
-            </div>
-          </div>
-      `;
-      
-      if (errors.length > 0) {
-        htmlContent += `
-          <div style="max-height: 200px; overflow-y: auto; border: 1px solid #f5c6cb; border-radius: 5px; background: #f8f9fa;">
-            <div style="padding: 10px; background: #f5c6cb; border-bottom: 1px solid #f1b0b7;">
-              <strong style="color: #721c24;">รายละเอียดข้อผิดพลาด:</strong>
-            </div>
-            <div style="padding: 10px;">
-        `;
-        
-        errors.forEach((error, index) => {
-          htmlContent += `
-            <div style="margin-bottom: 8px; padding: 8px; background: white; border-radius: 3px; border-left: 3px solid #dc3545;">
-              <span style="color: #721c24; font-size: 13px;">${index + 1}. ${error}</span>
-            </div>
-          `;
-        });
-        
-        htmlContent += `
-            </div>
-          </div>
-        `;
-      }
-      
-      htmlContent += `
-          <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 5px; border-left: 4px solid #ffc107;">
-            <small style="color: #856404;">
-              💡 <strong>คำแนะนำ:</strong> กรุณาตรวจสอบไฟล์ Excel และลองใหม่อีกครั้ง
-            </small>
-          </div>
-        </div>
-      `;
-
       Swal.fire({
-        title: "",
-        html: htmlContent,
+        title: "Import Failed",
+        text: errorMessage,
         icon: "error",
-        width: "500px",
-        showConfirmButton: true,
-        confirmButtonText: "ตกลง",
-        confirmButtonColor: "#dc3545",
-        allowOutsideClick: false,
-        allowEscapeKey: false
       });
     } finally {
       setImportLoading(false);
