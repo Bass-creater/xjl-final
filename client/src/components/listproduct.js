@@ -383,8 +383,24 @@ const Listproduct = () => {
       </div>
 
       <div className="flex items-center justify-center flex-col">
-        <div className="bg-[#FB923C] px-6 py-4 pb-6 rounded-lg w-full mb-10">
-          <h1 style={{ fontSize: "16px", margin: "0", color: "#fff" }}>
+        <div style={{
+          background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
+          padding: "16px 24px 24px 24px",
+          borderRadius: "12px",
+          width: "100%",
+          marginBottom: "40px",
+          boxShadow: "0 8px 25px rgba(251, 146, 60, 0.3), 0 4px 12px rgba(249, 115, 22, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+          border: "1px solid rgba(251, 146, 60, 0.4)",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <h1 style={{ 
+            fontSize: "16px", 
+            margin: "0", 
+            color: "#fff",
+            textShadow: "0 2px 8px rgba(0, 0, 0, 0.2), 0 1px 4px rgba(0, 0, 0, 0.1)",
+            fontWeight: "600",
+          }}>
             ຄົ້ນຫາລາຍການພັດດຸ
           </h1>
 
@@ -410,11 +426,35 @@ const Listproduct = () => {
               // value={findParcel}
               onChange={(e) => setFindParcel(e.target.value)}
               onPaste={handleSeachPaste}
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                color: "#374151",
+                fontSize: "14px",
+                borderRadius: "8px",
+                width: "100%",
+                padding: "10px 12px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+                backdropFilter: "blur(10px)",
+                outline: "none",
+                transition: "all 0.3s ease",
+              }}
               placeholder="Enter Number Parcel."
             />
             <button
-              className="bg-white rounded-lg px-4 text-[#732dcf] font-semibold text-md duration-200 hover:px-6 hover:duration-200"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                borderRadius: "8px",
+                padding: "10px 16px",
+                color: "#FB923C",
+                fontWeight: "600",
+                fontSize: "14px",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s ease",
+                cursor: "pointer",
+              }}
               type="button"
               onClick={() => {
                 const parcel = products.find(
@@ -460,19 +500,69 @@ const Listproduct = () => {
               <thead>
                 <tr>
                   {/* เพิ่มหัวข้อคอลัมน์ "No." */}
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th style={{
+                    padding: "12px 20px",
+                    borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                    background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                    textAlign: "left",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}>
                     No.
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th style={{
+                    padding: "12px 20px",
+                    borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                    background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                    textAlign: "left",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}>
                     ID
                   </th>
-                  <th className="text-center px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th style={{
+                    padding: "12px 20px",
+                    borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                    background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                    textAlign: "center",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}>
                     Status
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-end text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th style={{
+                    padding: "12px 20px",
+                    borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                    background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                    textAlign: "right",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}>
                     FROM
                   </th>
-                  <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                  <th style={{
+                    padding: "12px 20px",
+                    borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                    background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                    textAlign: "right",
+                    fontSize: "12px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.05em",
+                  }}>
                     Time
                   </th>
                 </tr>
@@ -531,7 +621,16 @@ const Listproduct = () => {
                     )?.map((product, index) => (
                       <tr
                         key={product.id_parcel}
-                        className="hover:bg-gray-100 bg-white"
+                        style={{
+                          backgroundColor: "white",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "rgba(251, 146, 60, 0.05)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "white";
+                        }}
                       >
                         {/* เพิ่ม Column แสดงลำดับโดยใช้ index */}
                         <td className="px-5 py-5 border-b border-gray-200 text-sm">

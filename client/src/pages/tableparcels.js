@@ -447,67 +447,124 @@ const TableParcels = () => {
         {/* Header */}
         <header style={{ 
           backgroundColor: "white", 
-          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)", 
-          borderBottom: "1px solid #e5e7eb", 
-          padding: "16px 24px" 
+          boxShadow: "0 4px 15px rgba(0, 0, 0, 0.12)", 
+          borderRadius: "15px",
+          margin: "20px",
+          padding: "30px 25px",
+          minHeight: "80px",
         }}>
           <div style={{ 
             display: "flex", 
             justifyContent: "space-between", 
             alignItems: "center" 
           }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+            }}>
               {isMobile && (
                 <button
                   onClick={toggleSidebar}
                   style={{
-                    marginRight: "16px",
-                    color: "#6b7280",
-                    background: "none",
+                    background: "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)",
                     border: "none",
+                    color: "white",
+                    fontSize: "18px",
                     cursor: "pointer",
+                    padding: "10px 14px",
+                    borderRadius: "14px",
+                    transition: "all 0.3s ease",
+                    boxShadow: "0 6px 20px rgba(239, 68, 68, 0.3)",
+                    fontWeight: "600",
                   }}
-                  onMouseOver={(e) => e.target.style.color = "#111827"}
-                  onMouseOut={(e) => e.target.style.color = "#6b7280"}
+                  onMouseOver={(e) => {
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow = "0 8px 25px rgba(239, 68, 68, 0.4)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.3)";
+                  }}
                 >
-                  <svg style={{ width: "24px", height: "24px" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
+                  ☰
                 </button>
               )}
-              <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#111827", margin: 0 }}>ຕາຕະລາງພັດດຸ</h1>
+              <h2 style={{ 
+                fontSize: "28px", 
+                margin: 0, 
+                fontWeight: "bold",
+                color: "#374151",
+              }}>
+                ຕາຕະລາງພັດດຸ
+              </h2>
             </div>
             {!isMobile && (
-              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <span style={{ fontSize: "14px", color: "#6b7280" }}>
-                  {new Date().toLocaleDateString("th-TH")}
-                </span>
-                <span style={{ fontSize: "14px", color: "#6b7280" }}>
-                  {new Date().toLocaleTimeString("th-TH", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
-                <span style={{ fontSize: "14px", fontWeight: "500", color: "#1f2937" }}>
-                  {username} | {role}
-                </span>
+              <>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "16px",
+                  padding: "12px 20px",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(249, 115, 22, 0.15) 100%)",
+                  borderRadius: "15px",
+                  border: "1px solid rgba(251, 146, 60, 0.2)",
+                }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ fontSize: "16px" }}>📅</span>
+                    <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "14px" }}>
+                      {new Date().toLocaleDateString("th-TH")}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ fontSize: "16px" }}>🕐</span>
+                    <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "14px" }}>
+                      {new Date().toLocaleTimeString("th-TH", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    <span style={{ fontSize: "16px" }}></span>
+                    <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "15px" }}>
+                      {username} | {role}
+                    </span>
+                  </div>
+                </div>
                 <Link
                   to="/"
                   style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#2563eb",
+                    padding: "12px 20px",
+                    backgroundColor: "#3B82F6",
                     color: "white",
-                    borderRadius: "8px",
+                    border: "none",
+                    borderRadius: "12px",
                     textDecoration: "none",
-                    fontSize: "14px",
-                    transition: "background-color 0.3s",
+                    cursor: "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontSize: "15px",
+                    fontWeight: "700",
+                    boxShadow: "0 3px 12px rgba(59, 130, 246, 0.3)",
+                    transition: "all 0.3s ease",
                   }}
-                  onMouseOver={(e) => e.target.style.backgroundColor = "#1d4ed8"}
-                  onMouseOut={(e) => e.target.style.backgroundColor = "#2563eb"}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#2563EB";
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.4)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "#3B82F6";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 3px 12px rgba(59, 130, 246, 0.3)";
+                  }}
                 >
-                  ໜ້າແຣກ
+                  <span style={{ fontSize: "16px" }}>🏠</span>
+                  ໜ້າເເຣກ
                 </Link>
-              </div>
+              </>
             )}
           </div>
         </header>

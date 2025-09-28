@@ -352,7 +352,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
           right: "0",
           width: "200px",
           height: "200px",
-          background: "radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.12) 0%, transparent 70%)",
           filter: "blur(50px)",
         }} />
         <div style={{

@@ -181,7 +181,7 @@ const InventoryStatistics = () => {
           right: "0",
           width: "200px",
           height: "200px",
-          background: "radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.12) 0%, transparent 70%)",
           filter: "blur(50px)",
         }} />
         <div style={{
@@ -484,7 +484,12 @@ const InventoryStatistics = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "20px",
+            padding: "30px 25px",
+            backgroundColor: "white",
+            boxShadow: "0 4px 15px rgba(0, 0, 0, 0.12)",
+            borderRadius: "15px",
+            marginBottom: "25px",
+            minHeight: "80px",
           }}
         >
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -502,38 +507,75 @@ const InventoryStatistics = () => {
                 ☰
               </button>
             )}
-            <h1 style={{ fontSize: "24px", margin: "0" }}>ໜ້າທຳອິດ</h1>
+            <span style={{ fontSize: "24px", marginRight: "10px" }}>🏠</span>
+            <h1 style={{ fontSize: "28px", margin: "0", color: "#374151", fontWeight: "800" }}>ໜ້າທຳອິດ</h1>
           </div>
           {!isMobile && (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <span style={{ marginRight: "20px" }}>
-                {new Date().toLocaleDateString("th-TH")}
-              </span>
-              <span style={{ marginRight: "20px" }}>
-                {new Date().toLocaleTimeString("th-TH", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-              <span>
-                {username} | {role}
-              </span>
+            <>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                padding: "12px 20px",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(249, 115, 22, 0.15) 100%)",
+                borderRadius: "15px",
+                border: "1px solid rgba(251, 146, 60, 0.2)",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "16px" }}>📅</span>
+                  <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "14px" }}>
+                    {new Date().toLocaleDateString("th-TH")}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "16px" }}>🕐</span>
+                  <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "14px" }}>
+                    {new Date().toLocaleTimeString("th-TH", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "16px" }}></span>
+                  <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "15px" }}>
+                    {username} | {role}
+                  </span>
+                </div>
+              </div>
               <Link
                 to="/"
                 style={{
-                  marginLeft: "20px",
-                  padding: "8px 16px",
-                  backgroundColor: "#4a69bd",
+                  padding: "12px 20px",
+                  backgroundColor: "#3B82F6",
                   color: "white",
                   border: "none",
-                  borderRadius: "5px",
+                  borderRadius: "12px",
                   textDecoration: "none",
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "15px",
+                  fontWeight: "700",
+                  boxShadow: "0 3px 12px rgba(59, 130, 246, 0.3)",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#2563EB";
+                  e.target.style.transform = "translateY(-1px)";
+                  e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#3B82F6";
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 2px 8px rgba(59, 130, 246, 0.3)";
                 }}
               >
+                <span style={{ fontSize: "16px" }}>🏠</span>
                 ໜ້າເເຣກ
               </Link>
-            </div>
+            </>
           )}
         </header>
 
@@ -550,7 +592,7 @@ const InventoryStatistics = () => {
               <div
                 style={{
                   ...cardStyle,
-                  background: "linear-gradient(135deg, #FB923C, #F97316)",
+                  background: "linear-gradient(135deg, #FEF3C7 0%, #FDE68A 30%, #F59E0B 70%, #D97706 100%)",
                   minHeight: "150px",
                   position: "relative",
                   overflow: "hidden",
@@ -621,7 +663,7 @@ const InventoryStatistics = () => {
                 <div
                   style={{
                     ...cardStyle,
-                    background: "linear-gradient(135deg, #11998e, #38ef7d)",
+                    background: "linear-gradient(135deg, #A7F3D0 0%, #6EE7B7 50%, #34D399 100%)",
                     flex: 1,
                     minWidth: "200px",
                     position: "relative",
@@ -639,15 +681,15 @@ const InventoryStatistics = () => {
                     borderRadius: "10px",
                   }} />
                   <div style={{ position: "relative", zIndex: 2 }}>
-                    <h2 style={titleStyle}>ເຄຣດິດ</h2>
+                    <h2 style={{...titleStyle, color: "#6B7280"}}>ເຄຣດິດ</h2>
 
                     <div style={valueContainerStyle}>
-                      <span style={valueStyle}>
+                      <span style={{...valueStyle, color: "#6B7280"}}>
                         {credit !== null && typeof credit !== "object"
                           ? Number(credit).toLocaleString("en-US")
                           : "Loading..."}
                       </span>
-                      <span style={unitStyle}>LAK</span>
+                      <span style={{...unitStyle, color: "#6B7280"}}>LAK</span>
                     </div>
                   </div>
                 </div>
@@ -665,25 +707,101 @@ const InventoryStatistics = () => {
 
           {storedBranch === "LAO Warehouse" ? (
             <div>
-              <h2>ພັດດຸທີ່ຢູ່ໃນໂກດັງ</h2>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                marginBottom: "20px",
+              }}>
+                <div style={{
+                  width: "40px",
+                  height: "40px",
+                  background: "linear-gradient(135deg, #FED7AA 0%, #FDBA74 50%, #FB923C 100%)",
+                  borderRadius: "8px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1px solid rgba(254, 215, 170, 0.4)",
+                  boxShadow: "0 4px 12px rgba(254, 215, 170, 0.3)",
+                }}>
+                  <span style={{ fontSize: "20px" }}>📦</span>
+                </div>
+                <h2 style={{
+                  fontSize: "24px",
+                  fontWeight: "600",
+                  color: "#F97316",
+                  margin: 0,
+                  textShadow: "0 2px 4px rgba(249, 115, 22, 0.15)",
+                }}>
+                  ພັດດຸທີ່ຢູ່ໃນໂກດັງ
+                </h2>
+              </div>
               {/* Data Table */}
               <table className="min-w-full leading-normal">
                 <thead>
-                  <tr>
+                  <tr style={{
+                    background: "linear-gradient(135deg, #FED7AA 0%, #FDBA74 50%, #FB923C 100%)",
+                    borderBottom: "2px solid rgba(254, 215, 170, 0.4)",
+                    boxShadow: "0 2px 4px rgba(254, 215, 170, 0.2)",
+                  }}>
                     {/* คอลัมน์ลำดับ */}
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th style={{
+                      padding: "12px 20px",
+                      color: "#92400E",
+                      textAlign: "left",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                    }}>
                       No
                     </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th style={{
+                      padding: "12px 20px",
+                      color: "#92400E",
+                      textAlign: "left",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                    }}>
                       Name
                     </th>
-                    <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th style={{
+                      padding: "12px 20px",
+                      color: "#92400E",
+                      textAlign: "left",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                    }}>
                       FROM
                     </th>
-                    <th className="text-center px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th style={{
+                      padding: "12px 20px",
+                      color: "#92400E",
+                      textAlign: "center",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                    }}>
                       Status
                     </th>
-                    <th className="text-end px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                    <th style={{
+                      padding: "12px 20px",
+                      color: "#92400E",
+                      textAlign: "right",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                    }}>
                       Time
                     </th>
                   </tr>
@@ -739,20 +857,20 @@ const InventoryStatistics = () => {
 const cardStyle = {
   padding: "20px",
   borderRadius: "10px",
-  color: "white",
-  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+  color: "#6B7280",
+  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
 };
 
 const titleStyle = {
-  fontSize: "24px",
+  fontSize: "28px",
   fontWeight: "bold",
   // marginBottom: "10px",
 };
 const textStyle = {
-  fontSize: "18px",
+  fontSize: "22px",
   fontWeight: "500",
 };
 
@@ -762,9 +880,9 @@ const valueContainerStyle = {
   gap: "10px",
 };
 
-const valueStyle = { fontSize: "38px", fontWeight: "bold" };
+const valueStyle = { fontSize: "48px", fontWeight: "bold" };
 
-const unitStyle = { fontSize: "24px" };
+const unitStyle = { fontSize: "28px" };
 
 const noteStyle = { fontSize: "12px", fontStyle: "italic", marginTop: "10px" };
 
