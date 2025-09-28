@@ -76,12 +76,15 @@ const TableParcels = () => {
     display: "block",
     color: "white",
     textDecoration: "none",
-    padding: "10px",
-    marginBottom: "5px",
-    borderRadius: "5px",
-    paddingRight: "10px",
-    backgroundColor: activePage === page ? "#34495e" : "transparent",
-    transition: "background-color 0.3s",
+    padding: "14px 18px",
+    marginBottom: "8px",
+    borderRadius: "12px",
+    backgroundColor: activePage === page ? "rgba(255, 255, 255, 0.15)" : "transparent",
+    border: activePage === page ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
+    transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontSize: "15px",
+    fontWeight: "500",
+    backdropFilter: "blur(10px)",
   });
 
   // Filter parcels based on search term
@@ -111,172 +114,396 @@ const TableParcels = () => {
   };
 
   return (
-    <div className="flex h-screen font-sans">
+    <div
+      style={{
+        display: "flex",
+        height: "100vh",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <style>
+        {`
+          @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+        `}
+      </style>
       {/* Sidebar */}
-     <aside
-             style={{
-               width: isMobile ? (sidebarOpen ? "100%" : "0") : "250px",
-               height: "100vh",
-               color: "white",
-               padding: sidebarOpen ? "20px" : "0",
-               display: "flex",
-               flexDirection: "column",
-               transition: "all 0.3s",
-               overflow: "hidden",
-               position: isMobile ? "fixed" : "relative",
-               zIndex: 1000,
-               left: isMobile ? (sidebarOpen ? "0" : "-100%") : "0",
-             }}
-             className="bg-gray-800"
-           >
-             <div
-               style={{
-                 display: "flex",
-                 justifyContent: "space-between",
-                 alignItems: "center",
-                 marginBottom: "20px",
-               }}
-             >
-               <h2 style={{ fontSize: "24px", margin: 0 }}>ການຈັດການ</h2>
-               {isMobile && (
-                 <button
-                   onClick={toggleSidebar}
-                   style={{
-                     background: "none",
-                     border: "none",
-                     color: "white",
-                     fontSize: "24px",
-                     cursor: "pointer",
-                   }}
-                 >
-                   ✕
-                 </button>
-               )}
-             </div>
-             <nav style={{ flex: 1 }}>
-               <Link
-                 to="/homeAdmin/main"
-                 style={sidebarLinkStyle("inventorystatistics")}
-                 onClick={() => {
-                   setActivePage("inventorystatistics");
-                   isMobile && toggleSidebar();
-                 }}
-               >
-                 ໜ້າທຳອິດ
-               </Link>
-               <Link
-                 to="/homeAdmin/list"
-                 style={sidebarLinkStyle("inventory")}
-                 onClick={() => {
-                   setActivePage("inventory");
-                   isMobile && toggleSidebar();
-                 }}
-               >
-                 ລາຍການພັດດຸ
-               </Link>
-               <Link
-                 to="/homeAdmin/distribution"
-                 style={sidebarLinkStyle("distribution")}
-                 onClick={() => {
-                   setActivePage("distribution");
-                   isMobile && toggleSidebar();
-                 }}
-               >
-                 ກະຈາຍພັດດຸ
-               </Link>
-               <Link
-                 to="/homeAdmin/tableparcels"
-                 style={sidebarLinkStyle("tablesparcels")}
-                 onClick={() => {
-                   setActivePage("distribution");
-                   isMobile && toggleSidebar();
-                 }}
-               >
-                 ຕາຕະລາງພັດດຸ
-               </Link>
+      <aside
+        style={{
+          width: isMobile ? (sidebarOpen ? "100%" : "0") : "280px",
+          height: "100vh",
+          background: "linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%)",
+          color: "white",
+          padding: sidebarOpen ? "25px" : "0",
+          display: "flex",
+          flexDirection: "column",
+          transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+          overflow: "hidden",
+          position: isMobile ? "fixed" : "relative",
+          zIndex: 1000,
+          left: isMobile ? (sidebarOpen ? "0" : "-100%") : "0",
+          boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        {/* Decorative background elements */}
+        <div style={{
+          position: "absolute",
+          top: "0",
+          right: "0",
+          width: "200px",
+          height: "200px",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%)",
+          filter: "blur(50px)",
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          width: "150px",
+          height: "150px",
+          background: "radial-gradient(circle, rgba(234, 88, 12, 0.06) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }} />
+        
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "35px",
+            padding: "20px",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(248, 250, 252, 0.08) 100%)",
+            borderRadius: "18px",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(15px)",
+            boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)",
+            position: "relative",
+            zIndex: 2,
+          }}
+        >
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+          }}>
+            <div style={{
+              width: "40px",
+              height: "40px",
+              background: "linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%)",
+              borderRadius: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(251, 146, 60, 0.4)",
+            }}>
+              <span style={{ fontSize: "18px" }}>📊</span>
+            </div>
+            <h2 style={{ 
+              fontSize: "28px", 
+              margin: 0, 
+              fontWeight: "800", 
+              background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)", 
+              WebkitBackgroundClip: "text", 
+              WebkitTextFillColor: "transparent",
+              letterSpacing: "-0.5px",
+            }}>
+              ການຈັດການ
+            </h2>
+          </div>
+          {isMobile && (
+            <button
+              onClick={toggleSidebar}
+              style={{
+                background: "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)",
+                border: "none",
+                color: "white",
+                fontSize: "18px",
+                cursor: "pointer",
+                padding: "10px 14px",
+                borderRadius: "14px",
+                transition: "all 0.3s ease",
+                boxShadow: "0 6px 20px rgba(239, 68, 68, 0.3)",
+                fontWeight: "600",
+              }}
+              onMouseOver={(e) => {
+                e.target.style.transform = "scale(1.1) rotate(90deg)";
+                e.target.style.boxShadow = "0 8px 25px rgba(239, 68, 68, 0.4)";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = "scale(1) rotate(0deg)";
+                e.target.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.3)";
+              }}
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        
+        <nav style={{ flex: 1, position: "relative", zIndex: 2 }}>
+          <Link
+            to="/homeAdmin/main"
+            style={sidebarLinkStyle("inventorystatistics")}
+            onClick={() => {
+              setActivePage("inventorystatistics");
+              isMobile && toggleSidebar();
+            }}
+          >
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>📊</span>
+              ໜ້າທຳອິດ
+            </span>
+          </Link>
+          <Link
+            to="/homeAdmin/list"
+            style={sidebarLinkStyle("inventory")}
+            onClick={() => {
+              setActivePage("inventory");
+              isMobile && toggleSidebar();
+            }}
+          >
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>📦</span>
+              ລາຍການພັດດຸ
+            </span>
+          </Link>
+          <Link
+            to="/homeAdmin/distribution"
+            style={sidebarLinkStyle("distribution")}
+            onClick={() => {
+              setActivePage("distribution");
+              isMobile && toggleSidebar();
+            }}
+          >
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>🚚</span>
+              ກະຈາຍພັດດຸ
+            </span>
+          </Link>
+          <Link
+            to="/homeAdmin/tableparcels"
+            style={sidebarLinkStyle("tableparcels")}
+            onClick={() => {
+              setActivePage("tableparcels");
+              isMobile && toggleSidebar();
+            }}
+          >
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>📋</span>
+              ຕາຕະລາງພັດດຸ
+            </span>
+          </Link>
+
+          {storedRole === "admin" && (
+            <Link
+              to="/homeAdmin/smallParcels"
+              style={sidebarLinkStyle("smallParcels")}
+              onClick={() => {
+                setActivePage("smallParcels");
+                isMobile && toggleSidebar();
+              }}
+            >
+              <span style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                fontSize: "16px",
+                fontWeight: "600",
+              }}>
+                <span style={{ fontSize: "20px" }}>📦</span>
+                ສ້າງການສົ່ງພັດສະດຸລວມ
+              </span>
+            </Link>
+          )}
      
-               {storedRole !== "branch" ? (
-                 <>
-                   <Link
-                     to="https://wx.lqfast.com/wx/waybillquery/#/?companyid=zJ0JeBq%2FsADQTY6mmRSZMA%3D%3D&translated=translated"
-                     style={sidebarLinkStyle("branches")}
-                     onClick={() => {
-                       setActivePage("branches");
-                       isMobile && toggleSidebar();
-                     }}
-                   >
-                     ຕິດຕາມພັດສະດຸຈາກຈີນ
-                   </Link>
-                 </>
-               ) : (
-                 <>
-                   <Link
-                     to="../../"
-                     style={sidebarLinkStyle("branches")}
-                     onClick={() => {
-                       setActivePage("branches");
-                       isMobile && toggleSidebar();
-                     }}
-                   >
-                     ຕິດຕາມພັດສະດຸ
-                   </Link>
-                 </>
-               )}
-             </nav>
-             <button
-               style={{
-                 width: "100%",
-                 padding: "10px",
-                 backgroundColor: "#e74c3c",
-                 color: "white",
-                 border: "none",
-                 borderRadius: "5px",
-                 cursor: "pointer",
-                 transition: "background-color 0.3s",
-               }}
-               onMouseOver={(e) => (e.target.style.backgroundColor = "#c0392b")}
-               onMouseOut={(e) => (e.target.style.backgroundColor = "#e74c3c")}
-               onClick={handleLogout}
-             >
-               LOGOUT
-             </button>
-           </aside>
+          {storedRole !== "branch" ? (
+            <>
+              <Link
+                to="https://wx.lqfast.com/wx/waybillquery/#/?companyid=zJ0JeBq%2FsADQTY6mmRSZMA%3D%3D&translated=translated"
+                style={sidebarLinkStyle("branches")}
+                onClick={() => {
+                  setActivePage("branches");
+                  isMobile && toggleSidebar();
+                }}
+              >
+                <span style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                }}>
+                  <span style={{ fontSize: "20px" }}>🌏</span>
+                  ຕິດຕາມພັດສະດຸຈາກຈີນ
+                </span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="../../"
+                style={sidebarLinkStyle("branches")}
+                onClick={() => {
+                  setActivePage("branches");
+                  isMobile && toggleSidebar();
+                }}
+              >
+                <span style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                }}>
+                  <span style={{ fontSize: "20px" }}>📍</span>
+                  ຕິດຕາມພັດສະດຸ
+                </span>
+              </Link>
+            </>
+          )}
+        </nav>
+        
+        <button
+          style={{
+            width: "100%",
+            padding: "18px",
+            background: "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)",
+            color: "white",
+            border: "none",
+            borderRadius: "18px",
+            cursor: "pointer",
+            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            fontSize: "17px",
+            fontWeight: "700",
+            boxShadow: "0 10px 30px rgba(239, 68, 68, 0.25)",
+            position: "relative",
+            overflow: "hidden",
+            zIndex: 2,
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = "translateY(-3px)";
+            e.target.style.boxShadow = "0 15px 40px rgba(239, 68, 68, 0.35)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 10px 30px rgba(239, 68, 68, 0.25)";
+          }}
+          onClick={handleLogout}
+        >
+          <span style={{ 
+            position: "relative", 
+            zIndex: 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "10px",
+            fontSize: "17px",
+            fontWeight: "700",
+          }}>
+            <span style={{ fontSize: "20px" }}>🚪</span>
+            LOGOUT
+          </span>
+          
+          {/* Animated background overlay */}
+          <div style={{
+            position: "absolute",
+            top: "0",
+            left: "-100%",
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%)",
+            transition: "left 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+          }} />
+        </button>
+      </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto bg-gray-50">
+      <main style={{ flex: 1, overflow: "auto", backgroundColor: "#f9fafb" }}>
         {/* Header */}
-        <header className="bg-white shadow-sm border-b border-gray-200 px-6 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
+        <header style={{ 
+          backgroundColor: "white", 
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)", 
+          borderBottom: "1px solid #e5e7eb", 
+          padding: "16px 24px" 
+        }}>
+          <div style={{ 
+            display: "flex", 
+            justifyContent: "space-between", 
+            alignItems: "center" 
+          }}>
+            <div style={{ display: "flex", alignItems: "center" }}>
               {isMobile && (
                 <button
                   onClick={toggleSidebar}
-                  className="mr-4 text-gray-600 hover:text-gray-900"
+                  style={{
+                    marginRight: "16px",
+                    color: "#6b7280",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseOver={(e) => e.target.style.color = "#111827"}
+                  onMouseOut={(e) => e.target.style.color = "#6b7280"}
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={{ width: "24px", height: "24px" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
               )}
-              <h1 className="text-2xl font-bold text-gray-900">ຕາຕະລາງພັດດຸ</h1>
+              <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#111827", margin: 0 }}>ຕາຕະລາງພັດດຸ</h1>
             </div>
             {!isMobile && (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-600">
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <span style={{ fontSize: "14px", color: "#6b7280" }}>
                   {new Date().toLocaleDateString("th-TH")}
                 </span>
-                <span className="text-sm text-gray-600">
+                <span style={{ fontSize: "14px", color: "#6b7280" }}>
                   {new Date().toLocaleTimeString("th-TH", {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </span>
-                <span className="text-sm font-medium text-gray-800">
+                <span style={{ fontSize: "14px", fontWeight: "500", color: "#1f2937" }}>
                   {username} | {role}
                 </span>
                 <Link
                   to="/"
-                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm"
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#2563eb",
+                    color: "white",
+                    borderRadius: "8px",
+                    textDecoration: "none",
+                    fontSize: "14px",
+                    transition: "background-color 0.3s",
+                  }}
+                  onMouseOver={(e) => e.target.style.backgroundColor = "#1d4ed8"}
+                  onMouseOut={(e) => e.target.style.backgroundColor = "#2563eb"}
                 >
                   ໜ້າແຣກ
                 </Link>
@@ -286,33 +513,82 @@ const TableParcels = () => {
         </header>
 
         {/* Content */}
-        <div className="p-6">
+        <div style={{ padding: "24px" }}>
           {/* Search and Controls */}
-          <div className="mb-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-            <div className="relative">
+          <div style={{ 
+            marginBottom: "24px", 
+            display: "flex", 
+            flexDirection: "column", 
+            gap: "16px",
+            "@media (min-width: 640px)": {
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center"
+            }
+          }}>
+            <div style={{ position: "relative" }}>
               <input
                 type="text"
                 placeholder="ຊອກຫາລະຫັດພັດດຸ, ຊື່ຜູ້ຮັບ, ຫຼື ເບີໂທ..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full sm:w-80 px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                style={{
+                  width: "100%",
+                  padding: "8px 16px 8px 40px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  outline: "none",
+                  transition: "border-color 0.3s, box-shadow 0.3s",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = "#3b82f6";
+                  e.target.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.2)";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#d1d5db";
+                  e.target.style.boxShadow = "none";
+                }}
               />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div style={{ 
+                position: "absolute", 
+                top: "50%", 
+                left: "12px", 
+                transform: "translateY(-50%)", 
+                pointerEvents: "none" 
+              }}>
+                <svg style={{ width: "20px", height: "20px", color: "#9ca3af" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
             </div>
-            <div className="text-sm text-gray-600">
+            <div style={{ fontSize: "14px", color: "#6b7280" }}>
               ທັງໝົດ {filteredParcels.length} ລາຍການ
             </div>
           </div>
 
           {/* Table */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div style={{ 
+            backgroundColor: "white", 
+            borderRadius: "8px", 
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)", 
+            overflow: "hidden" 
+          }}>
             {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+              <div style={{ 
+                display: "flex", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                height: "256px" 
+              }}>
+                <div style={{
+                  width: "48px",
+                  height: "48px",
+                  border: "3px solid #e5e7eb",
+                  borderTop: "3px solid #2563eb",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite"
+                }}></div>
               </div>
             ) : (
               <>

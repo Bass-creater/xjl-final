@@ -133,12 +133,15 @@ const InventoryStatistics = () => {
     display: "block",
     color: "white",
     textDecoration: "none",
-    padding: "10px",
-    marginBottom: "5px",
-    borderRadius: "5px",
-    paddingRight: "10px",
-    backgroundColor: activePage === page ? "#34495e" : "transparent",
-    transition: "background-color 0.3s",
+    padding: "14px 18px",
+    marginBottom: "8px",
+    borderRadius: "12px",
+    backgroundColor: activePage === page ? "rgba(255, 255, 255, 0.15)" : "transparent",
+    border: activePage === page ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
+    transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontSize: "15px",
+    fontWeight: "500",
+    backdropFilter: "blur(10px)",
   });
 
   const toggleSidebar = () => {
@@ -178,7 +181,7 @@ const InventoryStatistics = () => {
           right: "0",
           width: "200px",
           height: "200px",
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%)",
           filter: "blur(50px)",
         }} />
         <div style={{
@@ -187,7 +190,7 @@ const InventoryStatistics = () => {
           left: "0",
           width: "150px",
           height: "150px",
-          background: "radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(234, 88, 12, 0.06) 0%, transparent 70%)",
           filter: "blur(40px)",
         }} />
         
@@ -215,12 +218,12 @@ const InventoryStatistics = () => {
             <div style={{
               width: "40px",
               height: "40px",
-              background: "linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)",
+              background: "linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%)",
               borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid rgba(139, 92, 246, 0.4)",
+              border: "1px solid rgba(251, 146, 60, 0.4)",
             }}>
               <span style={{ fontSize: "18px" }}>📊</span>
             </div>
@@ -228,7 +231,7 @@ const InventoryStatistics = () => {
               fontSize: "28px", 
               margin: 0, 
               fontWeight: "800", 
-              background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 50%, #C084FC 100%)", 
+              background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)", 
               WebkitBackgroundClip: "text", 
               WebkitTextFillColor: "transparent",
               letterSpacing: "-0.5px",
@@ -547,22 +550,36 @@ const InventoryStatistics = () => {
               <div
                 style={{
                   ...cardStyle,
-                  background: "linear-gradient(135deg, #6d03aa, #4596fc)",
+                  background: "linear-gradient(135deg, #FB923C, #F97316)",
                   minHeight: "150px",
+                  position: "relative",
+                  overflow: "hidden",
                 }}
                 className="w-full"
               >
-                {storedRole === "branch" ? (
-                  <div>
-                    <h2 style={titleStyle}>ຈຳນວນພັດດຸທັງໝົດ</h2>
-                    <h2 style={titleStyle}>ທີ່ຖືກສົ່ງມາຍັງສາຂາ</h2>
-                  </div>
-                ) : (
-                  <div>
-                    <h2 style={titleStyle}>ຈຳນວນພັດດຸທັງໝົດ</h2>
-                    <h2 style={titleStyle}>ທີ່ຢູ່ໃນໂກດັງ</h2>
-                  </div>
-                )}
+                {/* White fade overlay */}
+                <div style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "0",
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%)",
+                  borderRadius: "10px",
+                }} />
+                <div style={{ position: "relative", zIndex: 2 }}>
+                  {storedRole === "branch" ? (
+                    <div>
+                      <h2 style={titleStyle}>ຈຳນວນພັດດຸທັງໝົດ</h2>
+                      <h2 style={titleStyle}>ທີ່ຖືກສົ່ງມາຍັງສາຂາ</h2>
+                    </div>
+                  ) : (
+                    <div>
+                      <h2 style={titleStyle}>ຈຳນວນພັດດຸທັງໝົດ</h2>
+                      <h2 style={titleStyle}>ທີ່ຢູ່ໃນໂກດັງ</h2>
+                    </div>
+                  )}
+                </div>
 
                 <div
                   style={{
@@ -607,17 +624,31 @@ const InventoryStatistics = () => {
                     background: "linear-gradient(135deg, #11998e, #38ef7d)",
                     flex: 1,
                     minWidth: "200px",
+                    position: "relative",
+                    overflow: "hidden",
                   }}
                 >
-                  <h2 style={titleStyle}>ເຄຣດິດ</h2>
+                  {/* White fade overlay */}
+                  <div style={{
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    width: "100%",
+                    height: "100%",
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 50%, transparent 100%)",
+                    borderRadius: "10px",
+                  }} />
+                  <div style={{ position: "relative", zIndex: 2 }}>
+                    <h2 style={titleStyle}>ເຄຣດິດ</h2>
 
-                  <div style={valueContainerStyle}>
-                    <span style={valueStyle}>
-                      {credit !== null && typeof credit !== "object"
-                        ? Number(credit).toLocaleString("en-US")
-                        : "Loading..."}
-                    </span>
-                    <span style={unitStyle}>LAK</span>
+                    <div style={valueContainerStyle}>
+                      <span style={valueStyle}>
+                        {credit !== null && typeof credit !== "object"
+                          ? Number(credit).toLocaleString("en-US")
+                          : "Loading..."}
+                      </span>
+                      <span style={unitStyle}>LAK</span>
+                    </div>
                   </div>
                 </div>
               </div>

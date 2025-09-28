@@ -47,12 +47,15 @@ const InventoryDashboard = () => {
     display: "block",
     color: "white",
     textDecoration: "none",
-    padding: "10px",
-    marginBottom: "5px",
-    borderRadius: "5px",
-    paddingRight: "10px",
-    backgroundColor: activePage === page ? "#34495e" : "transparent",
-    transition: "background-color 0.3s",
+    padding: "14px 18px",
+    marginBottom: "8px",
+    borderRadius: "12px",
+    backgroundColor: activePage === page ? "rgba(255, 255, 255, 0.15)" : "transparent",
+    border: activePage === page ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
+    transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontSize: "15px",
+    fontWeight: "500",
+    backdropFilter: "blur(10px)",
   });
 
   const toggleSidebar = () => {
@@ -93,7 +96,7 @@ const InventoryDashboard = () => {
           right: "0",
           width: "200px",
           height: "200px",
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%)",
           filter: "blur(50px)",
         }} />
         <div style={{
@@ -102,7 +105,7 @@ const InventoryDashboard = () => {
           left: "0",
           width: "150px",
           height: "150px",
-          background: "radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(234, 88, 12, 0.06) 0%, transparent 70%)",
           filter: "blur(40px)",
         }} />
         
@@ -130,12 +133,12 @@ const InventoryDashboard = () => {
             <div style={{
               width: "40px",
               height: "40px",
-              background: "linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)",
+              background: "linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%)",
               borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid rgba(139, 92, 246, 0.4)",
+              border: "1px solid rgba(251, 146, 60, 0.4)",
             }}>
               <span style={{ fontSize: "18px" }}>📊</span>
             </div>
@@ -143,7 +146,7 @@ const InventoryDashboard = () => {
               fontSize: "28px", 
               margin: 0, 
               fontWeight: "800", 
-              background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 50%, #C084FC 100%)", 
+              background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)", 
               WebkitBackgroundClip: "text", 
               WebkitTextFillColor: "transparent",
               letterSpacing: "-0.5px",
@@ -179,6 +182,7 @@ const InventoryDashboard = () => {
             </button>
           )}
         </div>
+        
         <nav style={{ flex: 1, position: "relative", zIndex: 2 }}>
           <Link
             to="/homeAdmin/main"
@@ -238,6 +242,48 @@ const InventoryDashboard = () => {
             </span>
           </Link>
 
+          <Link
+            to="/homeAdmin/tableparcels"
+            style={sidebarLinkStyle("tableparcels")}
+            onClick={() => {
+              setActivePage("tableparcels");
+              isMobile && toggleSidebar();
+            }}
+          >
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>📋</span>
+              ຕາຕະລາງພັດດຸ
+            </span>
+          </Link>
+
+          {storedRole === "admin" && (
+            <Link
+              to="/homeAdmin/smallParcels"
+              style={sidebarLinkStyle("smallParcels")}
+              onClick={() => {
+                setActivePage("smallParcels");
+                isMobile && toggleSidebar();
+              }}
+            >
+              <span style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                fontSize: "16px",
+                fontWeight: "600",
+              }}>
+                <span style={{ fontSize: "20px" }}>📦</span>
+                ສ້າງການສົ່ງພັດສະດຸລວມ
+              </span>
+            </Link>
+          )}
+
           {storedRole !== "branch" ? (
             <>
               <Link
@@ -284,6 +330,7 @@ const InventoryDashboard = () => {
             </>
           )}
         </nav>
+        
         <button
           style={{
             width: "100%",

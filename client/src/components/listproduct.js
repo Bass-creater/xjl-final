@@ -383,7 +383,7 @@ const Listproduct = () => {
       </div>
 
       <div className="flex items-center justify-center flex-col">
-        <div className="bg-[#732dcf] px-6 py-4 pb-6 rounded-lg w-full mb-10">
+        <div className="bg-[#FB923C] px-6 py-4 pb-6 rounded-lg w-full mb-10">
           <h1 style={{ fontSize: "16px", margin: "0", color: "#fff" }}>
             ຄົ້ນຫາລາຍການພັດດຸ
           </h1>
