@@ -1,0 +1,137 @@
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parcel Information</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Rethink+Sans:ital,wght@0,400..800;1,400..800&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Lao:wght@100..900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Noto+Sans+Lao:wght@100..900&display=swap");
+
+      @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+      * {
+        font-family: "Kanit", sans-serif, "Rethink Sans", "Noto Sans Lao",
+          sans-serif;
+        /* font-family: ; */
+      }
+
+      body {
+        font-family: "Kanit", sans-serif;
+        margin: 40px;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 100%;
+        /* max-width: 800px; */
+        margin: 0 auto;
+      }
+      h1 {
+        text-align: center;
+        font-size: 10rem;
+      }
+      .info {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-direction: column;
+      }
+      .info p {
+        margin: 0;
+        font-size: 5rem;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      .table th,
+      .table td {
+        border: 1px solid #000;
+        padding: 30px;
+        color: #5625b0;
+        font-size: 4rem;
+        font-weight: 600;
+        text-align: left;
+      }
+      .table td {
+        padding: 80px;
+      }
+      img {
+        width: 30%;
+        margin: 100px 0;
+      }
+      .contentinfo {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .contentcenter {
+        display: flex;
+        margin: 2vh 0;
+      }
+      .contentcenter p {
+        font-size: 6rem;
+      }
+      .footer {
+        margin-top: 10vh;
+        font-size: 5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div style="display: flex; align-items: center; justify-content: center">
+        <!-- <img src="data:image/jpeg;base64,${base64Image}" alt="" /> -->
+        <img src="../../client/src/assets/logo.png" alt="" />
+      </div>
+      <!-- <h1 style="color: #281252; ">ข้อมูลพัสดุ</h1> -->
+      <div class="info">
+        <div class="contentinfo">
+          <p style="color: #051133"><strong>จาก :</strong> ${fromValue}</p>
+          <p style="color: #051133">
+            <strong>ถึง :</strong> ${mainParcel.branch}
+          </p>
+        </div>
+        <div class="contentcenter">
+          <p style="color: #051133">${mainParcel.id_parcel}</p>
+        </div>
+      </div>
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Width (cm)</th>
+            <th>Length (cm)</th>
+            <th>Height (cm)</th>
+            <th>Weight (kg)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>${detail.width}</td>
+            <td>${detail.length}</td>
+            <td>${detail.height}</td>
+            <td>${detail.weight}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="footer">
+        <p style="text-align: end"><strong>จำนวน:</strong> ${detail.amount}</p>
+        <p style="text-align: end">
+          <strong>ราคารวม :</strong> ${detail.price} LAK
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

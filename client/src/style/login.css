@@ -1,0 +1,56 @@
+footer {
+    background-color: orange;
+    height: auto;
+  }
+  
+  footer .logo {
+    background-color: #fff;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  footer .logo img {
+    width: 140px;
+  }
+  .navfooter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+  }
+  .navfooter ul {
+    display: flex;
+  }
+  .navfooter ul li a {
+    color: #fff;
+  }
+  .navfooter ul li {
+    padding: 20px;
+    padding-top: 0;
+    margin-top: -2vh;
+    padding-bottom: 10px;
+  }
+  
+  footer h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    text-align: center;
+    color: #fff;
+    margin-top: 20px;
+  }
+  
+  /* styles.css */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8); /* Background color with some transparency */
+    z-index: 999; /* To ensure it's on top of other elements */
+  }
+  

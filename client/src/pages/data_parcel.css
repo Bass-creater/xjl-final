@@ -1,0 +1,59 @@
+.statusItem img {
+  /* margin: 10px 0; */
+  width: 20px;
+}
+
+.statusItem strong {
+  color: #333;
+}
+
+
+.error {
+  color: red;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+.line {
+  position: absolute;
+  background-color: #090f8d;
+  width: 3px;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+}
+
+.statusDetails > div {
+  display: flex;
+  width: 100%;
+}
+
+.statusItem img {
+  width: 30px;
+  height: auto;
+  max-width: 100%;
+}
+
+.statusTime,
+.statusItem {
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 10px;
+}
+
+.correct {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-left: -16px;
+  gap: 50px;
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* ปรับตามความต้องการ */
+}

@@ -1,0 +1,24 @@
+.form-section {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    width: 45%;
+  }
+  
+  .green {
+    background-color: #d0f0c0;
+  }
+  
+  .blue {
+    background-color: #c0d0f0;
+  }
+  
+  .input-group {
+    margin-bottom: 10px;
+  }
+  
+  textarea {
+    width: 100%;
+    height: 50px;
+  }
+  

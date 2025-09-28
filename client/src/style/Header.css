@@ -1,0 +1,25 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .date-info {
+    font-size: 1.2em;
+    padding: 50px;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .home-btn {
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #003399;
+    color: white;
+    border: none;
+    border-radius: 4px;
+  }
+  
