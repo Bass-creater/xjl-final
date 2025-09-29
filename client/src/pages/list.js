@@ -47,12 +47,15 @@ const InventoryDashboard = () => {
     display: "block",
     color: "white",
     textDecoration: "none",
-    padding: "10px",
-    marginBottom: "5px",
-    borderRadius: "5px",
-    paddingRight: "10px",
-    backgroundColor: activePage === page ? "#34495e" : "transparent",
-    transition: "background-color 0.3s",
+    padding: "14px 18px",
+    marginBottom: "8px",
+    borderRadius: "12px",
+    backgroundColor: activePage === page ? "rgba(255, 255, 255, 0.15)" : "transparent",
+    border: activePage === page ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
+    transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    fontSize: "15px",
+    fontWeight: "500",
+    backdropFilter: "blur(10px)",
   });
 
   const toggleSidebar = () => {
@@ -93,7 +96,7 @@ const InventoryDashboard = () => {
           right: "0",
           width: "200px",
           height: "200px",
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, transparent 70%)",
           filter: "blur(50px)",
         }} />
         <div style={{
@@ -102,7 +105,7 @@ const InventoryDashboard = () => {
           left: "0",
           width: "150px",
           height: "150px",
-          background: "radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(234, 88, 12, 0.06) 0%, transparent 70%)",
           filter: "blur(40px)",
         }} />
         
@@ -130,12 +133,12 @@ const InventoryDashboard = () => {
             <div style={{
               width: "40px",
               height: "40px",
-              background: "linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)",
+              background: "linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%)",
               borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid rgba(139, 92, 246, 0.4)",
+              border: "1px solid rgba(251, 146, 60, 0.4)",
             }}>
               <span style={{ fontSize: "18px" }}>📊</span>
             </div>
@@ -143,7 +146,7 @@ const InventoryDashboard = () => {
               fontSize: "28px", 
               margin: 0, 
               fontWeight: "800", 
-              background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 50%, #C084FC 100%)", 
+              background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)", 
               WebkitBackgroundClip: "text", 
               WebkitTextFillColor: "transparent",
               letterSpacing: "-0.5px",
@@ -179,6 +182,7 @@ const InventoryDashboard = () => {
             </button>
           )}
         </div>
+        
         <nav style={{ flex: 1, position: "relative", zIndex: 2 }}>
           <Link
             to="/homeAdmin/main"
@@ -238,6 +242,48 @@ const InventoryDashboard = () => {
             </span>
           </Link>
 
+          <Link
+            to="/homeAdmin/tableparcels"
+            style={sidebarLinkStyle("tableparcels")}
+            onClick={() => {
+              setActivePage("tableparcels");
+              isMobile && toggleSidebar();
+            }}
+          >
+            <span style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              fontSize: "16px",
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "20px" }}>📋</span>
+              ຕາຕະລາງພັດດຸ
+            </span>
+          </Link>
+
+          {storedRole === "admin" && (
+            <Link
+              to="/homeAdmin/smallParcels"
+              style={sidebarLinkStyle("smallParcels")}
+              onClick={() => {
+                setActivePage("smallParcels");
+                isMobile && toggleSidebar();
+              }}
+            >
+              <span style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                fontSize: "16px",
+                fontWeight: "600",
+              }}>
+                <span style={{ fontSize: "20px" }}>📦</span>
+                ສ້າງການສົ່ງພັດສະດຸລວມ
+              </span>
+            </Link>
+          )}
+
           {storedRole !== "branch" ? (
             <>
               <Link
@@ -284,6 +330,7 @@ const InventoryDashboard = () => {
             </>
           )}
         </nav>
+        
         <button
           style={{
             width: "100%",
@@ -345,57 +392,124 @@ const InventoryDashboard = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "20px",
+            marginBottom: "35px",
+            padding: "20px",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(248, 250, 252, 0.08) 100%)",
+            borderRadius: "18px",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(15px)",
+            boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)",
+            position: "relative",
+            zIndex: 2,
           }}
         >
-          <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+          }}>
             {isMobile && (
               <button
                 onClick={toggleSidebar}
                 style={{
-                  background: "none",
+                  background: "linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)",
                   border: "none",
-                  fontSize: "24px",
+                  color: "white",
+                  fontSize: "18px",
                   cursor: "pointer",
-                  marginRight: "10px",
+                  padding: "10px 14px",
+                  borderRadius: "14px",
+                  transition: "all 0.3s ease",
+                  boxShadow: "0 6px 20px rgba(239, 68, 68, 0.3)",
+                  fontWeight: "600",
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = "translateY(-2px)";
+                  e.target.style.boxShadow = "0 8px 25px rgba(239, 68, 68, 0.4)";
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.3)";
                 }}
               >
                 ☰
               </button>
             )}
-            <h1 style={{ fontSize: "24px", margin: "0" }}>ລາຍການພັດດຸ</h1>
+            <h2 style={{ 
+              fontSize: "28px", 
+              margin: 0, 
+              fontWeight: "bold",
+              color: "#374151",
+            }}>
+              ລາຍການພັດດຸ
+            </h2>
           </div>
           {!isMobile && (
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <span style={{ marginRight: "20px" }}>
-                {" "}
-                {new Date().toLocaleDateString("th-TH")}
-              </span>
-              <span style={{ marginRight: "20px" }}>
-                {new Date().toLocaleTimeString("th-TH", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </span>
-              <span>
-                {username} | {role}
-              </span>
+            <>
+              <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "16px",
+                padding: "12px 20px",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(249, 115, 22, 0.15) 100%)",
+                borderRadius: "15px",
+                border: "1px solid rgba(251, 146, 60, 0.2)",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "16px" }}>📅</span>
+                  <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "14px" }}>
+                    {new Date().toLocaleDateString("th-TH")}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "16px" }}>🕐</span>
+                  <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "14px" }}>
+                    {new Date().toLocaleTimeString("th-TH", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span style={{ fontSize: "16px" }}></span>
+                  <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "15px" }}>
+                    {username} | {role}
+                  </span>
+                </div>
+              </div>
               <Link
                 to="/"
                 style={{
-                  marginLeft: "20px",
-                  padding: "8px 16px",
-                  backgroundColor: "#4a69bd",
+                  padding: "12px 20px",
+                  backgroundColor: "#3B82F6",
                   color: "white",
                   border: "none",
-                  borderRadius: "5px",
+                  borderRadius: "12px",
                   textDecoration: "none",
                   cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "15px",
+                  fontWeight: "700",
+                  boxShadow: "0 3px 12px rgba(59, 130, 246, 0.3)",
+                  transition: "all 0.3s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = "#2563EB";
+                  e.target.style.transform = "translateY(-1px)";
+                  e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.4)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = "#3B82F6";
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "0 3px 12px rgba(59, 130, 246, 0.3)";
                 }}
               >
+                <span style={{ fontSize: "16px" }}>🏠</span>
                 ໜ້າເເຣກ
               </Link>
-            </div>
+            </>
           )}
         </header>
 

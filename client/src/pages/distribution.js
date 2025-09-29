@@ -60,7 +60,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     borderRadius: "12px",
     backgroundColor: activePage === page ? "rgba(255, 255, 255, 0.15)" : "transparent",
     border: activePage === page ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     fontSize: "15px",
     fontWeight: "500",
     backdropFilter: "blur(10px)",
@@ -400,7 +400,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     price = Math.round(price);
 
     setDetailsData((prevData) => ({
-      ...prevData,
+          ...prevData,
       price: (price * amount).toLocaleString("en-US"),
     }));
   }, [detailsData.typeParcel, detailsData.weight, detailsData.width, detailsData.length, detailsData.height, detailsData.amount, rateChina, rateThai]);
@@ -433,20 +433,20 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       </div>
 
       {/* Sidebar */}
-      <aside
-        style={{
+     <aside
+             style={{
           width: isMobile ? (sidebarOpen ? "100%" : "0") : "280px",
-          height: "100vh",
+               height: "100vh",
           background: "linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%)",
-          color: "white",
+               color: "white",
           padding: sidebarOpen ? "25px" : "0",
-          display: "flex",
-          flexDirection: "column",
+               display: "flex",
+               flexDirection: "column",
           transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
-          overflow: "hidden",
-          position: isMobile ? "fixed" : "relative",
-          zIndex: 1000,
-          left: isMobile ? (sidebarOpen ? "0" : "-100%") : "0",
+               overflow: "hidden",
+               position: isMobile ? "fixed" : "relative",
+               zIndex: 1000,
+               left: isMobile ? (sidebarOpen ? "0" : "-100%") : "0",
           boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
         }}
       >
@@ -457,7 +457,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
           right: "0",
           width: "200px",
           height: "200px",
-          background: "radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.18) 0%, transparent 70%)",
           filter: "blur(50px)",
         }} />
         <div style={{
@@ -466,7 +466,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
           left: "0",
           width: "150px",
           height: "150px",
-          background: "radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(234, 88, 12, 0.06) 0%, transparent 70%)",
           filter: "blur(40px)",
         }} />
         
@@ -494,12 +494,12 @@ const DistributionDashboard = ({ onDetailsChange }) => {
             <div style={{
               width: "40px",
               height: "40px",
-              background: "linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)",
+              background: "linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%)",
               borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid rgba(139, 92, 246, 0.4)",
+              border: "1px solid rgba(251, 146, 60, 0.4)",
             }}>
               <span style={{ fontSize: "18px" }}>📊</span>
             </div>
@@ -507,13 +507,13 @@ const DistributionDashboard = ({ onDetailsChange }) => {
               fontSize: "28px", 
               margin: 0, 
               fontWeight: "800", 
-              background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 50%, #C084FC 100%)", 
+              background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)", 
               WebkitBackgroundClip: "text", 
               WebkitTextFillColor: "transparent",
               letterSpacing: "-0.5px",
             }}>
               ການຈັດການ
-          </h2>
+            </h2>
           </div>
           {isMobile && (
             <button
@@ -543,6 +543,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
             </button>
           )}
         </div>
+        
         <nav style={{ flex: 1, position: "relative", zIndex: 2 }}>
           <Link
             to="/homeAdmin/main"
@@ -560,7 +561,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
               fontWeight: "600",
             }}>
               <span style={{ fontSize: "20px" }}>📊</span>
-              ໜ້າທຳອິດ
+            ໜ້າທຳອິດ
             </span>
           </Link>
           <Link
@@ -579,7 +580,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
               fontWeight: "600",
             }}>
               <span style={{ fontSize: "20px" }}>📦</span>
-              ລາຍການພັດດຸ
+            ລາຍການພັດດຸ
             </span>
           </Link>
           <Link
@@ -598,7 +599,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
               fontWeight: "600",
             }}>
               <span style={{ fontSize: "20px" }}>🚚</span>
-              ກະຈາຍພັດດຸ
+            ກະຈາຍພັດດຸ
             </span>
           </Link>
 
@@ -662,7 +663,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                   fontWeight: "600",
                 }}>
                   <span style={{ fontSize: "20px" }}>🌏</span>
-                  ຕິດຕາມພັດສະດຸຈາກຈີນ
+                ຕິດຕາມພັດສະດຸຈາກຈີນ
                 </span>
               </Link>
             </>
@@ -684,12 +685,13 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                   fontWeight: "600",
                 }}>
                   <span style={{ fontSize: "20px" }}>📍</span>
-                  ຕິດຕາມພັດສະດຸ
+                ຕິດຕາມພັດສະດຸ
                 </span>
               </Link>
             </>
           )}
         </nav>
+        
         <button
           style={{
             width: "100%",
@@ -728,7 +730,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
             fontWeight: "700",
           }}>
             <span style={{ fontSize: "20px" }}>🚪</span>
-            LOGOUT
+          LOGOUT
           </span>
           
           {/* Animated background overlay */}
@@ -775,7 +777,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
             right: "-20%",
             width: "150px",
             height: "150px",
-            background: "radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, rgba(124, 58, 237, 0.03) 100%)",
+            background: "radial-gradient(circle, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.06) 100%)",
             borderRadius: "50%",
             filter: "blur(30px)",
           }} />
@@ -785,7 +787,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
             left: "-15%",
             width: "100px",
             height: "100px",
-            background: "radial-gradient(circle, rgba(59, 130, 246, 0.04) 0%, rgba(37, 99, 235, 0.02) 100%)",
+            background: "radial-gradient(circle, rgba(251, 146, 60, 0.08) 0%, rgba(249, 115, 22, 0.04) 100%)",
             borderRadius: "50%",
             filter: "blur(25px)",
           }} />
@@ -802,7 +804,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                   padding: "12px",
                   borderRadius: "12px",
                   color: "white",
-                  boxShadow: "0 8px 25px rgba(139, 92, 246, 0.3)",
+                  boxShadow: "0 8px 25px rgba(251, 146, 60, 0.3)",
                   transition: "all 0.3s ease",
                 }}
                 onMouseOver={(e) => (e.target.style.transform = "scale(1.1)")}
@@ -841,9 +843,9 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                 padding: "14px 20px",
                 background: "linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.75) 100%)",
                 borderRadius: "14px",
-                border: "1px solid rgba(139, 92, 246, 0.12)",
+                border: "1px solid rgba(251, 146, 60, 0.18)",
                 backdropFilter: "blur(8px)",
-                boxShadow: "0 6px 20px rgba(139, 92, 246, 0.08)",
+                boxShadow: "0 6px 20px rgba(251, 146, 60, 0.18)",
               }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                   <div style={{
@@ -851,44 +853,44 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                     alignItems: "center",
                     gap: "6px",
                     padding: "6px 10px",
-                    background: "linear-gradient(135deg, rgba(139, 92, 246, 0.08) 0%, rgba(124, 58, 237, 0.06) 100%)",
+                    background: "linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(249, 115, 22, 0.1) 100%)",
                     borderRadius: "8px",
-                    border: "1px solid rgba(139, 92, 246, 0.15)",
+                    border: "1px solid rgba(251, 146, 60, 0.25)",
                   }}>
                     <span style={{ fontSize: "16px" }}>📅</span>
-                    <span style={{ fontWeight: "600", color: "#475569", fontSize: "13px" }}>
-                      {new Date().toLocaleDateString("th-TH")}
-                </span>
+                    <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "13px" }}>
+                {new Date().toLocaleDateString("th-TH")}
+              </span>
                   </div>
                   <div style={{
                     display: "flex",
                     alignItems: "center",
                     gap: "6px",
                     padding: "6px 10px",
-                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.06) 100%)",
+                    background: "linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(249, 115, 22, 0.15) 100%)",
                     borderRadius: "8px",
-                    border: "1px solid rgba(59, 130, 246, 0.15)",
+                    border: "1px solid rgba(251, 136, 60, 0.2)",
                   }}>
                     <span style={{ fontSize: "16px" }}>🕐</span>
-                    <span style={{ fontWeight: "600", color: "#475569", fontSize: "13px" }}>
-                      {new Date().toLocaleTimeString("th-TH", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </span>
+                    <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "13px" }}>
+                {new Date().toLocaleTimeString("th-TH", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
                   </div>
                 </div>
                 <div style={{
                   marginTop: "10px",
                   padding: "8px 14px",
-                  background: "linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.09) 100%)",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(249, 115, 22, 0.15) 100%)",
                   borderRadius: "10px",
-                  border: "1px solid rgba(139, 92, 246, 0.2)",
+                  border: "1px solid rgba(251, 146, 60, 0.2)",
                   textAlign: "center",
                 }}>
-                  <span style={{ fontWeight: "600", color: "#8B5CF6", fontSize: "14px" }}>
-                  👤 {username} | {role}
-                </span>
+                  <span style={{ fontWeight: "600", color: "#FB923C", fontSize: "14px" }}>
+                {username} | {role}
+              </span>
                 </div>
               </div>
               <Link
@@ -1272,7 +1274,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
           {storedBranch === "LAO Warehouse" ? (
             <>
               <Parcel onParcelChange={handleParcelChange} />
-              
+
               <div style={{ marginTop: "25px" }}>
                 <div
                   id="admin-lao"
@@ -1293,7 +1295,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                     right: "0",
                     width: "150px",
                     height: "150px",
-                    background: "radial-gradient(circle, rgba(139, 92, 246, 0.02) 0%, transparent 70%)",
+                    background: "radial-gradient(circle, rgba(251, 146, 60, 0.05) 0%, transparent 70%)",
                     zIndex: 1,
                   }} />
                   
@@ -1301,8 +1303,8 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                     ...gradientHeaderStyle("#8B5CF6", "#A78BFA"),
                     padding: "25px 30px",
                     borderRadius: "24px 24px 0 0",
-                    background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
-                    boxShadow: "0 8px 25px rgba(139, 92, 246, 0.2)",
+                    background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
+                    boxShadow: "0 8px 25px rgba(251, 146, 60, 0.2)",
                     position: "relative",
                     zIndex: 2,
                   }}>
@@ -1322,7 +1324,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         backdropFilter: "blur(8px)",
                       }}>
                         <span style={{ fontSize: "20px" }}>📦</span>
-                      </div>
+                  </div>
                       <div>
                     <h2 style={{ 
                       margin: 0, 
@@ -1363,19 +1365,19 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         padding: "20px",
                         background: "linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.75) 100%)",
                         borderRadius: "16px",
-                        border: "1px solid rgba(139, 92, 246, 0.1)",
+                        border: "1px solid rgba(251, 146, 60, 0.1)",
                         transition: "all 0.3s ease",
-                        boxShadow: "0 6px 20px rgba(139, 92, 246, 0.06)",
+                        boxShadow: "0 6px 20px rgba(251, 146, 60, 0.1)",
                         position: "relative",
                         overflow: "hidden",
                       }}
                       onMouseOver={(e) => {
                         e.currentTarget.style.transform = "translateY(-1px)";
-                        e.currentTarget.style.boxShadow = "0 8px 25px rgba(139, 92, 246, 0.1)";
+                        e.currentTarget.style.boxShadow = "0 8px 25px rgba(251, 146, 60, 0.1)";
                       }}
                       onMouseOut={(e) => {
                         e.currentTarget.style.transform = "translateY(0)";
-                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(139, 92, 246, 0.06)";
+                        e.currentTarget.style.boxShadow = "0 6px 20px rgba(251, 146, 60, 0.1)";
                       }}>
                         {/* Decorative accent */}
                         <div style={{
@@ -1384,7 +1386,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           left: "0",
                           width: "3px",
                           height: "100%",
-                          background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
+                          background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
                           borderRadius: "0 1px 1px 0",
                         }} />
                         
@@ -1401,7 +1403,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           <span style={{
                             width: "28px",
                             height: "28px",
-                            background: "linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.09) 100%)",
+                            background: "linear-gradient(135deg, rgba(251, 146, 60, 0.18) 0%, rgba(249, 115, 22, 0.15) 100%)",
                             borderRadius: "6px",
                             display: "flex",
                             alignItems: "center",
@@ -1414,13 +1416,13 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           style={{
                             ...inputStyle,
                             background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                            border: "2px solid rgba(139, 92, 246, 0.15)",
+                            border: "2px solid rgba(251, 146, 60, 0.25)",
                             borderRadius: "14px",
                             padding: "18px 20px",
                             fontSize: "16px",
                             fontWeight: "500",
                             transition: "all 0.3s ease",
-                            boxShadow: "0 6px 20px rgba(139, 92, 246, 0.08)",
+                            boxShadow: "0 6px 20px rgba(251, 146, 60, 0.18)",
                             cursor: "pointer",
                           }}
                           onChange={handleInputChange}
@@ -1428,12 +1430,12 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           name="typeParcel"
                           onFocus={(e) => {
                             e.target.style.border = "2px solid #8B5CF6";
-                            e.target.style.boxShadow = "0 10px 30px rgba(139, 92, 246, 0.15)";
+                            e.target.style.boxShadow = "0 10px 30px rgba(251, 146, 60, 0.25)";
                             e.target.style.transform = "translateY(-1px)";
                           }}
                           onBlur={(e) => {
-                            e.target.style.border = "2px solid rgba(139, 92, 246, 0.15)";
-                            e.target.style.boxShadow = "0 6px 20px rgba(139, 92, 246, 0.08)";
+                            e.target.style.border = "2px solid rgba(251, 146, 60, 0.25)";
+                            e.target.style.boxShadow = "0 6px 20px rgba(251, 146, 60, 0.18)";
                             e.target.style.transform = "translateY(0)";
                           }}
                         >
@@ -1710,7 +1712,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                             e.target.style.boxShadow = "0 8px 25px rgba(236, 72, 153, 0.2)";
                           }}
                         />
-                      </div>
+              </div>
 
                       <div style={{
                         padding: "20px",
@@ -1769,7 +1771,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           <option value="90">🎁 ສ່ວນລດ 90%</option>
                           <option value="95">🎁 ສ່ວນລດ 95%</option>
                         </select>
-                      </div>
+                  </div>
                       
                       {/* แสดงราคาหลังหักส่วนลด */}
                       {detailsData.price && detailsData.discount !== "0" && (
@@ -1797,17 +1799,17 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                             gap: "20px",
                           }}>
                             <div style={{
-                              padding: "20px",
+                        padding: "20px",
                               background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
                               borderRadius: "16px",
                               border: "1px solid rgba(34, 197, 94, 0.2)",
-                              textAlign: "center",
+                        textAlign: "center",
                             }}>
                               <div style={{ fontSize: "14px", color: "#6B7280", marginBottom: "8px" }}>ລາຄາເດີມ</div>
                               <div style={{ fontSize: "24px", fontWeight: "800", color: "#1F2937" }}>
                                 {Number(detailsData.price.replace(/,/g, "")).toLocaleString("en-US")} ກີບ
-                              </div>
-                            </div>
+                      </div>
+                      </div>
                             
                             <div style={{
                               padding: "20px",
@@ -1822,10 +1824,10 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                               </div>
                               <div style={{ fontSize: "16px", color: "#DC2626", fontWeight: "600" }}>
                                 ({(Number(detailsData.price.replace(/,/g, "")) * Number(detailsData.discount) / 100).toLocaleString("en-US")} ກີບ)
-                              </div>
-                            </div>
-                            
-                            <div style={{
+                      </div>
+                    </div>
+
+                      <div style={{ 
                               padding: "20px",
                               background: "linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%)",
                               borderRadius: "16px",
@@ -1836,11 +1838,11 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                               <div style={{ fontSize: "14px", color: "#16A34A", marginBottom: "8px", fontWeight: "600" }}>ລາຄາສຸດທ້າຍ</div>
                               <div style={{ fontSize: "28px", fontWeight: "900", color: "#16A34A" }}>
                                 {getDisplayPrice()} ກີບ
-                              </div>
-                            </div>
-                          </div>
                         </div>
-                      )}
+                            </div>
+                        </div>
+                      </div>
+                    )}
                     </div>
                   </div>
                 </div>
@@ -1860,37 +1862,37 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                   transform: "translate(-50%, -50%)",
                   width: "200px",
                   height: "200px",
-                  background: "radial-gradient(circle, rgba(139, 92, 246, 0.03) 0%, transparent 70%)",
+                  background: "radial-gradient(circle, rgba(251, 146, 60, 0.06) 0%, transparent 70%)",
                   filter: "blur(30px)",
                   zIndex: 1,
                 }} />
                 
-                <button
-                  type="button"
+                      <button
+                        type="button"
                   onClick={handleSubmit}
-                  style={{
+                        style={{
                     padding: "18px 40px",
-                    background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%)",
-                    color: "white",
-                    border: "none",
+                    background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
+                          color: "white",
+                          border: "none",
                     borderRadius: "20px",
                     fontSize: "18px",
                     fontWeight: "700",
                     cursor: "pointer",
                     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    boxShadow: "0 15px 30px rgba(139, 92, 246, 0.25), 0 6px 20px rgba(139, 92, 246, 0.15)",
+                    boxShadow: "0 15px 30px rgba(251, 146, 60, 0.35), 0 6px 20px rgba(251, 146, 60, 0.25)",
                     textShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
                     position: "relative",
                     zIndex: 2,
                     overflow: "hidden",
-                  }}
-                  onMouseOver={(e) => {
+                        }}
+                        onMouseOver={(e) => {
                     e.target.style.transform = "translateY(-2px) scale(1.02)";
-                    e.target.style.boxShadow = "0 18px 35px rgba(139, 92, 246, 0.3), 0 8px 25px rgba(139, 92, 246, 0.2)";
-                  }}
-                  onMouseOut={(e) => {
+                    e.target.style.boxShadow = "0 18px 35px rgba(251, 146, 60, 0.3), 0 8px 25px rgba(251, 146, 60, 0.2)";
+                        }}
+                        onMouseOut={(e) => {
                     e.target.style.transform = "translateY(0) scale(1)";
-                    e.target.style.boxShadow = "0 15px 30px rgba(139, 92, 246, 0.25), 0 6px 20px rgba(139, 92, 246, 0.15)";
+                    e.target.style.boxShadow = "0 15px 30px rgba(251, 146, 60, 0.35), 0 6px 20px rgba(251, 146, 60, 0.25)";
                   }}
                 >
                   <span style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: "12px" }}>
@@ -1923,12 +1925,12 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                   )}
                 </button>
               </div>
-
+              
               <hr style={{
                 margin: "50px 0",
                 border: "none",
                 height: "2px",
-                background: "linear-gradient(90deg, transparent 0%, rgba(139, 92, 246, 0.3) 50%, transparent 100%)",
+                background: "linear-gradient(90deg, transparent 0%, rgba(251, 146, 60, 0.3) 50%, transparent 100%)",
               }} />
               <ParcelWait />
             </>
@@ -1996,7 +1998,7 @@ const selectStyle = {
   border: "2px solid #8B5CF6",
   color: "#374151",
   fontWeight: "500",
-  boxShadow: "0 4px 15px rgba(139, 92, 246, 0.1)",
+  boxShadow: "0 4px 15px rgba(251, 146, 60, 0.1)",
 };
 
 const selectDisabledStyle = {

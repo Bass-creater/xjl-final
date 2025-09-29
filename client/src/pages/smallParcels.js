@@ -221,7 +221,7 @@ const SmallParcels = () => {
     borderRadius: "12px",
     backgroundColor: activePage === page ? "rgba(255, 255, 255, 0.15)" : "transparent",
     border: activePage === page ? "1px solid rgba(255, 255, 255, 0.2)" : "1px solid transparent",
-    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     fontSize: "15px",
     fontWeight: "500",
     backdropFilter: "blur(10px)",
@@ -265,18 +265,7 @@ const SmallParcels = () => {
   }
 
   return (
-    <div style={{ display: "flex", height: "100vh", fontFamily: "Inter, Arial, sans-serif" }}>
-      <style>
-        {`
-          @keyframes fade-in {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-          .animate-fade-in {
-            animation: fade-in 0.3s ease-out;
-          }
-        `}
-      </style>
+    <div style={{ display: "flex", height: "100vh", fontFamily: "Arial, sans-serif" }}>
       {/* Sidebar */}
       <aside style={{
         width: isMobile ? (sidebarOpen ? "100%" : "0") : "280px",
@@ -293,6 +282,26 @@ const SmallParcels = () => {
         left: isMobile ? (sidebarOpen ? "0" : "-100%") : "0",
         boxShadow: "4px 0 20px rgba(0, 0, 0, 0.1)",
       }}>
+        {/* Decorative background elements */}
+        <div style={{
+          position: "absolute",
+          top: "0",
+          right: "0",
+          width: "200px",
+          height: "200px",
+          background: "radial-gradient(circle, rgba(251, 146, 60, 0.12) 0%, transparent 70%)",
+          filter: "blur(50px)",
+        }} />
+        <div style={{
+          position: "absolute",
+          bottom: "0",
+          left: "0",
+          width: "150px",
+          height: "150px",
+          background: "radial-gradient(circle, rgba(234, 88, 12, 0.06) 0%, transparent 70%)",
+          filter: "blur(40px)",
+        }} />
+        
         <div style={{
           display: "flex",
           justifyContent: "space-between",
@@ -311,12 +320,12 @@ const SmallParcels = () => {
             <div style={{
               width: "40px",
               height: "40px",
-              background: "linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(124, 58, 237, 0.2) 100%)",
+              background: "linear-gradient(135deg, rgba(251, 146, 60, 0.3) 0%, rgba(234, 88, 12, 0.2) 100%)",
               borderRadius: "10px",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              border: "1px solid rgba(139, 92, 246, 0.4)",
+              border: "1px solid rgba(251, 146, 60, 0.4)",
             }}>
               <span style={{ fontSize: "18px" }}>📊</span>
             </div>
@@ -324,7 +333,7 @@ const SmallParcels = () => {
               fontSize: "28px", 
               margin: 0, 
               fontWeight: "800", 
-              background: "linear-gradient(135deg, #8B5CF6 0%, #A78BFA 50%, #C084FC 100%)", 
+              background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)", 
               WebkitBackgroundClip: "text", 
               WebkitTextFillColor: "transparent",
               letterSpacing: "-0.5px",
@@ -344,6 +353,14 @@ const SmallParcels = () => {
               transition: "all 0.3s ease",
               boxShadow: "0 6px 20px rgba(239, 68, 68, 0.3)",
               fontWeight: "600",
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = "scale(1.1) rotate(90deg)";
+              e.target.style.boxShadow = "0 8px 25px rgba(239, 68, 68, 0.4)";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = "scale(1) rotate(0deg)";
+              e.target.style.boxShadow = "0 6px 20px rgba(239, 68, 68, 0.3)";
             }}>
               ✕
             </button>
@@ -383,6 +400,44 @@ const SmallParcels = () => {
               </span>
             </Link>
           )}
+
+          {storedRole !== "branch" ? (
+            <>
+              <Link
+                to="https://wx.lqfast.com/wx/waybillquery/#/?companyid=zJ0JeBq%2FsADQTY6mmRSZMA%3D%3D&translated=translated"
+                style={sidebarLinkStyle("branches")}
+              >
+                <span style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                }}>
+                  <span style={{ fontSize: "20px" }}>🌏</span>
+                  ຕິດຕາມພັດສະດຸຈາກຈີນ
+                </span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="../../"
+                style={sidebarLinkStyle("branches")}
+              >
+                <span style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                }}>
+                  <span style={{ fontSize: "20px" }}>📍</span>
+                  ຕິດຕາມພັດສະດຸ
+                </span>
+              </Link>
+            </>
+          )}
         </nav>
         
         <button onClick={handleLogout} style={{
@@ -397,11 +452,42 @@ const SmallParcels = () => {
           fontSize: "17px",
           fontWeight: "700",
           boxShadow: "0 10px 30px rgba(239, 68, 68, 0.25)",
+          position: "relative",
+          overflow: "hidden",
+          zIndex: 2,
+        }}
+        onMouseOver={(e) => {
+          e.target.style.transform = "translateY(-3px)";
+          e.target.style.boxShadow = "0 15px 40px rgba(239, 68, 68, 0.35)";
+        }}
+        onMouseOut={(e) => {
+          e.target.style.transform = "translateY(0)";
+          e.target.style.boxShadow = "0 10px 30px rgba(239, 68, 68, 0.25)";
         }}>
-          <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
+          <span style={{ 
+            position: "relative", 
+            zIndex: 2,
+            display: "flex", 
+            alignItems: "center", 
+            justifyContent: "center", 
+            gap: "10px",
+            fontSize: "17px",
+            fontWeight: "700",
+          }}>
             <span style={{ fontSize: "20px" }}>🚪</span>
             LOGOUT
           </span>
+          
+          {/* Animated background overlay */}
+          <div style={{
+            position: "absolute",
+            top: "0",
+            left: "-100%",
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%)",
+            transition: "left 0.5s cubic-bezier(0.4, 0, 0.2, 1)",
+          }} />
         </button>
       </aside>
 
@@ -409,15 +495,15 @@ const SmallParcels = () => {
       <main style={{
         flex: 1,
         overflow: "auto",
-        padding: "25px",
+        padding: "20px",
         background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
       }}>
         <header style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "30px",
-          padding: "25px",
+          marginBottom: "20px",
+          padding: "20px",
           background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
           borderRadius: "20px",
           backdropFilter: "blur(20px)",
