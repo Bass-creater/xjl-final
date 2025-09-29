@@ -37,7 +37,7 @@ function Signup() {
 
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/signup", formSignup );
+        "https://xjllao.com/v1/api/signup", formSignup );
       setMessage(response.data.message);
 
       if (response.status === 201) {

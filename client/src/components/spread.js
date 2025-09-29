@@ -19,7 +19,7 @@ const Spread = () => {
     const fetchParcels = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels",
+          "https://xjllao.com/v1/api/parcels",
           {
             from: storedBranch,
           }
@@ -47,7 +47,7 @@ const Spread = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/parcel",
+        "https://xjllao.com/v1/api/parcel",
         formID
       );
       console.log(response.data);
@@ -103,7 +103,7 @@ const Spread = () => {
 
     try {
       await axios.post(
-        "http://localhost:1000/api/update-parcel-status",
+        "https://xjllao.com/v1/api/update-parcel-status",
         {
           parcelIds: parcelIds,
         }

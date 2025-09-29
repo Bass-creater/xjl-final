@@ -11,7 +11,6 @@ import ParcelWait from "../components/parcelwaitsave";
 // import { Sidebar } from "../components/sidebar";
 import "../style/font-style.css";
 import axios from "axios";
-import { BarLoader } from "react-spinners";
 
 // เพิ่ม CSS สำหรับ SweetAlert2 popup และ Loading animations
 const swalCustomStyles = `
@@ -208,7 +207,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       formData.append('excelFile', selectedFile);
 
       const response = await axios.post(
-        "http://localhost:1000/api/import-excel",
+        "https://xjllao.com/v1/api/import-excel",
         formData,
         {
           headers: {
@@ -333,7 +332,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
 
     try {
       const checkCredit = await axios.post(
-        "http://localhost:1000/api/checkcredit",
+        "https://xjllao.com/v1/api/checkcredit",
         { branch: parcelData.branch }
       );
 
@@ -360,7 +359,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       };
       console.log("Sending data", fullData);
       const response = await axios.post(
-        "http://localhost:1000/api/saveData",
+        "https://xjllao.com/v1/api/saveData",
         fullData
       );
 
@@ -404,7 +403,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/api/rate");
+        const response = await axios.get("https://xjllao.com/v1/api/rate");
         setRateChina(response.data.china);
         setRateThai(response.data.thai);
       } catch (error) {

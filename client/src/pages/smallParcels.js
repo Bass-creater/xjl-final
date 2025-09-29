@@ -46,7 +46,7 @@ const SmallParcels = () => {
   const fetchBranches = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:1000/api/listBranch', {
+      const response = await fetch('https://xjllao.com/v1/api/listBranch', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const SmallParcels = () => {
     
     try {
       // ตรวจสอบบาร์โค้ดกับ API
-      const response = await fetch(`http://localhost:1000/api/smallParcels`, {
+      const response = await fetch(`https://xjllao.com/v1/api/smallParcels`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ const SmallParcels = () => {
       setIsLoading(true);
       
       // ส่งข้อมูลไปยัง API
-      const response = await fetch('http://localhost:1000/api/smallParcelsSave', {
+      const response = await fetch('https://xjllao.com/v1/api/smallParcelsSave', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

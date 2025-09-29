@@ -30,7 +30,7 @@
 //   useEffect(() => {
 //     const fetchRate = async () => {
 //       try {
-//         const response = await axios.get("http://localhost:1000/api/rate");
+//         const response = await axios.get("https://xjllao.com/v1/api/rate");
 //         setRateChina(response.data.china);
 //         setRateThai(response.data.thai);
 //       } catch (error) {

@@ -16,7 +16,7 @@ function Data_parcel() {
     const checkStatus = async () => {
       try {
         const responseStatus = await axios.post(
-          "http://localhost:1000/api/checkstatus",
+          "https://xjllao.com/v1/api/checkstatus",
           {
             id_parcel: id,
           }

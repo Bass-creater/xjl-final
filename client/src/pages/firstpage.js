@@ -22,7 +22,7 @@ const InventoryStatistics = () => {
     const countParcels = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels/count",
+          "https://xjllao.com/v1/api/parcels/count",
           { from: storedBranch }
         );
         setTotalParcels(response.data.total);
@@ -37,7 +37,7 @@ const InventoryStatistics = () => {
     const countParcelsLao = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels/countwarehouse"
+          "https://xjllao.com/v1/api/parcels/countwarehouse"
         );
         setTotalParcelsLao(response.data.total);
       } catch (error) {
@@ -51,7 +51,7 @@ const InventoryStatistics = () => {
     const fetchCredit = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/credit",
+          "https://xjllao.com/v1/api/credit",
           {
             username,
           }
@@ -69,7 +69,7 @@ const InventoryStatistics = () => {
     const listParcel = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/listparcel"
+          "https://xjllao.com/v1/api/listparcel"
         );
         setListParcel(response.data);
       } catch (error) {
@@ -83,7 +83,7 @@ const InventoryStatistics = () => {
     const countParcelBranch = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels/countbranch",
+          "https://xjllao.com/v1/api/parcels/countbranch",
           {
             username: username,
           }
@@ -869,10 +869,6 @@ const titleStyle = {
   fontWeight: "bold",
   // marginBottom: "10px",
 };
-const textStyle = {
-  fontSize: "22px",
-  fontWeight: "500",
-};
 
 const valueContainerStyle = {
   display: "flex",
@@ -885,17 +881,5 @@ const valueStyle = { fontSize: "48px", fontWeight: "bold" };
 const unitStyle = { fontSize: "28px" };
 
 const noteStyle = { fontSize: "12px", fontStyle: "italic", marginTop: "10px" };
-
-const tableHeaderStyle = {
-  padding: "10px",
-  borderBottom: "2px solid #ddd",
-  textAlign: "left",
-};
-
-const tableCellStyle = {
-  padding: "10px",
-  borderBottom: "1px solid #ddd",
-  textAlign: "left",
-};
 
 export default InventoryStatistics;

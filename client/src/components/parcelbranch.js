@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import useAuth from "../hooks/useAuth";
-import Swal from "sweetalert2";
 
 const ParcelBranch = () => {
   const { username } = useAuth();
@@ -14,7 +13,7 @@ const ParcelBranch = () => {
     const fetchParcelsSave = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcelBranch",
+          "https://xjllao.com/v1/api/parcelBranch",
           {
             username: username,
           }
@@ -35,7 +34,7 @@ const ParcelBranch = () => {
     if (parcelId.length >= 5) {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcel/search",
+          "https://xjllao.com/v1/api/parcel/search",
           {
             id_parcel: parcelId,
             username: username,
@@ -50,7 +49,7 @@ const ParcelBranch = () => {
 
         try {
           const saveResponse = await axios.post(
-            "http://localhost:1000/api/parcel/saveerror",
+            "https://xjllao.com/v1/api/parcel/saveerror",
             {
               id_parcel: parcelId,
               username: username,
@@ -88,7 +87,7 @@ const ParcelBranch = () => {
     // console.log(idParcel);
     try {
       const responseUpdate = await axios.post(
-        "http://localhost:1000/api/updatereceive",
+        "https://xjllao.com/v1/api/updatereceive",
         { id_parcel: idParcel }
       );
       if (responseUpdate.status === 200) {

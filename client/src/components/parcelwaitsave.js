@@ -9,7 +9,7 @@ const ParcelWaitSave = () => {
   useEffect(() => {
     const fetchParcels = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/api/parcelswait");
+        const response = await axios.get("https://xjllao.com/v1/api/parcelswait");
         setParcels(response.data);
       } catch (error) {
         console.error("Error fetch Parcel: ", error);
@@ -26,7 +26,7 @@ const ParcelWaitSave = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/parcel/updatebranch",
+        "https://xjllao.com/v1/api/parcel/updatebranch",
         updateStatus
       );
 
@@ -50,7 +50,7 @@ const ParcelWaitSave = () => {
   };
 
   const openPDF = (id_parcel) => {
-    const pdfUrl = `http://localhost:1000/pdf/${id_parcel}.pdf`;
+    const pdfUrl = `https://xjllao.com/v1/pdf/${id_parcel}.pdf`;
     window.open(pdfUrl, "_blank", "noopener,noreferrer");
   };
 
