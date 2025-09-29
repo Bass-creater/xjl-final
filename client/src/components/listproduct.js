@@ -4,6 +4,52 @@ import Swal from "sweetalert2";
 import { BarLoader } from "react-spinners";
 // import useAuth from "../hooks/useAuth";
 
+// เพิ่ม CSS สำหรับ SweetAlert2 popup
+const swalCustomStyles = `
+  .swal-custom-popup {
+    border-radius: 20px !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  }
+  
+  .swal-custom-title {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 800 !important;
+    color: #1F2937 !important;
+  }
+  
+  .swal-custom-content {
+    font-family: 'Inter', sans-serif !important;
+    line-height: 1.6 !important;
+  }
+  
+  .swal2-confirm {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3) !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .swal2-confirm:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 30px rgba(0, 123, 255, 0.4) !important;
+  }
+`;
+
+// เพิ่ม CSS styles เข้าไปใน head
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement("style");
+  styleSheet.type = "text/css";
+  styleSheet.innerText = swalCustomStyles;
+  document.head.appendChild(styleSheet);
+}
+
 const Listproduct = () => {
   const [products, setProducts] = useState();
   const [productsOrigin, setProductsOrigin] = useState();
@@ -126,20 +172,78 @@ const Listproduct = () => {
       );
 
       if (response.status === 200) {
-        const { batch_uuid, imported_count, imported_records } = response.data;
+        const { batch_uuid, imported_count, duplicates_skipped, imported_records } = response.data;
         
-        let message = `Import to Parcels Save Successful!\n`;
-        message += `Batch UUID: ${batch_uuid}\n`;
-        message += `Imported Records: ${imported_count}\n`;
-        message += `\nRecords:\n`;
-        imported_records.forEach(record => {
-          message += `- ${record.id_parcel} (${record.branch}, ${record.tel}, ${record.weight}kg)\n`;
-        });
+        // สร้าง HTML สำหรับแสดงผลแบบสวยงาม
+        let htmlContent = `
+          <div style="text-align: center; font-family: 'Inter', sans-serif;">
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+              <h2 style="color: #007bff; margin: 0; font-size: 24px; font-weight: 700;">Import สำเร็จ!</h2>
+              <p style="color: #6B7280; margin: 8px 0 0 0; font-size: 14px;">Batch UUID: ${batch_uuid}</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+              <div style="background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 86, 179, 0.05) 100%); 
+                          padding: 15px; border-radius: 12px; border: 1px solid rgba(0, 123, 255, 0.2);">
+                <div style="font-size: 24px; font-weight: 800; color: #007bff; margin-bottom: 5px;">${imported_count}</div>
+                <div style="font-size: 14px; color: #0056b3; font-weight: 600;">นำเข้าสำเร็จ</div>
+              </div>
+              <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); 
+                          padding: 15px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                <div style="font-size: 24px; font-weight: 800; color: #F59E0B; margin-bottom: 5px;">${duplicates_skipped || 0}</div>
+                <div style="font-size: 14px; color: #D97706; font-weight: 600;">ข้ามข้อมูลซ้ำ</div>
+              </div>
+            </div>
+        `;
+
+        // แสดงรายการ Parcel IDs ที่นำเข้าสำเร็จ
+        if (imported_records && imported_records.length > 0) {
+          htmlContent += `
+            <div style="margin-bottom: 20px;">
+              <h3 style="color: #007bff; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">📦</span>
+                Parcel IDs ที่นำเข้าสำเร็จ (${imported_records.length} รายการ)
+              </h3>
+              <div style="max-height: 200px; overflow-y: auto; background: rgba(0, 123, 255, 0.05); 
+                          border-radius: 8px; padding: 10px; border: 1px solid rgba(0, 123, 255, 0.1);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px;">
+          `;
+          
+          imported_records.forEach(record => {
+            htmlContent += `
+              <div style="background: linear-gradient(135deg, rgba(0, 123, 255, 0.15) 0%, rgba(0, 86, 179, 0.1) 100%); 
+                          padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(0, 123, 255, 0.2); 
+                          font-size: 12px; font-weight: 600; color: #0056b3; text-align: center;">
+                ${record.id_parcel}
+              </div>
+            `;
+          });
+          
+          htmlContent += `
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        htmlContent += `
+          </div>
+        `;
 
         Swal.fire({
-          title: "Import Successful",
-          text: message,
+          title: "",
+          html: htmlContent,
           icon: "success",
+          width: "600px",
+          showConfirmButton: true,
+          confirmButtonText: "ตกลง",
+          confirmButtonColor: "#007bff",
+          customClass: {
+            popup: 'swal-custom-popup',
+            title: 'swal-custom-title',
+            content: 'swal-custom-content'
+          }
         }).then(() => {
           setSelectedFile(null);
           // Reset file input

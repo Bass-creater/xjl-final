@@ -13,6 +13,52 @@ import "../style/font-style.css";
 import axios from "axios";
 import { BarLoader } from "react-spinners";
 
+// เพิ่ม CSS สำหรับ SweetAlert2 popup
+const swalCustomStyles = `
+  .swal-custom-popup {
+    border-radius: 20px !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15) !important;
+    backdrop-filter: blur(20px) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  }
+  
+  .swal-custom-title {
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 800 !important;
+    color: #1F2937 !important;
+  }
+  
+  .swal-custom-content {
+    font-family: 'Inter', sans-serif !important;
+    line-height: 1.6 !important;
+  }
+  
+  .swal2-confirm {
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 12px 24px !important;
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3) !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .swal2-confirm:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4) !important;
+  }
+`;
+
+// เพิ่ม CSS styles เข้าไปใน head
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement("style");
+  styleSheet.type = "text/css";
+  styleSheet.innerText = swalCustomStyles;
+  document.head.appendChild(styleSheet);
+}
+
 const DistributionDashboard = ({ onDetailsChange }) => {
   const navigate = useNavigate();
   const { username, role } = useAuth();
@@ -125,30 +171,78 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       );
 
       if (response.status === 200) {
-        const { batch_uuid, imported_count, imported_parcels, errors } = response.data;
+        const { batch_uuid, imported_count, duplicates_skipped, imported_records } = response.data;
         
-        let message = `Import Successful!\n`;
-        message += `Batch UUID: ${batch_uuid}\n`;
-        message += `Imported Records: ${imported_count}\n`;
-        
-        if (imported_parcels && imported_parcels.length > 0) {
-          message += `\nImported Parcels:\n`;
-          imported_parcels.forEach(parcel => {
-            message += `- ${parcel.id_parcel} (${parcel.from} → ${parcel.to})\n`;
+        // สร้าง HTML สำหรับแสดงผลแบบสวยงาม
+        let htmlContent = `
+          <div style="text-align: center; font-family: 'Inter', sans-serif;">
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
+              <h2 style="color: #22C55E; margin: 0; font-size: 24px; font-weight: 700;">Import สำเร็จ!</h2>
+              <p style="color: #6B7280; margin: 8px 0 0 0; font-size: 14px;">Batch UUID: ${batch_uuid}</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+              <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%); 
+                          padding: 15px; border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.2);">
+                <div style="font-size: 24px; font-weight: 800; color: #22C55E; margin-bottom: 5px;">${imported_count}</div>
+                <div style="font-size: 14px; color: #16A34A; font-weight: 600;">นำเข้าสำเร็จ</div>
+              </div>
+              <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); 
+                          padding: 15px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                <div style="font-size: 24px; font-weight: 800; color: #F59E0B; margin-bottom: 5px;">${duplicates_skipped || 0}</div>
+                <div style="font-size: 14px; color: #D97706; font-weight: 600;">ข้ามข้อมูลซ้ำ</div>
+              </div>
+            </div>
+        `;
+
+        // แสดงรายการ Parcel IDs ที่นำเข้าสำเร็จ
+        if (imported_records && imported_records.length > 0) {
+          htmlContent += `
+            <div style="margin-bottom: 20px;">
+              <h3 style="color: #22C55E; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">📦</span>
+                Parcel IDs ที่นำเข้าสำเร็จ (${imported_records.length} รายการ)
+              </h3>
+              <div style="max-height: 200px; overflow-y: auto; background: rgba(34, 197, 94, 0.05); 
+                          border-radius: 8px; padding: 10px; border: 1px solid rgba(34, 197, 94, 0.1);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px;">
+          `;
+          
+          imported_records.forEach(record => {
+            htmlContent += `
+              <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.1) 100%); 
+                          padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.2); 
+                          font-size: 12px; font-weight: 600; color: #16A34A; text-align: center;">
+                ${record.id_parcel}
+              </div>
+            `;
           });
-        }
-        
-        if (errors && errors.length > 0) {
-          message += `\nErrors:\n`;
-          errors.forEach(error => {
-            message += `- ${error}\n`;
-          });
+          
+          htmlContent += `
+                </div>
+              </div>
+            </div>
+          `;
         }
 
+        htmlContent += `
+          </div>
+        `;
+
         Swal.fire({
-          title: "Import Successful",
-          text: message,
+          title: "",
+          html: htmlContent,
           icon: "success",
+          width: "600px",
+          showConfirmButton: true,
+          confirmButtonText: "ตกลง",
+          confirmButtonColor: "#22C55E",
+          customClass: {
+            popup: 'swal-custom-popup',
+            title: 'swal-custom-title',
+            content: 'swal-custom-content'
+          }
         }).then(() => {
           setSelectedFile(null);
           // Reset file input
