@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { BarLoader } from "react-spinners";
 // import useAuth from "../hooks/useAuth";
 
-// เพิ่ม CSS สำหรับ SweetAlert2 popup
+// เพิ่ม CSS สำหรับ SweetAlert2 popup และ Loading animations
 const swalCustomStyles = `
   .swal-custom-popup {
     border-radius: 20px !important;
@@ -39,6 +39,54 @@ const swalCustomStyles = `
   .swal2-confirm:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 12px 30px rgba(0, 123, 255, 0.4) !important;
+  }
+
+  /* Loading animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  @keyframes progressBar {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 `;
 
@@ -357,12 +405,108 @@ const Listproduct = () => {
 
   return (
     <div>
-      {/* Loading overlay */}
+      {/* Enhanced Loading overlay */}
       {importLoading && (
-        <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-          <div style={{ textAlign: "center", color: "white" }}>
-            <BarLoader color="#28a745" loading={importLoading} size={50} />
-            <div style={{ marginTop: "10px", fontSize: "16px" }}>Importing data to Parcels Save...</div>
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999,
+          animation: "fadeIn 0.3s ease-in-out"
+        }}>
+          <div style={{
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)",
+            borderRadius: "20px",
+            padding: "40px 50px",
+            textAlign: "center",
+            boxShadow: "0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+            backdropFilter: "blur(20px)",
+            maxWidth: "400px",
+            width: "90%",
+            animation: "slideInUp 0.4s ease-out"
+          }}>
+            {/* Animated spinner */}
+            <div style={{
+              width: "60px",
+              height: "60px",
+              margin: "0 auto 20px",
+              position: "relative"
+            }}>
+              <div style={{
+                width: "100%",
+                height: "100%",
+                border: "4px solid rgba(0, 123, 255, 0.1)",
+                borderTop: "4px solid #007bff",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite"
+              }}></div>
+              <div style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontSize: "24px",
+                animation: "pulse 2s ease-in-out infinite"
+              }}>
+                📦
+              </div>
+            </div>
+            
+            {/* Loading text */}
+            <h3 style={{
+              margin: "0 0 10px 0",
+              fontSize: "20px",
+              fontWeight: "700",
+              color: "#1F2937",
+              fontFamily: "'Inter', sans-serif"
+            }}>
+              กำลังนำเข้าข้อมูล
+            </h3>
+            
+            <p style={{
+              margin: "0 0 20px 0",
+              fontSize: "14px",
+              color: "#6B7280",
+              lineHeight: "1.5"
+            }}>
+              กรุณารอสักครู่ ระบบกำลังประมวลผลข้อมูล Excel...
+            </p>
+            
+            {/* Progress bar */}
+            <div style={{
+              width: "100%",
+              height: "6px",
+              backgroundColor: "rgba(0, 123, 255, 0.1)",
+              borderRadius: "3px",
+              overflow: "hidden",
+              marginBottom: "15px"
+            }}>
+              <div style={{
+                width: "100%",
+                height: "100%",
+                background: "linear-gradient(90deg, #007bff 0%, #0056b3 50%, #007bff 100%)",
+                backgroundSize: "200% 100%",
+                animation: "progressBar 2s ease-in-out infinite",
+                borderRadius: "3px"
+              }}></div>
+            </div>
+            
+            {/* Status text */}
+            <div style={{
+              fontSize: "12px",
+              color: "#9CA3AF",
+              fontStyle: "italic"
+            }}>
+              Import to Parcels Save
+            </div>
           </div>
         </div>
       )}
@@ -401,11 +545,34 @@ const Listproduct = () => {
                   textAlign: "center",
                   backgroundColor: isDragOver ? "#f8f9fa" : "#fff",
                   transition: "all 0.3s ease",
-                  cursor: "pointer",
-                  marginBottom: "15px"
+                  cursor: importLoading ? "not-allowed" : "pointer",
+                  marginBottom: "15px",
+                  opacity: importLoading ? 0.6 : 1,
+                  position: "relative"
                 }}
-                onClick={() => document.getElementById('excelFileInputParcelsSave').click()}
+                onClick={() => !importLoading && document.getElementById('excelFileInputParcelsSave').click()}
               >
+                {importLoading && (
+                  <div style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    background: "rgba(255, 255, 255, 0.9)",
+                    borderRadius: "50%",
+                    padding: "10px",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)"
+                  }}>
+                    <div style={{
+                      width: "20px",
+                      height: "20px",
+                      border: "2px solid rgba(0, 123, 255, 0.3)",
+                      borderTop: "2px solid #007bff",
+                      borderRadius: "50%",
+                      animation: "spin 1s linear infinite"
+                    }}></div>
+                  </div>
+                )}
                 <div style={{ fontSize: "24px", marginBottom: "10px" }}>
                   📁
                 </div>
@@ -460,22 +627,42 @@ const Listproduct = () => {
                     fontSize: "16px",
                     fontWeight: "500",
                     transition: "all 0.3s ease",
-                    minWidth: "150px"
+                    minWidth: "150px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "8px",
+                    position: "relative",
+                    overflow: "hidden"
                   }}
                   onMouseOver={(e) => {
                     if (selectedFile && !importLoading) {
                       e.target.style.backgroundColor = "#0056b3";
                       e.target.style.transform = "translateY(-2px)";
+                      e.target.style.boxShadow = "0 8px 25px rgba(0, 123, 255, 0.3)";
                     }
                   }}
                   onMouseOut={(e) => {
                     if (selectedFile && !importLoading) {
                       e.target.style.backgroundColor = "#007bff";
                       e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow = "none";
                     }
                   }}
                 >
-                  {importLoading ? "Importing..." : "Import to Parcels Save"}
+                  {importLoading && (
+                    <div style={{
+                      width: "16px",
+                      height: "16px",
+                      border: "2px solid rgba(255, 255, 255, 0.3)",
+                      borderTop: "2px solid white",
+                      borderRadius: "50%",
+                      animation: "spin 1s linear infinite"
+                    }}></div>
+                  )}
+                  <span>
+                    {importLoading ? "กำลังนำเข้า..." : "Import to Parcels Save"}
+                  </span>
                 </button>
               </div>
 

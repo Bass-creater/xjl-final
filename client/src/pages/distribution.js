@@ -13,7 +13,7 @@ import "../style/font-style.css";
 import axios from "axios";
 import { BarLoader } from "react-spinners";
 
-// เพิ่ม CSS สำหรับ SweetAlert2 popup
+// เพิ่ม CSS สำหรับ SweetAlert2 popup และ Loading animations
 const swalCustomStyles = `
   .swal-custom-popup {
     border-radius: 20px !important;
@@ -48,6 +48,54 @@ const swalCustomStyles = `
   .swal2-confirm:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4) !important;
+  }
+
+  /* Loading animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+
+  @keyframes progressBar {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
   }
 `;
 
@@ -515,16 +563,217 @@ const DistributionDashboard = ({ onDetailsChange }) => {
         fontFamily: "Inter, Arial, sans-serif",
       }}
     >
-      <div>
-        {loading ? (
-          <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl p-8 shadow-2xl">
-              <BarLoader color="#8B5CF6" loading={loading} size={80} />
-              <p className="mt-4 text-gray-600 font-medium">ກຳລັງບັນທຶກຂໍ້ມູນ...</p>
+      {/* Enhanced Loading overlay for parcel data saving */}
+      {loading && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999,
+          animation: "fadeIn 0.3s ease-in-out"
+        }}>
+          <div style={{
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)",
+            borderRadius: "20px",
+            padding: "40px 50px",
+            textAlign: "center",
+            boxShadow: "0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+            backdropFilter: "blur(20px)",
+            maxWidth: "400px",
+            width: "90%",
+            animation: "slideInUp 0.4s ease-out"
+          }}>
+            {/* Animated spinner */}
+            <div style={{
+              width: "60px",
+              height: "60px",
+              margin: "0 auto 20px",
+              position: "relative"
+            }}>
+              <div style={{
+                width: "100%",
+                height: "100%",
+                border: "4px solid rgba(139, 92, 246, 0.1)",
+                borderTop: "4px solid #8B5CF6",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite"
+              }}></div>
+              <div style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontSize: "24px",
+                animation: "pulse 2s ease-in-out infinite"
+              }}>
+                💾
+              </div>
+            </div>
+            
+            {/* Loading text */}
+            <h3 style={{
+              margin: "0 0 10px 0",
+              fontSize: "20px",
+              fontWeight: "700",
+              color: "#1F2937",
+              fontFamily: "'Inter', sans-serif"
+            }}>
+              กำลังบันทึกข้อมูล
+            </h3>
+            
+            <p style={{
+              margin: "0 0 20px 0",
+              fontSize: "14px",
+              color: "#6B7280",
+              lineHeight: "1.5"
+            }}>
+              กรุณารอสักครู่ ระบบกำลังบันทึกข้อมูล parcel...
+            </p>
+            
+            {/* Progress bar */}
+            <div style={{
+              width: "100%",
+              height: "6px",
+              backgroundColor: "rgba(139, 92, 246, 0.1)",
+              borderRadius: "3px",
+              overflow: "hidden",
+              marginBottom: "15px"
+            }}>
+              <div style={{
+                width: "100%",
+                height: "100%",
+                background: "linear-gradient(90deg, #8B5CF6 0%, #7C3AED 50%, #8B5CF6 100%)",
+                backgroundSize: "200% 100%",
+                animation: "progressBar 2s ease-in-out infinite",
+                borderRadius: "3px"
+              }}></div>
+            </div>
+            
+            {/* Status text */}
+            <div style={{
+              fontSize: "12px",
+              color: "#9CA3AF",
+              fontStyle: "italic"
+            }}>
+              Saving Parcel Data
             </div>
           </div>
-        ) : null}
-      </div>
+        </div>
+      )}
+
+      {/* Enhanced Loading overlay for Excel import from China */}
+      {importLoading && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(8px)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 9999,
+          animation: "fadeIn 0.3s ease-in-out"
+        }}>
+          <div style={{
+            background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)",
+            borderRadius: "20px",
+            padding: "40px 50px",
+            textAlign: "center",
+            boxShadow: "0 25px 50px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.2)",
+            border: "1px solid rgba(255, 255, 255, 0.3)",
+            backdropFilter: "blur(20px)",
+            maxWidth: "400px",
+            width: "90%",
+            animation: "slideInUp 0.4s ease-out"
+          }}>
+            {/* Animated spinner */}
+            <div style={{
+              width: "60px",
+              height: "60px",
+              margin: "0 auto 20px",
+              position: "relative"
+            }}>
+              <div style={{
+                width: "100%",
+                height: "100%",
+                border: "4px solid rgba(0, 123, 255, 0.1)",
+                borderTop: "4px solid #007bff",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite"
+              }}></div>
+              <div style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontSize: "24px",
+                animation: "pulse 2s ease-in-out infinite"
+              }}>
+                📦
+              </div>
+            </div>
+            
+            {/* Loading text */}
+            <h3 style={{
+              margin: "0 0 10px 0",
+              fontSize: "20px",
+              fontWeight: "700",
+              color: "#1F2937",
+              fontFamily: "'Inter', sans-serif"
+            }}>
+              กำลังนำเข้าข้อมูล
+            </h3>
+            
+            <p style={{
+              margin: "0 0 20px 0",
+              fontSize: "14px",
+              color: "#6B7280",
+              lineHeight: "1.5"
+            }}>
+              กรุณารอสักครู่ ระบบกำลังประมวลผลข้อมูล Excel...
+            </p>
+            
+            {/* Progress bar */}
+            <div style={{
+              width: "100%",
+              height: "6px",
+              backgroundColor: "rgba(0, 123, 255, 0.1)",
+              borderRadius: "3px",
+              overflow: "hidden",
+              marginBottom: "15px"
+            }}>
+              <div style={{
+                width: "100%",
+                height: "100%",
+                background: "linear-gradient(90deg, #007bff 0%, #0056b3 50%, #007bff 100%)",
+                backgroundSize: "200% 100%",
+                animation: "progressBar 2s ease-in-out infinite",
+                borderRadius: "3px"
+              }}></div>
+            </div>
+            
+            {/* Status text */}
+            <div style={{
+              fontSize: "12px",
+              color: "#6B7280",
+              fontStyle: "italic"
+            }}>
+              Import to Parcels Save
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Sidebar */}
      <aside
@@ -1285,6 +1534,10 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           position: "relative",
                           overflow: "hidden",
                           minWidth: "150px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "8px",
                         }}
                         onMouseOver={(e) => {
                           if (selectedFile && !importLoading) {
@@ -1299,15 +1552,20 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           }
                         }}
                       >
-                        <span style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: "8px" }}>
-                          {importLoading ? (
+                        {importLoading && (
+                          <div style={{
+                            width: "16px",
+                            height: "16px",
+                            border: "2px solid rgba(255, 255, 255, 0.3)",
+                            borderTop: "2px solid white",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite"
+                          }}></div>
+                        )}
+                        <span>
+                          {importLoading ? "กำลังนำเข้า..." : (
                             <>
-                              <BarLoader color="#ffffff" width={20} />
-                              <span>ກຳລັງ Import...</span>
-                            </>
-                          ) : (
-                            <>
-                              <span style={{ fontSize: "20px" }}>📊</span>
+                              <span style={{ fontSize: "20px", marginRight: "8px" }}>📊</span>
                               Import Excel
                             </>
                           )}
@@ -1963,61 +2221,75 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                 
                       <button
                         type="button"
-                  onClick={handleSubmit}
+                        onClick={handleSubmit}
+                        disabled={loading}
                         style={{
-                    padding: "18px 40px",
-                    background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
+                          padding: "18px 40px",
+                          background: loading 
+                            ? "linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)" 
+                            : "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
                           color: "white",
                           border: "none",
-                    borderRadius: "20px",
-                    fontSize: "18px",
-                    fontWeight: "700",
-                    cursor: "pointer",
-                    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    boxShadow: "0 15px 30px rgba(251, 146, 60, 0.35), 0 6px 20px rgba(251, 146, 60, 0.25)",
-                    textShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
-                    position: "relative",
-                    zIndex: 2,
-                    overflow: "hidden",
+                          borderRadius: "20px",
+                          fontSize: "18px",
+                          fontWeight: "700",
+                          cursor: loading ? "not-allowed" : "pointer",
+                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          boxShadow: loading 
+                            ? "0 4px 15px rgba(156, 163, 175, 0.2)" 
+                            : "0 15px 30px rgba(251, 146, 60, 0.35), 0 6px 20px rgba(251, 146, 60, 0.25)",
+                          textShadow: "0 1px 5px rgba(0, 0, 0, 0.1)",
+                          position: "relative",
+                          zIndex: 2,
+                          overflow: "hidden",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "12px",
                         }}
                         onMouseOver={(e) => {
-                    e.target.style.transform = "translateY(-2px) scale(1.02)";
-                    e.target.style.boxShadow = "0 18px 35px rgba(251, 146, 60, 0.3), 0 8px 25px rgba(251, 146, 60, 0.2)";
+                          if (!loading) {
+                            e.target.style.transform = "translateY(-2px) scale(1.02)";
+                            e.target.style.boxShadow = "0 18px 35px rgba(251, 146, 60, 0.3), 0 8px 25px rgba(251, 146, 60, 0.2)";
+                          }
                         }}
                         onMouseOut={(e) => {
-                    e.target.style.transform = "translateY(0) scale(1)";
-                    e.target.style.boxShadow = "0 15px 30px rgba(251, 146, 60, 0.35), 0 6px 20px rgba(251, 146, 60, 0.25)";
-                  }}
-                >
-                  <span style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: "12px" }}>
-                    <span style={{ fontSize: "24px" }}>💾</span>
-                    ບັນທຶກຂໍ້ມູນ
-                  </span>
-                  
-                  {/* Animated background overlay */}
-                  <div style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "-100%",
-                    width: "100%",
-                    height: "100%",
-                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%)",
-                    transition: "left 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
-                  }} />
-                  
-                  {/* Loading indicator */}
-                  {loading && (
-                    <div style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      zIndex: 3,
-                    }}>
-                      <BarLoader color="#ffffff" width={60} />
-                    </div>
-                  )}
-                </button>
+                          if (!loading) {
+                            e.target.style.transform = "translateY(0) scale(1)";
+                            e.target.style.boxShadow = "0 15px 30px rgba(251, 146, 60, 0.35), 0 6px 20px rgba(251, 146, 60, 0.25)";
+                          }
+                        }}
+                      >
+                        {loading && (
+                          <div style={{
+                            width: "20px",
+                            height: "20px",
+                            border: "2px solid rgba(255, 255, 255, 0.3)",
+                            borderTop: "2px solid white",
+                            borderRadius: "50%",
+                            animation: "spin 1s linear infinite"
+                          }}></div>
+                        )}
+                        <span>
+                          {loading ? "กำลังบันทึก..." : (
+                            <>
+                              <span style={{ fontSize: "24px" }}>💾</span>
+                              ບັນທຶກຂໍ້ມູນ
+                            </>
+                          )}
+                        </span>
+                        
+                        {/* Animated background overlay */}
+                        <div style={{
+                          position: "absolute",
+                          top: "0",
+                          left: "-100%",
+                          width: "100%",
+                          height: "100%",
+                          background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%)",
+                          transition: "left 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+                        }} />
+                      </button>
               </div>
               
               <hr style={{

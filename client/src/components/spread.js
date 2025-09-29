@@ -136,7 +136,7 @@ const Spread = () => {
   return (
     <div>
       {/* <h1>Total Parcels: {totalParcels}</h1> */}
-      <div className="bg-[#732dcf] px-6 py-4 pb-6 rounded-lg">
+      <div className="bg-[#FB923C] px-6 py-4 pb-6 rounded-lg">
         <label className="text-white font-semibold">
           Enter the parcel number
         </label>
