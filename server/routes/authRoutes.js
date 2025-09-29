@@ -72,7 +72,7 @@ router.get("/rate", authControl.rate);
 
 router.post("/checkstatus", authControl.checkStatus);
 
-// Excel import route
+// Excel import route - ไม่ต้อง auth แต่ยังส่ง JWT token ไป
 router.post("/import-excel", authControl.uploadExcel, authControl.importExcel);
 router.post("/import-excel-parcels-save", authControl.uploadFile, authControl.importExcelToParcelsSave);
 

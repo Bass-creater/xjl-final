@@ -87,6 +87,86 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     setParcelData(data);
   };
   const [loading, setLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [importLoading, setImportLoading] = useState(false);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleImportExcel = async () => {
+    if (!selectedFile) {
+      Swal.fire({
+        title: "Please Select File",
+        text: "Please select an Excel file to import",
+        icon: "info",
+      });
+      return;
+    }
+
+    setImportLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append('excelFile', selectedFile);
+
+      const response = await axios.post(
+        "http://localhost:1000/api/import-excel",
+        formData,
+        {
+          headers: {
+            'Authorization': localStorage.getItem('token'),
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+
+      if (response.status === 200) {
+        const { batch_uuid, imported_count, imported_parcels, errors } = response.data;
+        
+        let message = `Import Successful!\n`;
+        message += `Batch UUID: ${batch_uuid}\n`;
+        message += `Imported Records: ${imported_count}\n`;
+        
+        if (imported_parcels && imported_parcels.length > 0) {
+          message += `\nImported Parcels:\n`;
+          imported_parcels.forEach(parcel => {
+            message += `- ${parcel.id_parcel} (${parcel.from} → ${parcel.to})\n`;
+          });
+        }
+        
+        if (errors && errors.length > 0) {
+          message += `\nErrors:\n`;
+          errors.forEach(error => {
+            message += `- ${error}\n`;
+          });
+        }
+
+        Swal.fire({
+          title: "Import Successful",
+          text: message,
+          icon: "success",
+        }).then(() => {
+          setSelectedFile(null);
+          // Reset file input
+          const fileInput = document.getElementById('excel-file-input');
+          if (fileInput) fileInput.value = '';
+        });
+      }
+    } catch (error) {
+      console.error("Import Excel Error:", error);
+      Swal.fire({
+        title: "Import Failed",
+        text: error?.response?.data?.message || "Failed to import Excel file",
+        icon: "error",
+      });
+    } finally {
+      setImportLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,7 +191,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
 
     try {
       const checkCredit = await axios.post(
-        "https://kyelao.com/api/checkcredit",
+        "http://localhost:1000/api/checkcredit",
         { branch: parcelData.branch }
       );
 
@@ -138,7 +218,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       };
       console.log("Sending data", fullData);
       const response = await axios.post(
-        "https://kyelao.com/api/saveData",
+        "http://localhost:1000/api/saveData",
         fullData
       );
 
@@ -182,7 +262,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await axios.get("https://kyelao.com/api/rate");
+        const response = await axios.get("http://localhost:1000/api/rate");
         setRateChina(response.data.china);
         setRateThai(response.data.thai);
       } catch (error) {
@@ -323,21 +403,11 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       ...prevData,
       price: (price * amount).toLocaleString("en-US"),
     }));
-  }, [detailsData, rateChina]);
+  }, [detailsData.typeParcel, detailsData.weight, detailsData.width, detailsData.length, detailsData.height, detailsData.amount, rateChina, rateThai]);
 
   useEffect(() => {
     calculatePrice();
-  }, [
-    detailsData.typeParcel,
-    detailsData.weight,
-    detailsData.width,
-    detailsData.length,
-    detailsData.height,
-    detailsData.amount,
-    rateChina,
-    // rateThai,
-    // calculatePrice
-  ]);
+  }, [calculatePrice]);
 
   useEffect(() => {
     console.log(detailsData);
@@ -863,6 +933,342 @@ const DistributionDashboard = ({ onDetailsChange }) => {
         </header>
 
         <div style={{ overflowX: "auto" }}>
+          {/* Excel Import Section for China */}
+          {storedBranch !== "LAO Warehouse" && storedRole !== "branch" ? (
+            <div style={{ marginBottom: "30px" }}>
+              <div
+                style={{
+                  borderRadius: "24px",
+                  overflow: "hidden",
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.08), 0 10px 25px rgba(0,0,0,0.06)",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255, 255, 255, 0.3)",
+                  position: "relative",
+                }}
+              >
+                {/* Decorative background pattern */}
+                <div style={{
+                  position: "absolute",
+                  top: "0",
+                  right: "0",
+                  width: "150px",
+                  height: "150px",
+                  background: "radial-gradient(circle, rgba(34, 197, 94, 0.02) 0%, transparent 70%)",
+                  zIndex: 1,
+                }} />
+                
+                <div style={{
+                  background: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
+                  padding: "25px 30px",
+                  borderRadius: "24px 24px 0 0",
+                  boxShadow: "0 8px 25px rgba(34, 197, 94, 0.2)",
+                  position: "relative",
+                  zIndex: 2,
+                }}>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                  }}>
+                    <div style={{
+                      width: "40px",
+                      height: "40px",
+                      background: "rgba(255, 255, 255, 0.2)",
+                      borderRadius: "10px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      backdropFilter: "blur(8px)",
+                    }}>
+                      <span style={{ fontSize: "20px" }}>📊</span>
+                    </div>
+                    <div>
+                      <h2 style={{ 
+                        margin: 0, 
+                        color: "white", 
+                        fontSize: "24px",
+                        fontWeight: "700",
+                        textShadow: "0 1px 5px rgba(0, 0, 0, 0.15)",
+                        letterSpacing: "-0.3px",
+                      }}>
+                        Import Excel ຈາກຈີນ
+                      </h2>
+                      <p style={{
+                        margin: "4px 0 0 0",
+                        color: "rgba(255, 255, 255, 0.85)",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                      }}>
+                        Import parcel data from Excel file
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div style={{
+                  padding: "30px",
+                  background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.85) 100%)",
+                  position: "relative",
+                  zIndex: 2,
+                }}>
+                  <div style={{
+                    display: "grid",
+                    gap: "20px",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                  }}>
+                    {/* File Upload Section */}
+                    <div style={{
+                      padding: "25px",
+                      background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
+                      borderRadius: "20px",
+                      border: "1px solid rgba(34, 197, 94, 0.12)",
+                      transition: "all 0.3s ease",
+                      boxShadow: "0 8px 25px rgba(34, 197, 94, 0.08)",
+                      position: "relative",
+                      overflow: "hidden",
+                    }}>
+                      {/* Decorative accent */}
+                      <div style={{
+                        position: "absolute",
+                        top: "0",
+                        left: "0",
+                        width: "4px",
+                        height: "100%",
+                        background: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
+                        borderRadius: "0 2px 2px 0",
+                      }} />
+                      
+                      <label style={{
+                        marginBottom: "15px",
+                        fontWeight: "700",
+                        color: "#16A34A",
+                        fontSize: "17px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}>
+                        <span style={{
+                          width: "32px",
+                          height: "32px",
+                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.12) 100%)",
+                          borderRadius: "8px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "18px",
+                        }}>📁</span>
+                        ເລືອກຟາຍລ໌ Excel
+                      </label>
+                      
+                      <input
+                        id="excel-file-input"
+                        type="file"
+                        accept=".xlsx,.xls,.xlxs"
+                        onChange={handleFileChange}
+                        style={{
+                          width: "100%",
+                          padding: "15px",
+                          borderRadius: "12px",
+                          border: "2px solid rgba(34, 197, 94, 0.2)",
+                          backgroundColor: "#ffffff",
+                          fontSize: "16px",
+                          fontWeight: "500",
+                          transition: "all 0.3s ease",
+                          boxShadow: "0 4px 15px rgba(34, 197, 94, 0.1)",
+                          cursor: "pointer",
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.border = "2px solid #22C55E";
+                          e.target.style.boxShadow = "0 8px 25px rgba(34, 197, 94, 0.2)";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.border = "2px solid rgba(34, 197, 94, 0.2)";
+                          e.target.style.boxShadow = "0 4px 15px rgba(34, 197, 94, 0.1)";
+                        }}
+                      />
+                      
+                      {selectedFile && (
+                        <div style={{
+                          marginTop: "15px",
+                          padding: "15px",
+                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)",
+                          borderRadius: "12px",
+                          border: "1px solid rgba(34, 197, 94, 0.2)",
+                        }}>
+                          <div style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "#16A34A",
+                            fontWeight: "600",
+                          }}>
+                            <span style={{ fontSize: "18px" }}>✅</span>
+                            <span>ຟາຍລ໌ທີ່ເລືອກ: {selectedFile.name}</span>
+                          </div>
+                          <div style={{
+                            fontSize: "14px",
+                            color: "#6B7280",
+                            marginTop: "5px",
+                          }}>
+                            ຂະໜາດ: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Import Button Section */}
+                    <div style={{
+                      padding: "25px",
+                      background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
+                      borderRadius: "20px",
+                      border: "1px solid rgba(34, 197, 94, 0.12)",
+                      transition: "all 0.3s ease",
+                      boxShadow: "0 8px 25px rgba(34, 197, 94, 0.08)",
+                      position: "relative",
+                      overflow: "hidden",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                      {/* Decorative accent */}
+                      <div style={{
+                        position: "absolute",
+                        top: "0",
+                        left: "0",
+                        width: "4px",
+                        height: "100%",
+                        background: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
+                        borderRadius: "0 2px 2px 0",
+                      }} />
+                      
+                      <div style={{
+                        textAlign: "center",
+                        marginBottom: "20px",
+                      }}>
+                        <div style={{
+                          fontSize: "48px",
+                          marginBottom: "10px",
+                        }}>📊</div>
+                        <h3 style={{
+                          margin: "0 0 8px 0",
+                          color: "#16A34A",
+                          fontSize: "18px",
+                          fontWeight: "700",
+                        }}>
+                          Import ຂໍ້ມູນ
+                        </h3>
+                        <p style={{
+                          margin: "0",
+                          color: "#6B7280",
+                          fontSize: "14px",
+                        }}>
+                          ກົດປຸ່ມເພື່ອ import ຂໍ້ມູນຈາກ Excel
+                        </p>
+                      </div>
+                      
+                      <button
+                        onClick={handleImportExcel}
+                        disabled={!selectedFile || importLoading}
+                        style={{
+                          padding: "15px 30px",
+                          background: selectedFile && !importLoading 
+                            ? "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)" 
+                            : "linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "16px",
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          cursor: selectedFile && !importLoading ? "pointer" : "not-allowed",
+                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          boxShadow: selectedFile && !importLoading 
+                            ? "0 10px 25px rgba(34, 197, 94, 0.25)" 
+                            : "0 4px 15px rgba(156, 163, 175, 0.2)",
+                          position: "relative",
+                          overflow: "hidden",
+                          minWidth: "150px",
+                        }}
+                        onMouseOver={(e) => {
+                          if (selectedFile && !importLoading) {
+                            e.target.style.transform = "translateY(-2px) scale(1.02)";
+                            e.target.style.boxShadow = "0 12px 30px rgba(34, 197, 94, 0.3)";
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (selectedFile && !importLoading) {
+                            e.target.style.transform = "translateY(0) scale(1)";
+                            e.target.style.boxShadow = "0 10px 25px rgba(34, 197, 94, 0.25)";
+                          }
+                        }}
+                      >
+                        <span style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", gap: "8px" }}>
+                          {importLoading ? (
+                            <>
+                              <BarLoader color="#ffffff" width={20} />
+                              <span>ກຳລັງ Import...</span>
+                            </>
+                          ) : (
+                            <>
+                              <span style={{ fontSize: "20px" }}>📊</span>
+                              Import Excel
+                            </>
+                          )}
+                        </span>
+                        
+                        {/* Animated background overlay */}
+                        <div style={{
+                          position: "absolute",
+                          top: "0",
+                          left: "-100%",
+                          width: "100%",
+                          height: "100%",
+                          background: "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%)",
+                          transition: "left 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
+                        }} />
+                      </button>
+                    </div>
+                  </div>
+                  
+                  {/* Instructions */}
+                  <div style={{
+                    marginTop: "25px",
+                    padding: "20px",
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(37, 99, 235, 0.03) 100%)",
+                    borderRadius: "16px",
+                    border: "1px solid rgba(59, 130, 246, 0.1)",
+                  }}>
+                    <h4 style={{
+                      margin: "0 0 15px 0",
+                      color: "#3B82F6",
+                      fontSize: "16px",
+                      fontWeight: "700",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}>
+                      <span style={{ fontSize: "18px" }}>ℹ️</span>
+                      ຄຳແນະນຳການໃຊ້ງານ
+                    </h4>
+                    <ul style={{
+                      margin: "0",
+                      paddingLeft: "20px",
+                      color: "#6B7280",
+                      fontSize: "14px",
+                      lineHeight: "1.6",
+                    }}>
+                      <li>ຟາຍລ໌ Excel ຕ້ອງມີຂໍ້ມູນຢູ່ໃນຄໍລຳ D (ລະຫັດພັດສະດຸ)</li>
+                      <li>ຮູບແບບຟາຍລ໌ທີ່ຮອງຮັບ: .xlsx, .xls, .xlxs</li>
+                      <li>ຂະໜາດຟາຍລ໌ສູງສຸດ: 10MB</li>
+                      <li>ຂໍ້ມູນທີ່ import ຈະຖືກບັນທຶກເປັນສະຖານະ "origin"</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
           {storedBranch === "LAO Warehouse" ? (
             <>
               <Parcel onParcelChange={handleParcelChange} />

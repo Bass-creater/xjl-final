@@ -37,6 +37,10 @@ const Parcel = sequelize.define(
       allowNull: false,
       defaultValue: '',
     },
+    uuid: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,

@@ -70,6 +70,10 @@ ParcelDetail.init(
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
+    uuid: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize, // เชื่อมต่อกับฐานข้อมูล

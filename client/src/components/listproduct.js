@@ -263,124 +263,126 @@ const Listproduct = () => {
         </div>
       )}
 
-      {/* Excel Import Section for Parcels Save */}
-      <div className="mb-6">
-        <div
-          style={{
-            borderRadius: "10px",
-            overflow: "hidden",
-            boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-          }}
-        >
-          <div style={{
-            background: "linear-gradient(to right, #007bff, #0056b3)",
-            padding: "15px 20px",
-            borderRadius: "20px 20px 0 0",
-            color: "white",
-          }}>
-            <h2 style={{ margin: 0, color: "white" }}>Import Excel to Parcels Save</h2>
-          </div>
-          <div style={{
-            backgroundColor: "#f9f9f9",
-            padding: "20px",
-          }}>
-            {/* Drag and Drop Area */}
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              style={{
-                border: isDragOver ? "2px dashed #007bff" : "2px dashed #ccc",
-                borderRadius: "10px",
-                padding: "20px",
-                textAlign: "center",
-                backgroundColor: isDragOver ? "#f8f9fa" : "#fff",
-                transition: "all 0.3s ease",
-                cursor: "pointer",
-                marginBottom: "15px"
-              }}
-              onClick={() => document.getElementById('excelFileInputParcelsSave').click()}
-            >
-              <div style={{ fontSize: "24px", marginBottom: "10px" }}>
-                📁
-              </div>
-              <div style={{ fontSize: "16px", fontWeight: "500", marginBottom: "5px" }}>
-                {isDragOver ? "Drop file here" : "Drag file here or click to select"}
-              </div>
-              <div style={{ fontSize: "12px", color: "#666" }}>
-                Supports .xlsx, .xls, .xlxs files
-              </div>
+      {/* Excel Import Section for Parcels Save - Only show for LAO Warehouse */}
+      {storedBranch === "LAO Warehouse" && (
+        <div className="mb-6">
+          <div
+            style={{
+              borderRadius: "10px",
+              overflow: "hidden",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+            }}
+          >
+            <div style={{
+              background: "linear-gradient(to right, #007bff, #0056b3)",
+              padding: "15px 20px",
+              borderRadius: "20px 20px 0 0",
+              color: "white",
+            }}>
+              <h2 style={{ margin: 0, color: "white" }}>Import Excel to Parcels Save</h2>
             </div>
-
-            {/* Hidden File Input */}
-            <input
-              id="excelFileInputParcelsSave"
-              type="file"
-              accept=".xlsx,.xls,.xlxs"
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-
-            {/* Selected File Display */}
-            {selectedFile && (
-              <div style={{ 
-                marginBottom: "15px", 
-                padding: "10px", 
-                backgroundColor: "#e8f5e8", 
-                borderRadius: "5px",
-                border: "1px solid #28a745"
-              }}>
-                <div style={{ fontSize: "14px", fontWeight: "500", color: "#28a745", marginBottom: "5px" }}>
-                  ✓ Selected File
+            <div style={{
+              backgroundColor: "#f9f9f9",
+              padding: "20px",
+            }}>
+              {/* Drag and Drop Area */}
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                style={{
+                  border: isDragOver ? "2px dashed #007bff" : "2px dashed #ccc",
+                  borderRadius: "10px",
+                  padding: "20px",
+                  textAlign: "center",
+                  backgroundColor: isDragOver ? "#f8f9fa" : "#fff",
+                  transition: "all 0.3s ease",
+                  cursor: "pointer",
+                  marginBottom: "15px"
+                }}
+                onClick={() => document.getElementById('excelFileInputParcelsSave').click()}
+              >
+                <div style={{ fontSize: "24px", marginBottom: "10px" }}>
+                  📁
+                </div>
+                <div style={{ fontSize: "16px", fontWeight: "500", marginBottom: "5px" }}>
+                  {isDragOver ? "Drop file here" : "Drag file here or click to select"}
                 </div>
                 <div style={{ fontSize: "12px", color: "#666" }}>
-                  {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                  Supports .xlsx, .xls, .xlxs files
                 </div>
               </div>
-            )}
 
-            {/* Import Button */}
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <button
-                type="button"
-                onClick={handleImportExcel}
-                disabled={!selectedFile || importLoading}
-                style={{
-                  padding: "12px 24px",
-                  backgroundColor: selectedFile && !importLoading ? "#007bff" : "#6c757d",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "8px",
-                  cursor: selectedFile && !importLoading ? "pointer" : "not-allowed",
-                  fontSize: "16px",
-                  fontWeight: "500",
-                  transition: "all 0.3s ease",
-                  minWidth: "150px"
-                }}
-                onMouseOver={(e) => {
-                  if (selectedFile && !importLoading) {
-                    e.target.style.backgroundColor = "#0056b3";
-                    e.target.style.transform = "translateY(-2px)";
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (selectedFile && !importLoading) {
-                    e.target.style.backgroundColor = "#007bff";
-                    e.target.style.transform = "translateY(0)";
-                  }
-                }}
-              >
-                {importLoading ? "Importing..." : "Import to Parcels Save"}
-              </button>
-            </div>
+              {/* Hidden File Input */}
+              <input
+                id="excelFileInputParcelsSave"
+                type="file"
+                accept=".xlsx,.xls,.xlxs"
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+              />
 
-            {/* Instructions */}
-            <div style={{ marginTop: "15px", fontSize: "12px", color: "#666", textAlign: "center" }}>
-              <strong>Note:</strong> The system will read data from columns B-E (Branch, Tel, ID Parcel, Weight) starting from row 2. All parcels must have the same UUID from the parcels table.
+              {/* Selected File Display */}
+              {selectedFile && (
+                <div style={{ 
+                  marginBottom: "15px", 
+                  padding: "10px", 
+                  backgroundColor: "#e8f5e8", 
+                  borderRadius: "5px",
+                  border: "1px solid #28a745"
+                }}>
+                  <div style={{ fontSize: "14px", fontWeight: "500", color: "#28a745", marginBottom: "5px" }}>
+                    ✓ Selected File
+                  </div>
+                  <div style={{ fontSize: "12px", color: "#666" }}>
+                    {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                  </div>
+                </div>
+              )}
+
+              {/* Import Button */}
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <button
+                  type="button"
+                  onClick={handleImportExcel}
+                  disabled={!selectedFile || importLoading}
+                  style={{
+                    padding: "12px 24px",
+                    backgroundColor: selectedFile && !importLoading ? "#007bff" : "#6c757d",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    cursor: selectedFile && !importLoading ? "pointer" : "not-allowed",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                    transition: "all 0.3s ease",
+                    minWidth: "150px"
+                  }}
+                  onMouseOver={(e) => {
+                    if (selectedFile && !importLoading) {
+                      e.target.style.backgroundColor = "#0056b3";
+                      e.target.style.transform = "translateY(-2px)";
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (selectedFile && !importLoading) {
+                      e.target.style.backgroundColor = "#007bff";
+                      e.target.style.transform = "translateY(0)";
+                    }
+                  }}
+                >
+                  {importLoading ? "Importing..." : "Import to Parcels Save"}
+                </button>
+              </div>
+
+              {/* Instructions */}
+              <div style={{ marginTop: "15px", fontSize: "12px", color: "#666", textAlign: "center" }}>
+                <strong>Note:</strong> The system will read data from columns B-E (Branch, Tel, ID Parcel, Weight) starting from row 2. All parcels must have the same UUID from the parcels table.
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="flex items-center justify-center flex-col">
         <div className="bg-[#732dcf] px-6 py-4 pb-6 rounded-lg w-full mb-10">

@@ -1196,20 +1196,26 @@ exports.importExcel = async (req, res) => {
     // Get current time
     const currentTime = moment.tz("Asia/Vientiane").format("YYYY-MM-DD HH:mm:ss");
     
-    // Get user info from token to determine the from value
-    const token = req.headers.authorization;
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findByPk(decoded.id);
+    // Get user info from token to determine the from value (optional - ไม่บังคับ auth)
+    let fromValue = "China"; // default value
     
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    try {
+      const token = req.headers.authorization;
+      if (token) {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findByPk(decoded.id);
+        
+        if (user) {
+          fromValue = user.branch || "China";
+        }
+      }
+    } catch (tokenError) {
+      console.log('Token verification failed or no token provided, using default fromValue:', fromValue);
     }
-    
-    // Use user's branch as from value (same logic as in saveData)
-    const fromValue = user.branch || "China";
     
     const importedParcels = [];
     const errors = [];
+    const processedIds = new Set(); // เก็บ parcel IDs ที่ประมวลผลแล้ว
     
     // Process each row (skip header row if exists)
     for (let i = 1; i < jsonData.length; i++) {
@@ -1226,15 +1232,24 @@ exports.importExcel = async (req, res) => {
         
         if (idParcel && idParcel !== 'undefined' && idParcel !== 'null') {
           try {
-            // Check if parcel already exists
+            // ตรวจสอบว่า parcel ID ซ้ำในไฟล์เดียวกันหรือไม่
+            if (processedIds.has(idParcel)) {
+              errors.push(`Row ${i + 1}: Parcel ID ${idParcel} is duplicate in Excel file - skipped`);
+              continue;
+            }
+            
+            // ตรวจสอบว่า parcel ID มีอยู่ในฐานข้อมูลแล้วหรือไม่
             const existingParcel = await Parcel.findOne({
               where: { id_parcel: idParcel }
             });
             
             if (existingParcel) {
-              errors.push(`Parcel ID ${idParcel} already exists`);
+              errors.push(`Row ${i + 1}: Parcel ID ${idParcel} already exists in database - skipped`);
               continue;
             }
+            
+            // เพิ่ม parcel ID เข้าไปใน Set เพื่อป้องกันการซ้ำ
+            processedIds.add(idParcel);
             
             // Create new parcel
             const newParcel = await Parcel.create({
@@ -1243,14 +1258,14 @@ exports.importExcel = async (req, res) => {
               to: "LAO Warehouse",
               time: currentTime,
               status: "origin",
-              timeexport: ""
+              timeexport: "",
+              uuid: batchUuid
             });
             
             // Create UUID record
-            await Uuid.create({
+            const uuidRecord = await Uuid.create({
               batch_uuid: batchUuid,
-              id_parcel: idParcel,
-              created_at: currentTime
+              id_parcel: idParcel
             });
             
             // Create SaveTime record
@@ -1271,7 +1286,7 @@ exports.importExcel = async (req, res) => {
             });
             
           } catch (error) {
-            errors.push(`Error processing parcel ${idParcel}: ${error.message}`);
+            errors.push(`Row ${i + 1}: Error processing parcel ${idParcel}: ${error.message}`);
           }
         }
       }
@@ -1363,6 +1378,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
     
     const processedData = [];
     const errors = [];
+    const seenIds = new Set(); // Track IDs seen in Excel file
     
     // Process each row starting from row 2 (index 1)
     for (let i = 1; i < jsonData.length; i++) {
@@ -1388,6 +1404,14 @@ exports.importExcelToParcelsSave = async (req, res) => {
             id_parcel !== 'undefined' && weight !== 'undefined' &&
             branch !== 'null' && tel !== 'null' && 
             id_parcel !== 'null' && weight !== 'null') {
+          
+          // Check for duplicates within Excel file - skip silently
+          if (seenIds.has(id_parcel)) {
+            console.log(`⚠️ Skipping duplicate parcel ID in Excel: ${id_parcel} (Row ${i + 1})`);
+            continue;
+          }
+          
+          seenIds.add(id_parcel);
           processedData.push({
             row: i + 1, // Actual row number in Excel
             branch,
@@ -1412,12 +1436,19 @@ exports.importExcelToParcelsSave = async (req, res) => {
     const firstRow = processedData[0];
     const firstParcel = await Parcel.findOne({
       where: { id_parcel: firstRow.id_parcel },
-      attributes: ['id_parcel', 'uuid']
+      attributes: ['id_parcel', 'uuid', 'from']
     });
     
     if (!firstParcel) {
       return res.status(404).json({ 
         message: `Parcel ID ${firstRow.id_parcel} not found in parcels table`,
+        row: firstRow.row
+      });
+    }
+    
+    if (!firstParcel.uuid) {
+      return res.status(404).json({ 
+        message: `UUID not found for parcel ID ${firstRow.id_parcel}`,
         row: firstRow.row
       });
     }
@@ -1449,16 +1480,82 @@ exports.importExcelToParcelsSave = async (req, res) => {
       });
     }
     
+    // Get from value from parcels table
+    const fromValue = firstParcel.from || "China"; // ใช้ค่า from จาก parcels table
+    
+    console.log('🔍 Debug UUID:', {
+      batchUuid: batchUuid,
+      fromValue: fromValue,
+      firstParcel: firstParcel
+    });
+    
+    // Check for duplicates in parcels_save table
+    const parcelIds = processedData.map(row => row.id_parcel);
+    console.log('🔍 Checking duplicates for parcel IDs:', parcelIds);
+    
+    const existingParcels = await ParcelDetail.findAll({
+      where: {
+        id_parcel: parcelIds
+      },
+      attributes: ['id_parcel']
+    });
+    
+    console.log('🔍 Existing parcels found:', existingParcels.map(p => p.id_parcel));
+    
+    const existingIds = new Set(existingParcels.map(p => p.id_parcel));
+    
+    // Filter out duplicates - skip silently
+    const uniqueData = processedData.filter(row => {
+      const isDuplicate = existingIds.has(row.id_parcel);
+      if (isDuplicate) {
+        console.log(`⚠️ Skipping duplicate parcel ID in database: ${row.id_parcel}`);
+      }
+      return !isDuplicate;
+    });
+    
+    console.log('🔍 Unique data after filtering:', {
+      originalCount: processedData.length,
+      uniqueCount: uniqueData.length,
+      duplicatesSkipped: processedData.length - uniqueData.length
+    });
+    
+    // If all parcels are duplicates, return success with message
+    if (uniqueData.length === 0) {
+      return res.status(200).json({
+        message: "All parcels already exist in parcels_save table - no new data imported",
+        batch_uuid: batchUuid,
+        total_rows: processedData.length,
+        duplicates_skipped: processedData.length,
+        imported_count: 0
+      });
+    }
+    
     // Bulk insert to parcels_save
-    const parcelsSaveData = processedData.map(row => ({
+    const parcelsSaveData = uniqueData.map(row => ({
       id_parcel: row.id_parcel,
-      branch: row.branch,
+      from: fromValue,
+      status: 'pending',
+      type_tel: '+856',
       tel: row.tel,
+      type: '-',
+      note: '-',
+      branch: row.branch,
+      typeParcel: '-',
+      width: 0.0,
+      length: 0.0,
+      height: 0.0,
       weight: row.weight,
-      uuid: batchUuid,
-      created_at: currentTime,
-      status: 'pending'
+      amount: 0,
+      price: 0,
+      time: currentTime,
+      uuid: batchUuid
     }));
+    
+    console.log('📦 Debug parcelsSaveData:', {
+      sample: parcelsSaveData[0],
+      batchUuid: batchUuid,
+      totalRecords: parcelsSaveData.length
+    });
     
     // Assuming parcels_save table exists, if not we need to create the model
     const insertedRecords = await ParcelDetail.bulkCreate(parcelsSaveData);
@@ -1470,6 +1567,8 @@ exports.importExcelToParcelsSave = async (req, res) => {
       message: "Import to parcels_save completed successfully",
       batch_uuid: batchUuid,
       imported_count: insertedRecords.length,
+      duplicates_skipped: processedData.length - uniqueData.length,
+      total_rows: processedData.length,
       imported_records: insertedRecords.map(record => ({
         id_parcel: record.id_parcel,
         branch: record.branch,
