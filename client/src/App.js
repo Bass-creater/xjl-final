@@ -18,6 +18,8 @@ const DataParcel = lazy(() => import("./pages/data_parcel.js"));
 const ParcelCalculator = lazy(() => import("./pages/parcelcalculate.js"));
 const ViewPdfPage = lazy(() => import("./pages/viewPdf.js"));
 const TableParcels = lazy(() => import("./pages/tableparcels.js"));
+const NormalShipping = lazy(() => import("./pages/normalShipping.js"));
+const ExpressShipping = lazy(() => import("./pages/expressShipping.js"));
 
 function App() {
   return (
@@ -25,7 +27,7 @@ function App() {
       fallback={
         <div>
           <MoonLoader
-            color="#7d00d1"
+            color="#ff6b35"
             size={80}
             style={{
               position: "absolute",
@@ -56,6 +58,8 @@ function App() {
         <Route path="/parcelcalculate" element={<ParcelCalculator />} />
         <Route path="/homeAdmin/tableparcels" element={<TableParcels />} />
         <Route path="/view-pdf/:parcelId" element={<ViewPdfPage />} />
+        <Route path="/normalShipping" element={<NormalShipping />} />
+        <Route path="/expressShipping" element={<ExpressShipping />} />
       </Routes>
     </Suspense>
   );

@@ -600,8 +600,8 @@ const DistributionDashboard = ({ onDetailsChange }) => {
               <div style={{
                 width: "100%",
                 height: "100%",
-                border: "4px solid rgba(139, 92, 246, 0.1)",
-                borderTop: "4px solid #8B5CF6",
+                border: "4px solid rgba(255, 107, 53, 0.1)",
+                borderTop: "4px solid #ff6b35",
                 borderRadius: "50%",
                 animation: "spin 1s linear infinite"
               }}></div>

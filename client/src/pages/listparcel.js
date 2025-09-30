@@ -320,7 +320,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
       <div>
         {loading ? (
           <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-            <BarLoader color="#b104e0" loading={loading} size={50} />
+            <BarLoader color="#ff6b35" loading={loading} size={50} />
           </div>
         ) : null}
       </div>

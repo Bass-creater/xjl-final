@@ -168,15 +168,15 @@ function Home() {
           </Link>
         </div>
         <div className="navfooter">
-          <ul>
+          <ul className="flex flex-wrap justify-center gap-2 sm:gap-4 text-sm sm:text-base">
             <li>
-              <a href="/">| Home</a>
+              <a href="/" className="px-2 sm:px-5 py-1 sm:py-2 text-white hover:text-orange-200 transition-colors">| Home</a>
             </li>
             <li>
-              <a href="/">| About</a>
+              <a href="/" className="px-2 sm:px-5 py-1 sm:py-2 text-white hover:text-orange-200 transition-colors">| About</a>
             </li>
             <li>
-              <a href="/">| ຕິດຕາມພັດສະດຸ</a>
+              <a href="/" className="px-2 sm:px-5 py-1 sm:py-2 text-white hover:text-orange-200 transition-colors">| ຕິດຕາມພັດສະດຸ</a>
             </li>
             <li>
               <a href="/">| ຄຳນວນຄ່າຂົນສົ່ງ</a>
@@ -184,12 +184,12 @@ function Home() {
           </ul>
         </div>
         <h1>Contact</h1>
-        <div className="w-full flex items-center justify-center mt-10 pb-4">
+        <div className="w-full flex items-center justify-center mt-2 pb-4">
           <Link
             to="https://www.facebook.com/share/1FP8T7v2SC/?mibextid=wwXIfr"
-            className="w-96 flex items-center justify-center py-4 bg-[#126cfd] rounded-xl "
+            className="flex items-center justify-center p-4 sm:p-5 bg-[#126cfd] rounded-full hover:bg-[#0d5bb8] transition-colors duration-200"
           >
-            <img src={Facebook} className="w-12 facebook" alt="facebook"></img>
+            <img src={Facebook} className="w-8 h-8 sm:w-10 sm:h-10" alt="facebook"></img>
           </Link>
         </div>
       </footer>

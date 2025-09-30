@@ -642,7 +642,7 @@ const TableParcels = () => {
                   width: "48px",
                   height: "48px",
                   border: "3px solid #e5e7eb",
-                  borderTop: "3px solid #2563eb",
+                  borderTop: "3px solid #ff6b35",
                   borderRadius: "50%",
                   animation: "spin 1s linear infinite"
                 }}></div>
