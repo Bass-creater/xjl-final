@@ -110,7 +110,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
 
     try {
       const checkCredit = await axios.post(
-        "https://localhost:1000/api/checkcredit",
+        "https://xjllao.com/v1/api/checkcredit",
         { branch: parcelData.branch }
       );
 
@@ -135,7 +135,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
       };
       console.log("Sending data", fullData);
       const response = await axios.post(
-        "https://localhost:1000/api/saveData",
+        "https://xjllao.com/v1/api/saveData",
         fullData
       );
 
@@ -179,7 +179,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await axios.get("https://localhost:1000/api/rate");
+        const response = await axios.get("https://xjllao.com/v1/api/rate");
         setRateChina(response.data.china);
         setRateThai(response.data.thai);
       } catch (error) {
