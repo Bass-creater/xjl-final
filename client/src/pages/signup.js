@@ -6,7 +6,7 @@ import Navbar from "../components/navbar";
 import Facebook from "../assets/facebook.png";
 import '../style/font-style.css'
 import axios from "axios";
-import { BarLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 function Signup() {
   const navigate = useNavigate();
@@ -58,7 +58,7 @@ function Signup() {
       <Navbar></Navbar>
       {loading && (
         <div className="loading-overlay">
-          <BarLoader color="#ff6b35" size={80} />
+          <ClipLoader color="#ff6b35" size={80} />
         </div>
       )}
       <section className="bg-gray-50 pt-14">
@@ -172,12 +172,14 @@ function Signup() {
           </ul>
         </div>
         <h1>Contact</h1>
-        <Link
-          to="https://www.facebook.com/profile.php?id=61551089827548&mibextid=LQQJ4d"
-          className="flex items-center justify-center pt-9"
-        >
-          <img src={Facebook} className="w-12" alt="facebook"></img>
-        </Link>
+        <div className="w-full flex items-center justify-center mt-2 pb-4">
+          <Link
+            to="https://www.facebook.com/share/1FP8T7v2SC/?mibextid=wwXIfr"
+            className="flex items-center justify-center p-4 sm:p-5 bg-[#126cfd] rounded-full hover:bg-[#0d5bb8] transition-colors duration-200"
+          >
+            <img src={Facebook} className="w-8 h-8 sm:w-10 sm:h-10" alt="facebook"></img>
+          </Link>
+        </div>
       </footer>
     </div>
   );
