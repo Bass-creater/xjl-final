@@ -651,36 +651,136 @@ const TableParcels = () => {
               <>
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead>
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ລຳດັບ
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ລະຫັດພັດດຸ
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ຜູ້ຮັບ
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ເບີໂທ
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ຈາກ - ໄປ
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ນ້ຳໜັກ (kg)
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ລາຄາ (LAK)
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ສະຖານະ
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ວັນທີ
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "center",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ການດຳເນີນງານ
                         </th>
                       </tr>

@@ -81,10 +81,10 @@ const swalCustomStyles = `
 
   @keyframes pulse {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-50%, -50%);
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.1);
+      transform: translate(-50%, -50%);
     }
   }
 

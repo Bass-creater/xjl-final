@@ -171,13 +171,76 @@ const Successbranch = () => {
           <p className="text-start">ຢືນຢັນການຈັດສົ່ງສິນຄ້າໃຫ້ລູກຄ້າ</p>
           <table className="w-full xl:w-[70%]">
             <thead>
-              <tr className="bg-gray-200 text-gray-800">
-                <th className="border py-2 text-center w-20">No.</th>
-                <th className="border px-4 py-2 text-start w-60">ID</th>
-                <th className="border px-4 py-2">Weight (kg)</th>
-                <th className="border px-4 py-2">Date</th>
-                <th className="border px-4 py-2">Price (LAK)</th>
-                <th className="border px-4 py-2 w-20">Amount</th>
+              <tr>
+                <th style={{
+                  padding: "12px 20px",
+                  borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                  textAlign: "center",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "rgb(55, 65, 81)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  width: "80px",
+                }}>No.</th>
+                <th style={{
+                  padding: "12px 20px",
+                  borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "rgb(55, 65, 81)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  width: "240px",
+                }}>ID</th>
+                <th style={{
+                  padding: "12px 20px",
+                  borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "rgb(55, 65, 81)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                }}>Weight (kg)</th>
+                <th style={{
+                  padding: "12px 20px",
+                  borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "rgb(55, 65, 81)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                }}>Date</th>
+                <th style={{
+                  padding: "12px 20px",
+                  borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "rgb(55, 65, 81)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                }}>Price (LAK)</th>
+                <th style={{
+                  padding: "12px 20px",
+                  borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                  background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                  textAlign: "left",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "rgb(55, 65, 81)",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                  width: "80px",
+                }}>Amount</th>
                 {/* <th className="border px-4 py-2 w-20">Submit</th> */}
               </tr>
             </thead>
