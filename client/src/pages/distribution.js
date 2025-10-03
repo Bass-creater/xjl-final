@@ -207,7 +207,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       formData.append('excelFile', selectedFile);
 
       const response = await axios.post(
-        "https://xjllao.com/v1/api/import-excel",
+        "http://localhost:1000/api/import-excel",
         formData,
         {
           headers: {
@@ -332,7 +332,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
 
     try {
       const checkCredit = await axios.post(
-        "https://xjllao.com/v1/api/checkcredit",
+        "http://localhost:1000/api/checkcredit",
         { branch: parcelData.branch }
       );
 
@@ -359,7 +359,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       };
       console.log("Sending data", fullData);
       const response = await axios.post(
-        "https://xjllao.com/v1/api/saveData",
+        "http://localhost:1000/api/saveData",
         fullData
       );
 
@@ -403,7 +403,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await axios.get("https://xjllao.com/v1/api/rate");
+        const response = await axios.get("http://localhost:1000/api/rate");
         setRateChina(response.data.china);
         setRateThai(response.data.thai);
       } catch (error) {

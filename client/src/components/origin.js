@@ -18,7 +18,7 @@ const Origin = ({ onParcelChange }) => {
     const listBranch = async () => {
       try {
         const response = await fetch(
-          "https://xjllao.com/v1/api/listBranch",
+          "http://localhost:1000/api/listBranch",
           {
             method: "POST",
           }

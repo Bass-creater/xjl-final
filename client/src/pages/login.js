@@ -28,7 +28,7 @@ function Login() {
 
     try {
       const response = await axios.post(
-        "https://xjllao.com/v1/api/login",
+        "http://localhost:1000/api/login",
         formLogin,
         { withCredentials: true }
       );

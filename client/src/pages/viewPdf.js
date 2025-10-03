@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 
 const ViewPdfPage = () => {
   const { parcelId } = useParams();
-  const pdfUrl = `https://xjllao.com/v1/pdf/${parcelId}.pdf`;
+  const pdfUrl = `http://localhost:1000/pdf/${parcelId}.pdf`;
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>

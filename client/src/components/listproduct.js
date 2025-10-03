@@ -110,7 +110,7 @@ const Listproduct = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.post(
-          "https://xjllao.com/v1/api/listproduct",
+          "http://localhost:1000/api/listproduct",
           { to: storedBranch }
         );
         const sorted = response.data.sort(
@@ -127,7 +127,7 @@ const Listproduct = () => {
   useEffect(() => {
     const fetchOrigin = async () => {
       try {
-        const response = await axios.post("https://xjllao.com/v1/api/listOrigin", {
+        const response = await axios.post("http://localhost:1000/api/listOrigin", {
           from: storedBranch,
         });
         const sortedRes = response.data.sort(
@@ -214,7 +214,7 @@ const Listproduct = () => {
       formData.append('file', selectedFile);
 
       const response = await axios.post(
-        "https://xjllao.com/v1/api/import-excel-parcels-save",
+        "http://localhost:1000/api/import-excel-parcels-save",
         formData
       );
 
@@ -334,7 +334,7 @@ const Listproduct = () => {
 
     try {
       const response = await axios.post(
-        "https://xjllao.com/v1/api/parcel/update",
+        "http://localhost:1000/api/parcel/update",
         updateParcel
       );
 
@@ -356,7 +356,7 @@ const Listproduct = () => {
 
     try {
       const response = await axios.post(
-        "https://xjllao.com/v1/api/parcel/save",
+        "http://localhost:1000/api/parcel/save",
         dataToSave
       );
 
@@ -386,7 +386,7 @@ const Listproduct = () => {
     if (pasted.length >= 5) {
       try {
         const response = await axios.post(
-          "https://xjllao.com/v1/api/parcel/searchwarehouse",
+          "http://localhost:1000/api/parcel/searchwarehouse",
           {
             id_parcel: pasted,
           }
