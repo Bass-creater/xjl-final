@@ -22,7 +22,7 @@ const InventoryStatistics = () => {
     const countParcels = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels/count",
+          "https://xjllao.com/v1/api/parcels/count",
           { from: storedBranch }
         );
         setTotalParcels(response.data.total);
@@ -37,7 +37,7 @@ const InventoryStatistics = () => {
     const countParcelsLao = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels/countwarehouse"
+          "https://xjllao.com/v1/api/parcels/countwarehouse"
         );
         setTotalParcelsLao(response.data.total);
       } catch (error) {
@@ -51,7 +51,7 @@ const InventoryStatistics = () => {
     const fetchCredit = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/credit",
+          "https://xjllao.com/v1/api/credit",
           {
             username,
           }
@@ -69,7 +69,7 @@ const InventoryStatistics = () => {
     const listParcel = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/listparcel"
+          "https://xjllao.com/v1/api/listparcel"
         );
         setListParcel(response.data);
       } catch (error) {
@@ -83,7 +83,7 @@ const InventoryStatistics = () => {
     const countParcelBranch = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels/countbranch",
+          "https://xjllao.com/v1/api/parcels/countbranch",
           {
             username: username,
           }
@@ -497,11 +497,15 @@ const InventoryStatistics = () => {
               <button
                 onClick={toggleSidebar}
                 style={{
-                  background: "none",
+                  background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
                   border: "none",
                   fontSize: "24px",
                   cursor: "pointer",
                   marginRight: "10px",
+                  padding: "8px",
+                  borderRadius: "8px",
+                  color: "white",
+                  boxShadow: "0 4px 15px rgba(251, 146, 60, 0.3)",
                 }}
               >
                 ☰

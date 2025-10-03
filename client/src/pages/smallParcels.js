@@ -46,7 +46,7 @@ const SmallParcels = () => {
   const fetchBranches = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:1000/api/listBranch', {
+      const response = await fetch('https://xjllao.com/v1/api/listBranch', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ const SmallParcels = () => {
     
     try {
       // ตรวจสอบบาร์โค้ดกับ API
-      const response = await fetch(`http://localhost:1000/api/smallParcels`, {
+      const response = await fetch(`https://xjllao.com/v1/api/smallParcels`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ const SmallParcels = () => {
       setIsLoading(true);
       
       // ส่งข้อมูลไปยัง API
-      const response = await fetch('http://localhost:1000/api/smallParcelsSave', {
+      const response = await fetch('https://xjllao.com/v1/api/smallParcelsSave', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -513,7 +513,7 @@ const SmallParcels = () => {
           <div style={{ display: "flex", alignItems: "center" }}>
             {isMobile && (
               <button onClick={toggleSidebar} style={{
-                background: "linear-gradient(135deg, #8B5CF6, #A78BFA)",
+                background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
                 border: "none",
                 fontSize: "24px",
                 cursor: "pointer",
@@ -521,7 +521,7 @@ const SmallParcels = () => {
                 padding: "12px",
                 borderRadius: "12px",
                 color: "white",
-                boxShadow: "0 8px 25px rgba(139, 92, 246, 0.3)",
+                boxShadow: "0 8px 25px rgba(251, 146, 60, 0.3)",
                 transition: "all 0.3s ease",
               }}>
                 ☰

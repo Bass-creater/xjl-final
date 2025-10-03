@@ -12,7 +12,7 @@ const Successbranch = () => {
     const fetchSuccess = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcelBranch",
+          "https://xjllao.com/v1/api/parcelBranch",
           {
             username: username,
           }
@@ -35,7 +35,7 @@ const Successbranch = () => {
     if (pasted.length >= 5) {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcel/searchsuccess",
+          "https://xjllao.com/v1/api/parcel/searchsuccess",
           {
             id_parcel: pasted,
             username: username,
@@ -54,7 +54,7 @@ const Successbranch = () => {
   const handleSuccess = async () => {
     const id_parcel = parcelResponse.id_parcel;
     try {
-      const success = await axios.post("http://localhost:1000/api/updatesuccess", {
+      const success = await axios.post("https://xjllao.com/v1/api/updatesuccess", {
         id_parcel: id_parcel,
       });
       if (success.status === 200) {

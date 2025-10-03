@@ -34,19 +34,19 @@ const swalCustomStyles = `
   }
   
   .swal2-confirm {
-    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%) !important;
+    background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%) !important;
     border: none !important;
     border-radius: 12px !important;
     padding: 12px 24px !important;
     font-weight: 700 !important;
     font-size: 16px !important;
-    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3) !important;
     transition: all 0.3s ease !important;
   }
   
   .swal2-confirm:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4) !important;
+    box-shadow: 0 12px 30px rgba(30, 64, 175, 0.4) !important;
   }
 
   /* Loading animations */
@@ -207,7 +207,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       formData.append('excelFile', selectedFile);
 
       const response = await axios.post(
-        "http://localhost:1000/api/import-excel",
+        "https://xjllao.com/v1/api/import-excel",
         formData,
         {
           headers: {
@@ -225,15 +225,15 @@ const DistributionDashboard = ({ onDetailsChange }) => {
           <div style="text-align: center; font-family: 'Inter', sans-serif;">
             <div style="margin-bottom: 20px;">
               <div style="font-size: 48px; margin-bottom: 10px;">✅</div>
-              <h2 style="color: #22C55E; margin: 0; font-size: 24px; font-weight: 700;">Import สำเร็จ!</h2>
+              <h2 style="color: #1E40AF; margin: 0; font-size: 24px; font-weight: 700;">Import สำเร็จ!</h2>
               <p style="color: #6B7280; margin: 8px 0 0 0; font-size: 14px;">Batch UUID: ${batch_uuid}</p>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-              <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%); 
-                          padding: 15px; border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.2);">
-                <div style="font-size: 24px; font-weight: 800; color: #22C55E; margin-bottom: 5px;">${imported_count}</div>
-                <div style="font-size: 14px; color: #16A34A; font-weight: 600;">นำเข้าสำเร็จ</div>
+              <div style="background: linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(30, 58, 138, 0.05) 100%); 
+                          padding: 15px; border-radius: 12px; border: 1px solid rgba(30, 64, 175, 0.2);">
+                <div style="font-size: 24px; font-weight: 800; color: #1E40AF; margin-bottom: 5px;">${imported_count}</div>
+                <div style="font-size: 14px; color: #1E3A8A; font-weight: 600;">นำเข้าสำเร็จ</div>
               </div>
               <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); 
                           padding: 15px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
@@ -247,20 +247,20 @@ const DistributionDashboard = ({ onDetailsChange }) => {
         if (imported_records && imported_records.length > 0) {
           htmlContent += `
             <div style="margin-bottom: 20px;">
-              <h3 style="color: #22C55E; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+              <h3 style="color: #1E40AF; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
                 <span style="font-size: 18px;">📦</span>
                 Parcel IDs ที่นำเข้าสำเร็จ (${imported_records.length} รายการ)
               </h3>
-              <div style="max-height: 200px; overflow-y: auto; background: rgba(34, 197, 94, 0.05); 
-                          border-radius: 8px; padding: 10px; border: 1px solid rgba(34, 197, 94, 0.1);">
+              <div style="max-height: 200px; overflow-y: auto; background: rgba(30, 64, 175, 0.05); 
+                          border-radius: 8px; padding: 10px; border: 1px solid rgba(30, 64, 175, 0.1);">
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px;">
           `;
           
           imported_records.forEach(record => {
             htmlContent += `
-              <div style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.1) 100%); 
-                          padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(34, 197, 94, 0.2); 
-                          font-size: 12px; font-weight: 600; color: #16A34A; text-align: center;">
+              <div style="background: linear-gradient(135deg, rgba(30, 64, 175, 0.15) 0%, rgba(30, 58, 138, 0.1) 100%); 
+                          padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(30, 64, 175, 0.2); 
+                          font-size: 12px; font-weight: 600; color: #1E3A8A; text-align: center;">
                 ${record.id_parcel}
               </div>
             `;
@@ -284,7 +284,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
           width: "600px",
           showConfirmButton: true,
           confirmButtonText: "ตกลง",
-          confirmButtonColor: "#22C55E",
+          confirmButtonColor: "#1E40AF",
           customClass: {
             popup: 'swal-custom-popup',
             title: 'swal-custom-title',
@@ -332,7 +332,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
 
     try {
       const checkCredit = await axios.post(
-        "http://localhost:1000/api/checkcredit",
+        "https://xjllao.com/v1/api/checkcredit",
         { branch: parcelData.branch }
       );
 
@@ -359,7 +359,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       };
       console.log("Sending data", fullData);
       const response = await axios.post(
-        "http://localhost:1000/api/saveData",
+        "https://xjllao.com/v1/api/saveData",
         fullData
       );
 
@@ -403,7 +403,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/api/rate");
+        const response = await axios.get("https://xjllao.com/v1/api/rate");
         setRateChina(response.data.china);
         setRateThai(response.data.thai);
       } catch (error) {
@@ -1138,7 +1138,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
               <button
                 onClick={toggleSidebar}
                 style={{
-                  background: "linear-gradient(135deg, #8B5CF6, #A78BFA)",
+                  background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
                   border: "none",
                   fontSize: "24px",
                   cursor: "pointer",
@@ -1298,15 +1298,15 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                   right: "0",
                   width: "150px",
                   height: "150px",
-                  background: "radial-gradient(circle, rgba(34, 197, 94, 0.02) 0%, transparent 70%)",
+                  background: "radial-gradient(circle, rgba(30, 64, 175, 0.02) 0%, transparent 70%)",
                   zIndex: 1,
                 }} />
                 
                 <div style={{
-                  background: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
+                  background: "linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%)",
                   padding: "25px 30px",
                   borderRadius: "24px 24px 0 0",
-                  boxShadow: "0 8px 25px rgba(34, 197, 94, 0.2)",
+                  boxShadow: "0 8px 25px rgba(30, 64, 175, 0.2)",
                   position: "relative",
                   zIndex: 2,
                 }}>
@@ -1366,9 +1366,9 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                       padding: "25px",
                       background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
                       borderRadius: "20px",
-                      border: "1px solid rgba(34, 197, 94, 0.12)",
+                      border: "1px solid rgba(30, 64, 175, 0.12)",
                       transition: "all 0.3s ease",
-                      boxShadow: "0 8px 25px rgba(34, 197, 94, 0.08)",
+                      boxShadow: "0 8px 25px rgba(30, 64, 175, 0.08)",
                       position: "relative",
                       overflow: "hidden",
                     }}>
@@ -1379,14 +1379,14 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         left: "0",
                         width: "4px",
                         height: "100%",
-                        background: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
+                        background: "linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%)",
                         borderRadius: "0 2px 2px 0",
                       }} />
                       
                       <label style={{
                         marginBottom: "15px",
                         fontWeight: "700",
-                        color: "#16A34A",
+                        color: "#1E3A8A",
                         fontSize: "17px",
                         display: "flex",
                         alignItems: "center",
@@ -1395,7 +1395,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         <span style={{
                           width: "32px",
                           height: "32px",
-                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.12) 100%)",
+                          background: "linear-gradient(135deg, rgba(30, 64, 175, 0.15) 0%, rgba(30, 58, 138, 0.12) 100%)",
                           borderRadius: "8px",
                           display: "flex",
                           alignItems: "center",
@@ -1414,21 +1414,21 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           width: "100%",
                           padding: "15px",
                           borderRadius: "12px",
-                          border: "2px solid rgba(34, 197, 94, 0.2)",
+                          border: "2px solid rgba(30, 64, 175, 0.2)",
                           backgroundColor: "#ffffff",
                           fontSize: "16px",
                           fontWeight: "500",
                           transition: "all 0.3s ease",
-                          boxShadow: "0 4px 15px rgba(34, 197, 94, 0.1)",
+                          boxShadow: "0 4px 15px rgba(30, 64, 175, 0.1)",
                           cursor: "pointer",
                         }}
                         onFocus={(e) => {
-                          e.target.style.border = "2px solid #22C55E";
-                          e.target.style.boxShadow = "0 8px 25px rgba(34, 197, 94, 0.2)";
+                          e.target.style.border = "2px solid #1E40AF";
+                          e.target.style.boxShadow = "0 8px 25px rgba(30, 64, 175, 0.2)";
                         }}
                         onBlur={(e) => {
-                          e.target.style.border = "2px solid rgba(34, 197, 94, 0.2)";
-                          e.target.style.boxShadow = "0 4px 15px rgba(34, 197, 94, 0.1)";
+                          e.target.style.border = "2px solid rgba(30, 64, 175, 0.2)";
+                          e.target.style.boxShadow = "0 4px 15px rgba(30, 64, 175, 0.1)";
                         }}
                       />
                       
@@ -1436,15 +1436,15 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         <div style={{
                           marginTop: "15px",
                           padding: "15px",
-                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)",
+                          background: "linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(30, 58, 138, 0.05) 100%)",
                           borderRadius: "12px",
-                          border: "1px solid rgba(34, 197, 94, 0.2)",
+                          border: "1px solid rgba(30, 64, 175, 0.2)",
                         }}>
                           <div style={{
                             display: "flex",
                             alignItems: "center",
                             gap: "10px",
-                            color: "#16A34A",
+                            color: "#1E3A8A",
                             fontWeight: "600",
                           }}>
                             <span style={{ fontSize: "18px" }}>✅</span>
@@ -1466,9 +1466,9 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                       padding: "25px",
                       background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
                       borderRadius: "20px",
-                      border: "1px solid rgba(34, 197, 94, 0.12)",
+                      border: "1px solid rgba(30, 64, 175, 0.12)",
                       transition: "all 0.3s ease",
-                      boxShadow: "0 8px 25px rgba(34, 197, 94, 0.08)",
+                      boxShadow: "0 8px 25px rgba(30, 64, 175, 0.08)",
                       position: "relative",
                       overflow: "hidden",
                       display: "flex",
@@ -1483,7 +1483,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         left: "0",
                         width: "4px",
                         height: "100%",
-                        background: "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)",
+                        background: "linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%)",
                         borderRadius: "0 2px 2px 0",
                       }} />
                       
@@ -1497,7 +1497,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         }}>📊</div>
                         <h3 style={{
                           margin: "0 0 8px 0",
-                          color: "#16A34A",
+                          color: "#1E3A8A",
                           fontSize: "18px",
                           fontWeight: "700",
                         }}>
@@ -1516,38 +1516,40 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         onClick={handleImportExcel}
                         disabled={!selectedFile || importLoading}
                         style={{
-                          padding: "15px 30px",
+                          padding: "16px 32px",
                           background: selectedFile && !importLoading 
-                            ? "linear-gradient(135deg, #22C55E 0%, #16A34A 100%)" 
-                            : "linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "16px",
-                          fontSize: "16px",
-                          fontWeight: "700",
+                            ? "linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%)" 
+                            : "linear-gradient(135deg, #E5E7EB 0%, #D1D5DB 100%)",
+                          color: selectedFile && !importLoading ? "white" : "#9CA3AF",
+                          border: selectedFile && !importLoading ? "none" : "1px solid #E5E7EB",
+                          borderRadius: "12px",
+                          fontSize: "14px",
+                          fontWeight: "600",
                           cursor: selectedFile && !importLoading ? "pointer" : "not-allowed",
-                          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                           boxShadow: selectedFile && !importLoading 
-                            ? "0 10px 25px rgba(34, 197, 94, 0.25)" 
-                            : "0 4px 15px rgba(156, 163, 175, 0.2)",
+                            ? "0 4px 12px rgba(30, 64, 175, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1)" 
+                            : "0 2px 4px rgba(0, 0, 0, 0.05)",
                           position: "relative",
                           overflow: "hidden",
-                          minWidth: "150px",
+                          minWidth: "160px",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          gap: "8px",
+                          gap: "10px",
+                          letterSpacing: "0.025em",
+                          textTransform: "uppercase",
                         }}
                         onMouseOver={(e) => {
                           if (selectedFile && !importLoading) {
                             e.target.style.transform = "translateY(-2px) scale(1.02)";
-                            e.target.style.boxShadow = "0 12px 30px rgba(34, 197, 94, 0.3)";
+                            e.target.style.boxShadow = "0 12px 30px rgba(30, 64, 175, 0.3)";
                           }
                         }}
                         onMouseOut={(e) => {
                           if (selectedFile && !importLoading) {
                             e.target.style.transform = "translateY(0) scale(1)";
-                            e.target.style.boxShadow = "0 10px 25px rgba(34, 197, 94, 0.25)";
+                            e.target.style.boxShadow = "0 10px 25px rgba(30, 64, 175, 0.25)";
                           }
                         }}
                       >
@@ -1947,15 +1949,15 @@ const DistributionDashboard = ({ onDetailsChange }) => {
 
                       <div style={{
                         padding: "20px",
-                        background: "linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(22, 163, 74, 0.03) 100%)",
+                        background: "linear-gradient(135deg, rgba(30, 64, 175, 0.05) 0%, rgba(30, 58, 138, 0.03) 100%)",
                         borderRadius: "16px",
-                        border: "1px solid rgba(34, 197, 94, 0.1)",
+                        border: "1px solid rgba(30, 64, 175, 0.1)",
                         transition: "all 0.3s ease",
                       }}>
                         <label style={{
                           ...labelStyle,
                           fontSize: "16px",
-                          color: "#22C55E",
+                          color: "#1E40AF",
                           fontWeight: "700",
                           marginBottom: "12px",
                         }}>⚖️ ນ້ຳໜັກ(kg) :</label>
@@ -1968,20 +1970,20 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           style={{
                             ...inputStyle,
                             background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
-                            border: "2px solid rgba(34, 197, 94, 0.2)",
+                            border: "2px solid rgba(30, 64, 175, 0.2)",
                             borderRadius: "12px",
                             padding: "15px",
                             fontSize: "16px",
                             transition: "all 0.3s ease",
-                            boxShadow: "0 4px 15px rgba(34, 197, 94, 0.1)",
+                            boxShadow: "0 4px 15px rgba(30, 64, 175, 0.1)",
                           }}
                           onFocus={(e) => {
-                            e.target.style.border = "2px solid #22C55E";
-                            e.target.style.boxShadow = "0 8px 25px rgba(34, 197, 94, 0.2)";
+                            e.target.style.border = "2px solid #1E40AF";
+                            e.target.style.boxShadow = "0 8px 25px rgba(30, 64, 175, 0.2)";
                           }}
                           onBlur={(e) => {
-                            e.target.style.border = "2px solid rgba(34, 197, 94, 0.2)";
-                            e.target.style.boxShadow = "0 4px 15px rgba(34, 197, 94, 0.1)";
+                            e.target.style.border = "2px solid rgba(30, 64, 175, 0.2)";
+                            e.target.style.boxShadow = "0 4px 15px rgba(30, 64, 175, 0.1)";
                           }}
                         />
                       </div>
@@ -2129,16 +2131,16 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         <div style={{
                           gridColumn: "1 / -1",
                           padding: "25px",
-                          background: "linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.05) 100%)",
+                          background: "linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(30, 58, 138, 0.05) 100%)",
                           borderRadius: "20px",
-                          border: "2px solid rgba(34, 197, 94, 0.2)",
+                          border: "2px solid rgba(30, 64, 175, 0.2)",
                           marginTop: "20px",
-                          boxShadow: "0 15px 35px rgba(34, 197, 94, 0.1)",
+                          boxShadow: "0 15px 35px rgba(30, 64, 175, 0.1)",
                         }}>
                           <h3 style={{
                             fontSize: "20px",
                             fontWeight: "700",
-                            color: "#16A34A",
+                            color: "#1E3A8A",
                             marginBottom: "20px",
                             textAlign: "center",
                           }}>
@@ -2153,7 +2155,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                         padding: "20px",
                               background: "linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.8) 100%)",
                               borderRadius: "16px",
-                              border: "1px solid rgba(34, 197, 94, 0.2)",
+                              border: "1px solid rgba(30, 64, 175, 0.2)",
                         textAlign: "center",
                             }}>
                               <div style={{ fontSize: "14px", color: "#6B7280", marginBottom: "8px" }}>ລາຄາເດີມ</div>
@@ -2180,14 +2182,14 @@ const DistributionDashboard = ({ onDetailsChange }) => {
 
                       <div style={{ 
                               padding: "20px",
-                              background: "linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%)",
+                              background: "linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(30, 58, 138, 0.1) 100%)",
                               borderRadius: "16px",
-                              border: "2px solid #22C55E",
+                              border: "2px solid #1E40AF",
                               textAlign: "center",
-                              boxShadow: "0 8px 25px rgba(34, 197, 94, 0.2)",
+                              boxShadow: "0 8px 25px rgba(30, 64, 175, 0.2)",
                             }}>
-                              <div style={{ fontSize: "14px", color: "#16A34A", marginBottom: "8px", fontWeight: "600" }}>ລາຄາສຸດທ້າຍ</div>
-                              <div style={{ fontSize: "28px", fontWeight: "900", color: "#16A34A" }}>
+                              <div style={{ fontSize: "14px", color: "#1E3A8A", marginBottom: "8px", fontWeight: "600" }}>ລາຄາສຸດທ້າຍ</div>
+                              <div style={{ fontSize: "28px", fontWeight: "900", color: "#1E3A8A" }}>
                                 {getDisplayPrice()} ກີບ
                         </div>
                             </div>

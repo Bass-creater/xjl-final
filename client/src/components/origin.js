@@ -18,16 +18,23 @@ const Origin = ({ onParcelChange }) => {
     const listBranch = async () => {
       try {
         const response = await fetch(
-          "http://localhost:1000/api/listBranch",
+          "https://xjllao.com/v1/api/listBranch",
           {
             method: "POST",
           }
         );
         const data = await response.json();
 
-        setBranches(data);
+        // ตรวจสอบว่า data เป็น array หรือไม่
+        if (Array.isArray(data)) {
+          setBranches(data);
+        } else {
+          console.error("API returned non-array data:", data);
+          setBranches([]);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching branches:", error);
+        setBranches([]);
       }
     };
 
@@ -192,7 +199,7 @@ const Origin = ({ onParcelChange }) => {
                 <option value="" disabled>
                   ເລືອກສາຂາ
                 </option>
-                {branches.map((branch, index) => (
+                {Array.isArray(branches) && branches.map((branch, index) => (
                   <option key={index} value={branch.branch}>
                     {branch.info}
                   </option>

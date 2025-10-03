@@ -110,7 +110,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
 
     try {
       const checkCredit = await axios.post(
-        "http://localhost:1000/api/checkcredit",
+        "https://xjllao.com/v1/api/checkcredit",
         { branch: parcelData.branch }
       );
 
@@ -135,7 +135,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
       };
       console.log("Sending data", fullData);
       const response = await axios.post(
-        "http://localhost:1000/api/saveData",
+        "https://xjllao.com/v1/api/saveData",
         fullData
       );
 
@@ -179,7 +179,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await axios.get("http://localhost:1000/api/rate");
+        const response = await axios.get("https://xjllao.com/v1/api/rate");
         setRateChina(response.data.china);
         setRateThai(response.data.thai);
       } catch (error) {
@@ -656,11 +656,15 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
               <button
                 onClick={toggleSidebar}
                 style={{
-                  background: "none",
+                  background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
                   border: "none",
                   fontSize: "24px",
                   cursor: "pointer",
                   marginRight: "10px",
+                  padding: "8px",
+                  borderRadius: "8px",
+                  color: "white",
+                  boxShadow: "0 4px 15px rgba(251, 146, 60, 0.3)",
                 }}
               >
                 ☰

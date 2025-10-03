@@ -19,7 +19,7 @@ const Spread = () => {
     const fetchParcels = async () => {
       try {
         const response = await axios.post(
-          "http://localhost:1000/api/parcels",
+          "https://xjllao.com/v1/api/parcels",
           {
             from: storedBranch,
           }
@@ -47,7 +47,7 @@ const Spread = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:1000/api/parcel",
+        "https://xjllao.com/v1/api/parcel",
         formID
       );
       console.log(response.data);
@@ -103,7 +103,7 @@ const Spread = () => {
 
     try {
       await axios.post(
-        "http://localhost:1000/api/update-parcel-status",
+        "https://xjllao.com/v1/api/update-parcel-status",
         {
           parcelIds: parcelIds,
         }
@@ -185,7 +185,36 @@ const Spread = () => {
           />
           <button
             type="submit"
-            className="bg-white rounded-lg px-4 text-[#732dcf] font-semibold text-md duration-200 hover:px-6 hover:duration-200"
+            style={{
+              background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+              color: "#FB923C",
+              border: "1px solid rgba(251, 146, 60, 0.3)",
+              borderRadius: "10px",
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: "600",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: "0 2px 8px rgba(251, 146, 60, 0.15)",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              position: "relative",
+              overflow: "hidden",
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = "translateY(-1px)";
+              e.target.style.background = "linear-gradient(135deg, #FB923C 0%, #F97316 100%)";
+              e.target.style.color = "white";
+              e.target.style.border = "1px solid #FB923C";
+              e.target.style.boxShadow = "0 4px 12px rgba(251, 146, 60, 0.25)";
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = "translateY(0)";
+              e.target.style.background = "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)";
+              e.target.style.color = "#FB923C";
+              e.target.style.border = "1px solid rgba(251, 146, 60, 0.3)";
+              e.target.style.boxShadow = "0 2px 8px rgba(251, 146, 60, 0.15)";
+            }}
           >
             save
           </button>

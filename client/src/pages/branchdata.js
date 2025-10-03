@@ -379,11 +379,15 @@ const BranchDashboard = () => {
               <button
                 onClick={toggleSidebar}
                 style={{
-                  background: "none",
+                  background: "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
                   border: "none",
                   fontSize: "24px",
                   cursor: "pointer",
                   marginRight: "10px",
+                  padding: "8px",
+                  borderRadius: "8px",
+                  color: "white",
+                  boxShadow: "0 4px 15px rgba(251, 146, 60, 0.3)",
                 }}
               >
                 ☰
