@@ -72,10 +72,10 @@ const swalCustomStyles = `
 
   @keyframes pulse {
     0%, 100% {
-      transform: translate(-50%, -50%) scale(1);
+      transform: translate(-50%, -50%);
     }
     50% {
-      transform: translate(-50%, -50%) scale(1.1);
+      transform: translate(-50%, -50%);
     }
   }
 
@@ -442,8 +442,8 @@ const Listproduct = () => {
               <div style={{
                 width: "100%",
                 height: "100%",
-                border: "4px solid rgba(0, 123, 255, 0.1)",
-                borderTop: "4px solid #007bff",
+                border: "4px solid rgba(255, 107, 53, 0.1)",
+                borderTop: "4px solid #ff6b35",
                 borderRadius: "50%",
                 animation: "spin 1s linear infinite"
               }}></div>

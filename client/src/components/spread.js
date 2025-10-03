@@ -135,6 +135,31 @@ const Spread = () => {
 
   return (
     <div>
+      <style>{`
+        .overflow-auto::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+        
+        .overflow-auto::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 8px;
+        }
+        
+        .overflow-auto::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 8px;
+          border: 2px solid #f1f5f9;
+        }
+        
+        .overflow-auto::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+        
+        .overflow-auto::-webkit-scrollbar-corner {
+          background: #f1f5f9;
+        }
+      `}</style>
       {/* <h1>Total Parcels: {totalParcels}</h1> */}
       <div className="bg-[#FB923C] px-6 py-4 pb-6 rounded-lg">
         <label className="text-white font-semibold">
@@ -170,7 +195,26 @@ const Spread = () => {
       <div className="flex items-end justify-end">
         <button
           onClick={handleSelectAll}
-          className="px-4 py-2 bg-orange-600 text-white rounded mt-6 text-sm"
+          style={{
+            padding: "12px 24px",
+            background: "#3b82f6",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "500",
+            transition: "all 0.2s ease",
+            marginTop: "24px",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.background = "#2563eb";
+            e.target.style.transform = "translateY(-1px)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.background = "#3b82f6";
+            e.target.style.transform = "translateY(0)";
+          }}
         >
           {selectedParcels.size === parcels.length
             ? "ຍົກເລີກການເລືອກທັງໝົດ"
@@ -178,62 +222,218 @@ const Spread = () => {
         </button>
       </div>
 
-      <table className="mt-2 w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-300">
-          <tr>
-            <th scope="col" className="px-6 py-3 w-32">
-              No
-            </th>
-            <th scope="col" className="px-6 py-3">
-              ID PARCEL
-            </th>
-            <th scope="col" className="px-6 py-3">
-              TO
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Send
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {parcels.length > 0 ? (
-            parcels
-              .filter((parcel) => parcel.status === "origin")
-              .map((parcel, index) => (
-                <tr className="bg-white border-b" key={parcel.id_parcel}>
-                  {/* แสดงลำดับ */}
-                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    {index + 1}
-                  </td>
-                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                    {parcel.id_parcel}
-                  </td>
-                  <td className="px-6 py-4 text-gray-900">{parcel.to}</td>
-                  <td className="px-6 py-4 text-gray-900">
-                    <input
-                      type="checkbox"
-                      checked={selectedParcels.has(parcel.id_parcel)}
-                      onChange={(event) =>
-                        handleParcelSelect(event, parcel.id_parcel)
-                      }
-                    />
-                  </td>
-                </tr>
-              ))
-          ) : (
+      <div style={{
+        background: "white",
+        borderRadius: "20px",
+        boxShadow: "0 10px 30px rgba(251, 146, 60, 0.15)",
+        border: "1px solid rgba(251, 146, 60, 0.1)",
+        overflow: "hidden"
+      }}>
+        <div 
+          className="overflow-auto"
+          style={{
+            maxHeight: "70vh",
+            borderRadius: "16px",
+            scrollbarWidth: "thin",
+            scrollbarColor: "#cbd5e1 #f1f5f9"
+          }}
+        >
+          <table className="w-full" style={{
+            minWidth: "600px",
+            borderCollapse: "collapse",
+            borderSpacing: "0"
+          }}>
+          <thead style={{
+            position: "sticky",
+            top: "0",
+            zIndex: "10"
+          }}>
             <tr>
-              <td colSpan="4" className="px-6 py-4 text-center">
-                No parcels found with status 'origin'.
-              </td>
+              <th style={{
+                padding: "12px 20px",
+                borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                textAlign: "left",
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "rgb(55, 65, 81)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}>
+                NO.
+              </th>
+              <th style={{
+                padding: "12px 20px",
+                borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                textAlign: "left",
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "rgb(55, 65, 81)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}>
+                ID PARCEL
+              </th>
+              <th style={{
+                padding: "12px 20px",
+                borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                textAlign: "left",
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "rgb(55, 65, 81)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}>
+                TO
+              </th>
+              <th style={{
+                padding: "12px 20px",
+                borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                textAlign: "center",
+                fontSize: "12px",
+                fontWeight: "600",
+                color: "rgb(55, 65, 81)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}>
+                SEND
+              </th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {parcels.length > 0 ? (
+              parcels
+                .filter((parcel) => parcel.status === "origin")
+                .map((parcel, index) => (
+                  <tr
+                    key={parcel.id_parcel}
+                    style={{
+                      backgroundColor: "white",
+                      transition: "all 0.3s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "rgba(251, 146, 60, 0.05)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "white";
+                    }}
+                  >
+                    <td style={{
+                      padding: "16px 24px",
+                      backgroundColor: "white",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      borderTop: "none",
+                      borderLeft: "none",
+                      borderRight: "none",
+                      borderBottom: "none"
+                    }}>
+                      {index + 1}
+                    </td>
+                    <td style={{
+                      padding: "16px 24px",
+                      backgroundColor: "white",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      borderTop: "none",
+                      borderLeft: "none",
+                      borderRight: "none",
+                      borderBottom: "none"
+                    }}>
+                      {parcel.id_parcel}
+                    </td>
+                    <td style={{
+                      padding: "16px 24px",
+                      backgroundColor: "white",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      borderTop: "none",
+                      borderLeft: "none",
+                      borderRight: "none",
+                      borderBottom: "none"
+                    }}>
+                      {parcel.to}
+                    </td>
+                    <td style={{
+                      padding: "16px 24px",
+                      backgroundColor: "white",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                      textAlign: "center",
+                      borderTop: "none",
+                      borderLeft: "none",
+                      borderRight: "none",
+                      borderBottom: "none"
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={selectedParcels.has(parcel.id_parcel)}
+                        onChange={(event) =>
+                          handleParcelSelect(event, parcel.id_parcel)
+                        }
+                        style={{
+                          width: "18px",
+                          height: "18px",
+                          accentColor: "#FB923C",
+                          cursor: "pointer"
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))
+            ) : (
+              <tr>
+                <td colSpan="4" style={{
+                  padding: "16px 24px",
+                  backgroundColor: "white",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#6B7280",
+                  textAlign: "center",
+                  borderTop: "none",
+                  borderLeft: "none",
+                  borderRight: "none",
+                  borderBottom: "none"
+                }}>
+                  No parcels found with status 'origin'.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+        </div>
+      </div>
 
       <div className="flex items-end justify-end">
         <button
           onClick={handleSubmit}
-          className="px-4 py-2 bg-orange-600 text-white rounded mt-6 text-sm"
+          style={{
+            padding: "12px 24px",
+            background: "#10b981",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "500",
+            transition: "all 0.2s ease",
+            marginTop: "24px",
+          }}
+          onMouseOver={(e) => {
+            e.target.style.background = "#059669";
+            e.target.style.transform = "translateY(-1px)";
+          }}
+          onMouseOut={(e) => {
+            e.target.style.background = "#10b981";
+            e.target.style.transform = "translateY(0)";
+          }}
         >
           Update
         </button>

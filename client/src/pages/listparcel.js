@@ -11,7 +11,7 @@ import ParcelWait from "../components/parcelwaitsave";
 // import { Sidebar } from "../components/sidebar";
 import "../style/font-style.css";
 import axios from "axios";
-import { BarLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 const ListParcelDashboard = ({ onDetailsChange }) => {
   const navigate = useNavigate();
@@ -320,7 +320,7 @@ const ListParcelDashboard = ({ onDetailsChange }) => {
       <div>
         {loading ? (
           <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50">
-            <BarLoader color="#b104e0" loading={loading} size={50} />
+            <ClipLoader color="#ff6b35" loading={loading} size={80} />
           </div>
         ) : null}
       </div>

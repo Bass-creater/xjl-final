@@ -592,7 +592,7 @@ const InventoryStatistics = () => {
               <div
                 style={{
                   ...cardStyle,
-                  background: "linear-gradient(135deg, #FEF3C7 0%, #FDE68A 30%, #F59E0B 70%, #D97706 100%)",
+                  background: "linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 30%, #FED7AA 70%, #FDBA74 100%)",
                   minHeight: "150px",
                   position: "relative",
                   overflow: "hidden",
@@ -663,7 +663,7 @@ const InventoryStatistics = () => {
                 <div
                   style={{
                     ...cardStyle,
-                    background: "linear-gradient(135deg, #A7F3D0 0%, #6EE7B7 50%, #34D399 100%)",
+                    background: "linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 30%, #A7F3D0 70%, #6EE7B7 100%)",
                     flex: 1,
                     minWidth: "200px",
                     position: "relative",
@@ -681,15 +681,15 @@ const InventoryStatistics = () => {
                     borderRadius: "10px",
                   }} />
                   <div style={{ position: "relative", zIndex: 2 }}>
-                    <h2 style={{...titleStyle, color: "#6B7280"}}>ເຄຣດິດ</h2>
+                    <h2 style={titleStyle}>ເຄຣດິດ</h2>
 
                     <div style={valueContainerStyle}>
-                      <span style={{...valueStyle, color: "#6B7280"}}>
+                      <span style={valueStyle}>
                         {credit !== null && typeof credit !== "object"
                           ? Number(credit).toLocaleString("en-US")
                           : "Loading..."}
                       </span>
-                      <span style={{...unitStyle, color: "#6B7280"}}>LAK</span>
+                      <span style={unitStyle}>LAK</span>
                     </div>
                   </div>
                 </div>
@@ -737,115 +737,150 @@ const InventoryStatistics = () => {
                 </h2>
               </div>
               {/* Data Table */}
-              <table className="min-w-full leading-normal">
-                <thead>
-                  <tr style={{
-                    background: "linear-gradient(135deg, #FED7AA 0%, #FDBA74 50%, #FB923C 100%)",
-                    borderBottom: "2px solid rgba(254, 215, 170, 0.4)",
-                    boxShadow: "0 2px 4px rgba(254, 215, 170, 0.2)",
-                  }}>
+              <div style={{
+                background: "white",
+                borderRadius: "15px",
+                boxShadow: "0 8px 25px rgba(0, 0, 0, 0.12)",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+                overflow: "hidden"
+              }}>
+                <table className="min-w-full leading-normal">
+                  <thead>
+                    <tr style={{
+                      background: "linear-gradient(135deg, #FED7AA 0%, #FDBA74 50%, #FB923C 100%)",
+                      borderRadius: "15px 15px 0 0",
+                      boxShadow: "0 4px 12px rgba(251, 146, 60, 0.2)",
+                    }}>
                     {/* คอลัมน์ลำดับ */}
                     <th style={{
-                      padding: "12px 20px",
-                      color: "#92400E",
+                      padding: "16px 24px",
+                      color: "#374151",
                       textAlign: "left",
-                      fontSize: "12px",
-                      fontWeight: "600",
+                      fontSize: "13px",
+                      fontWeight: "700",
                       textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                      letterSpacing: "0.1em",
+                      borderRight: "none",
                     }}>
-                      No
+                      No.
                     </th>
                     <th style={{
-                      padding: "12px 20px",
-                      color: "#92400E",
+                      padding: "16px 24px",
+                      color: "#374151",
                       textAlign: "left",
-                      fontSize: "12px",
-                      fontWeight: "600",
+                      fontSize: "13px",
+                      fontWeight: "700",
                       textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                      letterSpacing: "0.1em",
+                      borderRight: "none",
                     }}>
-                      Name
+                      ID
                     </th>
                     <th style={{
-                      padding: "12px 20px",
-                      color: "#92400E",
+                      padding: "16px 24px",
+                      color: "#374151",
                       textAlign: "left",
-                      fontSize: "12px",
-                      fontWeight: "600",
+                      fontSize: "13px",
+                      fontWeight: "700",
                       textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                      letterSpacing: "0.1em",
+                      borderRight: "none",
+                    }}>
+                      STATUS
+                    </th>
+                    <th style={{
+                      padding: "16px 24px",
+                      color: "#374151",
+                      textAlign: "left",
+                      fontSize: "13px",
+                      fontWeight: "700",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      borderRight: "none",
                     }}>
                       FROM
                     </th>
                     <th style={{
-                      padding: "12px 20px",
-                      color: "#92400E",
-                      textAlign: "center",
-                      fontSize: "12px",
-                      fontWeight: "600",
+                      padding: "16px 24px",
+                      color: "#374151",
+                      textAlign: "left",
+                      fontSize: "13px",
+                      fontWeight: "700",
                       textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                      borderRight: "1px solid rgba(146, 64, 14, 0.1)",
+                      letterSpacing: "0.1em",
                     }}>
-                      Status
-                    </th>
-                    <th style={{
-                      padding: "12px 20px",
-                      color: "#92400E",
-                      textAlign: "right",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.05em",
-                    }}>
-                      Time
+                      TIME
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {listParcel &&
                     listParcel.map((product, index) => (
-                      <tr key={product.id_parcel} className="hover:bg-gray-100">
+                      <tr key={product.id_parcel} style={{ 
+                        transition: "background-color 0.2s ease",
+                        borderBottom: "1px solid rgba(0, 0, 0, 0.05)"
+                      }}>
                         {/* ลำดับ */}
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          <p className="text-gray-900 whitespace-no-wrap">
-                            {index + 1}
-                          </p>
+                        <td style={{
+                          padding: "16px 24px",
+                          backgroundColor: "white",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#374151"
+                        }}>
+                          {index + 1}
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          <p className="text-gray-900 whitespace-no-wrap">
-                            {product.id_parcel}
-                          </p>
+                        <td style={{
+                          padding: "16px 24px",
+                          backgroundColor: "white",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#374151"
+                        }}>
+                          {product.id_parcel}
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          <p className="text-gray-900 whitespace-no-wrap">
-                            {product.from}
-                          </p>
-                        </td>
-                        <td className="text-center px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                          <span className="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
-                            <span
-                              aria-hidden
-                              className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-                            ></span>
-                            {product.status ? (
-                              <span className="relative">ພັດສະດຸຢູ່ສາງ</span>
-                            ) : null}
+                        <td style={{
+                          padding: "16px 24px",
+                          backgroundColor: "white",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#374151"
+                        }}>
+                          <span style={{
+                            display: "inline-block",
+                            padding: "4px 12px",
+                            background: product.status ? "linear-gradient(135deg, #10B981 0%, #059669 100%)" : "linear-gradient(135deg, #EF4444 0%, #DC2626 100%)",
+                            color: "white",
+                            borderRadius: "12px",
+                            fontSize: "12px",
+                            fontWeight: "600"
+                          }}>
+                            {product.status ? "ພັດສະດຸຢູ່ສາງ" : "ລໍຖ້າ"}
                           </span>
                         </td>
-                        <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm text-end">
-                          <p className="text-gray-900 whitespace-no-wrap">
-                            {product.time}
-                          </p>
+                        <td style={{
+                          padding: "16px 24px",
+                          backgroundColor: "white",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#374151"
+                        }}>
+                          {product.from}
+                        </td>
+                        <td style={{
+                          padding: "16px 24px",
+                          backgroundColor: "white",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#374151"
+                        }}>
+                          {product.time}
                         </td>
                       </tr>
                     ))}
                 </tbody>
-              </table>
+                </table>
+              </div>
             </div>
           ) : null}
         </div>
@@ -855,19 +890,27 @@ const InventoryStatistics = () => {
 };
 
 const cardStyle = {
-  padding: "20px",
-  borderRadius: "10px",
-  color: "#6B7280",
-  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+  padding: "28px",
+  borderRadius: "20px",
+  color: "#1F2937",
+  boxShadow: "0 10px 40px rgba(0, 0, 0, 0.08), 0 4px 20px rgba(0, 0, 0, 0.04)",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
+  border: "1px solid rgba(0, 0, 0, 0.03)",
+  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+  position: "relative",
+  overflow: "hidden",
+  background: "linear-gradient(135deg, #ffffff 0%, #fafafa 100%)",
 };
 
 const titleStyle = {
-  fontSize: "28px",
-  fontWeight: "bold",
-  // marginBottom: "10px",
+  fontSize: "22px",
+  fontWeight: "700",
+  color: "#1F2937",
+  marginBottom: "8px",
+  lineHeight: "1.3",
+  letterSpacing: "-0.02em",
 };
 
 const valueContainerStyle = {
@@ -876,10 +919,30 @@ const valueContainerStyle = {
   gap: "10px",
 };
 
-const valueStyle = { fontSize: "48px", fontWeight: "bold" };
+const valueStyle = { 
+  fontSize: "44px", 
+  fontWeight: "800", 
+  color: "#1F2937",
+  lineHeight: "1",
+  letterSpacing: "-0.03em",
+};
 
-const unitStyle = { fontSize: "28px" };
+const unitStyle = { 
+  fontSize: "18px", 
+  fontWeight: "600", 
+  color: "#1F2937",
+  marginLeft: "6px",
+  opacity: 0.8,
+};
 
-const noteStyle = { fontSize: "12px", fontStyle: "italic", marginTop: "10px" };
+const noteStyle = { 
+  fontSize: "11px", 
+  fontStyle: "normal", 
+  marginTop: "6px", 
+  color: "#1F2937",
+  opacity: 0.7,
+  fontWeight: "500",
+  lineHeight: "1.4",
+};
 
 export default InventoryStatistics;
