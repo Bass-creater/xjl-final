@@ -1534,7 +1534,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
     const parcelsSaveData = uniqueData.map(row => ({
       id_parcel: row.id_parcel,
       from: fromValue,
-      status: 'pending',
+      status: 'accepted',
       type_tel: '+856',
       tel: row.tel,
       type: '-',
