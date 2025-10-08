@@ -59,9 +59,13 @@ exports.idParcel = async (req, res) => {
       .tz("Asia/Vientiane")
       .format("YYYY-MM-DD HH:mm:ss");
 
+    // Generate UUID for this parcel
+    const parcelUuid = uuidv4();
+
     await Parcel.create({
       id_parcel,
       from,
+      uuid: parcelUuid
     });
 
     await SaveTime.create({
@@ -1357,20 +1361,13 @@ exports.importExcelToParcelsSave = async (req, res) => {
       return res.status(400).json({ message: "Cannot access first sheet" });
     }
     
-    // Convert to JSON (starting from row 2, columns B-E)
+    // Convert to JSON (starting from row 1, columns B-E)
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
-      header: 1,
-      range: 1 // Start from row 2 (0-based index 1)
+      header: 1
     });
     
     if (!jsonData || jsonData.length === 0) {
       return res.status(400).json({ message: "Excel file has no data" });
-    }
-    
-    if (jsonData.length < 2) {
-      return res.status(400).json({ 
-        message: "Excel file must have at least 2 rows (header + data)" 
-      });
     }
     
     // Get current time
@@ -1413,7 +1410,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
           
           seenIds.add(id_parcel);
           processedData.push({
-            row: i + 1, // Actual row number in Excel
+            row: i + 1, // Actual row number in Excel (same as China side)
             branch,
             tel,
             id_parcel,
@@ -1559,6 +1556,23 @@ exports.importExcelToParcelsSave = async (req, res) => {
     
     // Assuming parcels_save table exists, if not we need to create the model
     const insertedRecords = await ParcelDetail.bulkCreate(parcelsSaveData);
+    
+    // อัปเดต status ในตาราง parcels เป็น "accepted" สำหรับพัสดุที่ import สำเร็จ
+    if (insertedRecords.length > 0) {
+      const parcelIdsToUpdate = insertedRecords.map(record => record.id_parcel);
+      
+      await Parcel.update(
+        { status: "accepted" },
+        {
+          where: {
+            id_parcel: parcelIdsToUpdate,
+            status: "export"
+          }
+        }
+      );
+      
+      console.log(`✅ Updated ${parcelIdsToUpdate.length} parcels status to "accepted" in parcels table`);
+    }
     
     // Clean up uploaded file
     fs.unlinkSync(filePath);
