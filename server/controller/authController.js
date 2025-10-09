@@ -1571,7 +1571,18 @@ exports.importExcelToParcelsSave = async (req, res) => {
         }
       );
       
+      // อัปเดต column acceptorigin ในตาราง SaveTime
+      await SaveTime.update(
+        { acceptorigin: currentTime },
+        {
+          where: {
+            id_parcel: parcelIdsToUpdate
+          }
+        }
+      );
+      
       console.log(`✅ Updated ${parcelIdsToUpdate.length} parcels status to "accepted" in parcels table`);
+      console.log(`✅ Updated ${parcelIdsToUpdate.length} parcels acceptorigin in SaveTime table`);
     }
     
     // Clean up uploaded file
