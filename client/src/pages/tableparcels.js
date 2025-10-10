@@ -12,6 +12,8 @@ const TableParcels = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const storedRole = localStorage.getItem("role");
   const storedBranch = localStorage.getItem("branch");
@@ -21,24 +23,35 @@ const TableParcels = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Sample data - replace with your actual API call
-  const sampleParcels = [
-    { id: 1, parcelId: "KYE001", recipient: "ມິດສະຫວາຍ ລີ", phone: "020 1234567", from: "ຈີນ", to: "ວຽງຈັນ", status: "ກຳລັງສົ່ງ", weight: "2.5", price: "25,000", date: "2024-01-15" },
-    { id: 2, parcelId: "KYE002", recipient: "ນາງ ສາວ ວັນນີ", phone: "020 2345678", from: "ຈີນ", to: "ລຸ່ງພະບາງ", status: "ສຳເລັດ", weight: "1.8", price: "18,000", date: "2024-01-14" },
-    { id: 3, parcelId: "KYE003", recipient: "ນາຍ ບຸນມີ", phone: "020 3456789", from: "ຈີນ", to: "ສະຫວັນນະເຂດ", status: "ລໍຖ້າຮັບ", weight: "3.2", price: "32,000", date: "2024-01-13" },
-    { id: 4, parcelId: "KYE004", recipient: "ນາງ ສົມພອນ", phone: "020 4567890", from: "ຈີນ", to: "ຈຳປາສັກ", status: "ກຳລັງສົ່ງ", weight: "0.8", price: "12,000", date: "2024-01-12" },
-    { id: 5, parcelId: "KYE005", recipient: "ນາຍ ພູມມີ", phone: "020 5678901", from: "ຈີນ", to: "ວຽງຈັນ", status: "ສຳເລັດ", weight: "4.1", price: "45,000", date: "2024-01-11" },
-    { id: 6, parcelId: "KYE006", recipient: "ນາງ ຈິດສະນຸກ", phone: "020 6789012", from: "ຈີນ", to: "ບໍລິຄຳໄຊ", status: "ລໍຖ້າຮັບ", weight: "2.0", price: "22,000", date: "2024-01-10" },
-    { id: 7, parcelId: "KYE007", recipient: "ນາຍ ສຸກສັນ", phone: "020 7890123", from: "ຈີນ", to: "ຄຳມ່ວນ", status: "ກຳລັງສົ່ງ", weight: "1.5", price: "16,500", date: "2024-01-09" },
-    { id: 8, parcelId: "KYE008", recipient: "ນາງ ພັນທິຍາ", phone: "020 8901234", from: "ຈີນ", to: "ຫຼວງນ້ຳທາ", status: "ສຳເລັດ", weight: "2.8", price: "28,000", date: "2024-01-08" }
-  ];
-
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setParcels(sampleParcels);
-      setLoading(false);
-    }, 1000);
+    const fetchParcels = async () => {
+      try {
+        const response = await axios.get("https://xjllao.com/v1/api/parcelswait");
+        
+        // Map API response to match the expected format
+        const mappedParcels = response.data.map((parcel, index) => ({
+          id: index + 1,
+          parcelId: parcel.id_parcel,
+          recipient: parcel.branch || "-",
+          phone: parcel.tel || "-",
+          from: parcel.from || "ຈີນ",
+          to: parcel.branch || "-",
+          status: parcel.status || "ລໍຖ້າຮັບ",
+          weight: parcel.weight || "0",
+          price: parcel.price || "0",
+          time: parcel.time, // Keep original time for filtering
+          date: parcel.time ? new Date(parcel.time).toLocaleDateString('th-TH') : "-"
+        }));
+        
+        setParcels(mappedParcels);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching parcels:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchParcels();
   }, []);
 
   useEffect(() => {
@@ -87,12 +100,35 @@ const TableParcels = () => {
     backdropFilter: "blur(10px)",
   });
 
-  // Filter parcels based on search term
-  const filteredParcels = parcels.filter(parcel =>
-    parcel.parcelId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    parcel.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    parcel.phone.includes(searchTerm)
-  );
+  // Filter parcels based on search term and date range
+  const filteredParcels = parcels.filter(parcel => {
+    // Search filter
+    const matchesSearch = parcel.parcelId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      parcel.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      parcel.phone.includes(searchTerm);
+    
+    // Date range filter
+    let matchesDateRange = true;
+    if (startDate || endDate) {
+      const parcelDate = new Date(parcel.time);
+      
+      if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999); // Include the entire end date
+        matchesDateRange = parcelDate >= start && parcelDate <= end;
+      } else if (startDate) {
+        const start = new Date(startDate);
+        matchesDateRange = parcelDate >= start;
+      } else if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        matchesDateRange = parcelDate <= end;
+      }
+    }
+    
+    return matchesSearch && matchesDateRange;
+  });
 
   // Pagination logic
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -102,6 +138,8 @@ const TableParcels = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
+      case "accepted":
+        return "bg-green-100 text-green-800";
       case "ສຳເລັດ":
         return "bg-green-100 text-green-800";
       case "ກຳລັງສົ່ງ":
@@ -111,6 +149,15 @@ const TableParcels = () => {
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const getStatusDisplay = (status) => {
+    if (status === "accepted") {
+      return (
+        <span style={{ fontSize: "20px", fontWeight: "bold" }}>✓</span>
+      );
+    }
+    return status;
   };
 
   return (
@@ -576,17 +623,13 @@ const TableParcels = () => {
             marginBottom: "24px", 
             display: "flex", 
             flexDirection: "column", 
-            gap: "16px",
-            "@media (min-width: 640px)": {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center"
-            }
+            gap: "16px"
           }}>
-            <div style={{ position: "relative" }}>
+            {/* Search Box */}
+            <div style={{ position: "relative", flex: "1", minWidth: "250px" }}>
               <input
                 type="text"
-                placeholder="ຊອກຫາລະຫັດພັດດຸ, ຊື່ຜູ້ຮັບ, ຫຼື ເບີໂທ..."
+                placeholder="ຄົ້ນຫາດ້ວຍ ID ພັດດຸ (id_parcel)..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
@@ -619,6 +662,104 @@ const TableParcels = () => {
                 </svg>
               </div>
             </div>
+
+            {/* Date Range Filter */}
+            <div style={{ 
+              display: "flex", 
+              gap: "12px", 
+              alignItems: "center",
+              flexWrap: "wrap"
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <label style={{ fontSize: "14px", color: "#374151", fontWeight: "500" }}>
+                  ວັນທີເລີ່ມຕົ້ນ:
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => {
+                    setStartDate(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    padding: "8px 12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    transition: "border-color 0.3s, box-shadow 0.3s",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.2)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
+                  }}
+                />
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <label style={{ fontSize: "14px", color: "#374151", fontWeight: "500" }}>
+                  ວັນທີສິ້ນສຸດ:
+                </label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => {
+                    setEndDate(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    padding: "8px 12px",
+                    border: "1px solid #d1d5db",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    outline: "none",
+                    transition: "border-color 0.3s, box-shadow 0.3s",
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.2)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.boxShadow = "none";
+                  }}
+                />
+              </div>
+
+              {(startDate || endDate) && (
+                <button
+                  onClick={() => {
+                    setStartDate("");
+                    setEndDate("");
+                    setCurrentPage(1);
+                  }}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: "#ef4444",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontWeight: "500",
+                    cursor: "pointer",
+                    transition: "all 0.3s ease",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#dc2626";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "#ef4444";
+                  }}
+                >
+                  ລ້າງການກັ່ນຕອງ
+                </button>
+              )}
+            </div>
+
             <div style={{ fontSize: "14px", color: "#6b7280" }}>
               ທັງໝົດ {filteredParcels.length} ລາຍການ
             </div>
@@ -646,6 +787,30 @@ const TableParcels = () => {
                   borderRadius: "50%",
                   animation: "spin 1s linear infinite"
                 }}></div>
+              </div>
+            ) : filteredParcels.length === 0 ? (
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "256px",
+                gap: "16px"
+              }}>
+                <div style={{ fontSize: "48px" }}>📦</div>
+                <div style={{ 
+                  fontSize: "18px", 
+                  fontWeight: "600", 
+                  color: "#374151" 
+                }}>
+                  {(startDate || endDate) ? "ບໍ່ມີພັດດຸວັນທີດັ່ງກ່າວ" : "ບໍ່ມີຂໍ້ມູນ"}
+                </div>
+                <div style={{ 
+                  fontSize: "14px", 
+                  color: "#6b7280" 
+                }}>
+                  {(startDate || endDate) ? "ລອງປ່ຽນຊ່ວງວັນທີທີ່ຕ້ອງການຄົ້ນຫາ" : "ບໍ່ມີພັດດຸໃນລະບົບ"}
+                </div>
               </div>
             ) : (
               <>
@@ -770,19 +935,6 @@ const TableParcels = () => {
                         }}>
                           ວັນທີ
                         </th>
-                        <th style={{
-                          padding: "12px 20px",
-                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
-                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
-                          textAlign: "center",
-                          fontSize: "12px",
-                          fontWeight: "600",
-                          color: "rgb(55, 65, 81)",
-                          textTransform: "uppercase",
-                          letterSpacing: "0.05em",
-                        }}>
-                          ການດຳເນີນງານ
-                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
@@ -811,24 +963,11 @@ const TableParcels = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(parcel.status)}`}>
-                              {parcel.status}
+                              {getStatusDisplay(parcel.status)}
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {parcel.date}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-2">
-                              <button className="text-blue-600 hover:text-blue-900 transition-colors">
-                                ແກ້ໄຂ
-                              </button>
-                              <button className="text-green-600 hover:text-green-900 transition-colors">
-                                ເບິ່ງ
-                              </button>
-                              <button className="text-red-600 hover:text-red-900 transition-colors">
-                                ລົບ
-                              </button>
-                            </div>
                           </td>
                         </tr>
                       ))}

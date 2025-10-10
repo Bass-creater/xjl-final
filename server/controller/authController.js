@@ -1321,6 +1321,35 @@ exports.uploadExcel = upload.single('excelFile');
 exports.uploadFile = upload.single('file');
 
 // New Excel import function for parcels_save
+exports.parcelsWait = async (req, res) => {
+  try {
+    const parcels = await ParcelDetail.findAll({
+      attributes: [
+        'id_parcel',
+        'from',
+        'status',
+        'tel',
+        'branch',
+        'typeParcel',
+        'weight',
+        'amount',
+        'price',
+        'time',
+        'uuid'
+      ],
+      order: [['time', 'DESC']]
+    });
+
+    res.status(200).json(parcels);
+  } catch (error) {
+    console.error("Error fetching parcels wait:", error);
+    res.status(500).json({ 
+      message: "An error occurred while fetching parcels", 
+      error: error.message 
+    });
+  }
+};
+
 exports.importExcelToParcelsSave = async (req, res) => {
   try {
     console.log('📁 Import Excel to Parcels Save request received');
