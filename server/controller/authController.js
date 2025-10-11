@@ -18,6 +18,19 @@ const multer = require("multer");
 
 const fs = require("fs");
 
+// Setup associations
+ParcelDetail.hasOne(SaveTime, {
+  foreignKey: 'id_parcel',
+  sourceKey: 'id_parcel',
+  as: 'saveTime'
+});
+
+SaveTime.belongsTo(ParcelDetail, {
+  foreignKey: 'id_parcel',
+  targetKey: 'id_parcel',
+  as: 'parcelDetail'
+});
+
 exports.signupUser = async (req, res) => {
   const { username, email, passwrd } = req.body;
 
@@ -811,16 +824,34 @@ exports.updateReceive = async (req, res) => {
 };
 
 exports.updateSuccess = async (req, res) => {
-  const { id_parcel } = req.body;
+  const { id_parcel, parcels_id } = req.body;
 
   const savetime = moment.tz("Asia/Vientiane").format("YYYY-MM-DD HH:mm:ss");
 
   try {
+    // รองรับทั้งแบบ single และ array
+    let parcelIds = [];
+    
+    if (parcels_id && Array.isArray(parcels_id)) {
+      // ถ้าส่งมาเป็น array ของ objects [{ id: "xxx" }]
+      parcelIds = parcels_id.map(item => item.id);
+    } else if (id_parcel) {
+      // ถ้าส่งมาเป็น single value
+      parcelIds = [id_parcel];
+    }
+
+    if (parcelIds.length === 0) {
+      return res.status(400).json({ message: "No parcel IDs provided" });
+    }
+
+    console.log('Updating status to success for parcels:', parcelIds);
+
+    // อัปเดต status เป็น "success" ในตาราง parcels_save
     const updateSuccess = await ParcelDetail.update(
       { status: "success", time: savetime },
       {
         where: {
-          id_parcel: id_parcel,
+          id_parcel: parcelIds,
         },
       }
     );
@@ -829,24 +860,33 @@ exports.updateSuccess = async (req, res) => {
       .tz("Asia/Vientiane")
       .format("YYYY-MM-DD HH:mm:ss");
 
+    // อัปเดต column success ในตาราง SaveTime
     const successExport = await SaveTime.update(
       {
         success: successTime,
       },
       {
         where: {
-          id_parcel: id_parcel,
+          id_parcel: parcelIds,
         },
       }
     );
 
-    if (successExport[0] === 0) {
-      return res.status(404).json({ message: "SaveTime not found ID parcel" });
-    }
+    console.log(`✅ Updated ${updateSuccess[0]} parcels in parcels_save`);
+    console.log(`✅ Updated ${successExport[0]} records in SaveTime`);
 
-    res.status(200).json({ message: "Success!", time: savetime });
+    res.status(200).json({ 
+      message: "Success!", 
+      time: savetime,
+      updated_parcels: updateSuccess[0],
+      updated_savetime: successExport[0]
+    });
   } catch (error) {
-    res.status(500).json({ message: "Error unsuccessful" });
+    console.error('Error updating success status:', error);
+    res.status(500).json({ 
+      message: "Error unsuccessful",
+      error: error.message 
+    });
   }
 };
 
@@ -1093,8 +1133,8 @@ exports.checkStatus = async (req, res) => {
     if (status.origin) result.origin = status.origin;
     if (status.export) result.export = status.export;
     if (status.acceptorigin) result.acceptorigin = status.acceptorigin;
-    if (status.spread) result.spread = status.spread;
-    if (status.branch) result.branch = status.branch;
+   //if (status.spread) result.spread = status.spread;
+    //if (status.branch) result.branch = status.branch;
     if (status.success) result.success = status.success;
 
     res.status(200).json({
@@ -1332,15 +1372,33 @@ exports.parcelsWait = async (req, res) => {
         'branch',
         'typeParcel',
         'weight',
+        'volume',
         'amount',
         'price',
         'time',
         'uuid'
       ],
+      include: [{
+        model: SaveTime,
+        as: 'saveTime',
+        attributes: ['origin', 'acceptorigin'],
+        required: false
+      }],
       order: [['time', 'DESC']]
     });
 
-    res.status(200).json(parcels);
+    // Map the data to include saveTime fields at root level
+    const mappedParcels = parcels.map(parcel => {
+      const parcelData = parcel.toJSON();
+      return {
+        ...parcelData,
+        origin: parcelData.saveTime?.origin || null,
+        acceptorigin: parcelData.saveTime?.acceptorigin || null,
+        saveTime: undefined // Remove nested saveTime object
+      };
+    });
+
+    res.status(200).json(mappedParcels);
   } catch (error) {
     console.error("Error fetching parcels wait:", error);
     res.status(500).json({ 
@@ -1390,7 +1448,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
       return res.status(400).json({ message: "Cannot access first sheet" });
     }
     
-    // Convert to JSON (starting from row 1, columns B-E)
+    // Convert to JSON (starting from row 1, columns B-G)
     const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
       header: 1
     });
@@ -1416,6 +1474,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
       }
       
       // Check if columns B, C, D, E exist and have data (indices 1, 2, 3, 4)
+      // Columns F (volume) and G (amount) are optional
       if (row[1] !== undefined && row[2] !== undefined && row[3] !== undefined && row[4] !== undefined &&
           row[1] !== null && row[2] !== null && row[3] !== null && row[4] !== null &&
           row[1] !== '' && row[2] !== '' && row[3] !== '' && row[4] !== '') {
@@ -1424,6 +1483,15 @@ exports.importExcelToParcelsSave = async (req, res) => {
         const tel = String(row[2]).trim();
         const id_parcel = String(row[3]).trim();
         const weight = String(row[4]).trim();
+        const volume = row[5] !== undefined && row[5] !== null && row[5] !== '' ? String(row[5]).trim() : '0';
+        
+        // Extract only numbers from column G (amount), e.g., "2B" -> 2, "1A" -> 1
+        let amount = 0;
+        if (row[6] !== undefined && row[6] !== null && row[6] !== '') {
+          const amountStr = String(row[6]).trim();
+          const numMatch = amountStr.match(/\d+/); // Extract first number
+          amount = numMatch ? parseInt(numMatch[0]) : 0;
+        }
         
         if (branch && tel && id_parcel && weight && 
             branch !== 'undefined' && tel !== 'undefined' && 
@@ -1443,7 +1511,9 @@ exports.importExcelToParcelsSave = async (req, res) => {
             branch,
             tel,
             id_parcel,
-            weight: parseFloat(weight) || 0
+            weight: parseFloat(weight) || 0,
+            volume: parseFloat(volume) || 0,
+            amount: amount
           });
         }
         // Skip rows with empty data without adding to errors
@@ -1571,7 +1641,8 @@ exports.importExcelToParcelsSave = async (req, res) => {
       length: 0.0,
       height: 0.0,
       weight: row.weight,
-      amount: 0,
+      volume: row.volume,
+      amount: row.amount,
       price: 0,
       time: currentTime,
       uuid: batchUuid
@@ -1627,7 +1698,9 @@ exports.importExcelToParcelsSave = async (req, res) => {
         id_parcel: record.id_parcel,
         branch: record.branch,
         tel: record.tel,
-        weight: record.weight
+        weight: record.weight,
+        volume: record.volume,
+        amount: record.amount
       }))
     });
     

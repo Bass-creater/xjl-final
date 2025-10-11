@@ -38,9 +38,12 @@ const TableParcels = () => {
           to: parcel.branch || "-",
           status: parcel.status || "ລໍຖ້າຮັບ",
           weight: parcel.weight || "0",
+          volume: parcel.volume || "0",
+          amount: parcel.amount || "0",
           price: parcel.price || "0",
           time: parcel.time, // Keep original time for filtering
-          date: parcel.time ? new Date(parcel.time).toLocaleDateString('th-TH') : "-"
+          dateReceived: parcel.origin ? new Date(parcel.origin).toLocaleDateString('th-TH') : "-",
+          dateSent: parcel.acceptorigin ? new Date(parcel.acceptorigin).toLocaleDateString('th-TH') : "-"
         }));
         
         setParcels(mappedParcels);
@@ -159,6 +162,19 @@ const TableParcels = () => {
     }
     return status;
   };
+
+  // คำนวณน้ำหนัก, ปริมาตร และจำนวนรวม
+  const totalWeight = filteredParcels.reduce((sum, parcel) => {
+    return sum + (parseFloat(parcel.weight) || 0);
+  }, 0);
+
+  const totalVolume = filteredParcels.reduce((sum, parcel) => {
+    return sum + (parseFloat(parcel.volume) || 0);
+  }, 0);
+
+  const totalAmount = filteredParcels.reduce((sum, parcel) => {
+    return sum + (parseInt(parcel.amount) || 0);
+  }, 0);
 
   return (
     <div
@@ -666,12 +682,31 @@ const TableParcels = () => {
             {/* Date Range Filter */}
             <div style={{ 
               display: "flex", 
-              gap: "12px", 
+              gap: "16px", 
               alignItems: "center",
-              flexWrap: "wrap"
+              flexWrap: "wrap",
+              padding: "20px",
+              background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)",
+              borderRadius: "16px",
+              border: "1px solid rgba(203, 213, 225, 0.5)",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)"
             }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <label style={{ fontSize: "14px", color: "#374151", fontWeight: "500" }}>
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: "10px",
+                padding: "12px 16px",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.08) 0%, rgba(249, 115, 22, 0.05) 100%)",
+                borderRadius: "12px",
+                border: "1px solid rgba(251, 146, 60, 0.2)"
+              }}>
+                <span style={{ fontSize: "18px" }}>📅</span>
+                <label style={{ 
+                  fontSize: "14px", 
+                  color: "#374151", 
+                  fontWeight: "600",
+                  minWidth: "100px"
+                }}>
                   ວັນທີເລີ່ມຕົ້ນ:
                 </label>
                 <input
@@ -682,26 +717,45 @@ const TableParcels = () => {
                     setCurrentPage(1);
                   }}
                   style={{
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "8px",
+                    padding: "10px 14px",
+                    border: "2px solid #e5e7eb",
+                    borderRadius: "10px",
                     fontSize: "14px",
+                    fontWeight: "500",
                     outline: "none",
-                    transition: "border-color 0.3s, box-shadow 0.3s",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "white",
+                    minWidth: "160px"
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "#3b82f6";
-                    e.target.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.2)";
+                    e.target.style.borderColor = "#FB923C";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(251, 146, 60, 0.15)";
+                    e.target.style.transform = "translateY(-1px)";
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.borderColor = "#e5e7eb";
                     e.target.style.boxShadow = "none";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 />
               </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <label style={{ fontSize: "14px", color: "#374151", fontWeight: "500" }}>
+              <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: "10px",
+                padding: "12px 16px",
+                background: "linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(37, 99, 235, 0.05) 100%)",
+                borderRadius: "12px",
+                border: "1px solid rgba(59, 130, 246, 0.2)"
+              }}>
+                <span style={{ fontSize: "18px" }}>📅</span>
+                <label style={{ 
+                  fontSize: "14px", 
+                  color: "#374151", 
+                  fontWeight: "600",
+                  minWidth: "100px"
+                }}>
                   ວັນທີສິ້ນສຸດ:
                 </label>
                 <input
@@ -712,20 +766,25 @@ const TableParcels = () => {
                     setCurrentPage(1);
                   }}
                   style={{
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "8px",
+                    padding: "10px 14px",
+                    border: "2px solid #e5e7eb",
+                    borderRadius: "10px",
                     fontSize: "14px",
+                    fontWeight: "500",
                     outline: "none",
-                    transition: "border-color 0.3s, box-shadow 0.3s",
+                    transition: "all 0.3s ease",
+                    backgroundColor: "white",
+                    minWidth: "160px"
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = "#3b82f6";
-                    e.target.style.boxShadow = "0 0 0 2px rgba(59, 130, 246, 0.2)";
+                    e.target.style.borderColor = "#3B82F6";
+                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.15)";
+                    e.target.style.transform = "translateY(-1px)";
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.borderColor = "#e5e7eb";
                     e.target.style.boxShadow = "none";
+                    e.target.style.transform = "translateY(0)";
                   }}
                 />
               </div>
@@ -738,30 +797,83 @@ const TableParcels = () => {
                     setCurrentPage(1);
                   }}
                   style={{
-                    padding: "8px 16px",
-                    backgroundColor: "#ef4444",
+                    padding: "12px 20px",
+                    background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)",
                     color: "white",
                     border: "none",
-                    borderRadius: "8px",
+                    borderRadius: "12px",
                     fontSize: "14px",
-                    fontWeight: "500",
+                    fontWeight: "600",
                     cursor: "pointer",
                     transition: "all 0.3s ease",
+                    boxShadow: "0 4px 12px rgba(239, 68, 68, 0.25)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px"
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = "#dc2626";
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow = "0 6px 16px rgba(239, 68, 68, 0.35)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "#ef4444";
+                    e.target.style.background = "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 4px 12px rgba(239, 68, 68, 0.25)";
                   }}
                 >
+                  <span style={{ fontSize: "16px" }}>🗑️</span>
                   ລ້າງການກັ່ນຕອງ
                 </button>
               )}
             </div>
 
-            <div style={{ fontSize: "14px", color: "#6b7280" }}>
-              ທັງໝົດ {filteredParcels.length} ລາຍການ
+            <div style={{ 
+              display: "flex", 
+              gap: "20px", 
+              flexWrap: "wrap",
+              alignItems: "center"
+            }}>
+              <div style={{ 
+                fontSize: "14px", 
+                color: "#6b7280",
+                fontWeight: "600"
+              }}>
+                ທັງໝົດ {filteredParcels.length} ລາຍການ
+              </div>
+              <div style={{
+                padding: "8px 16px",
+                background: "linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%)",
+                borderRadius: "8px",
+                border: "1px solid rgba(16, 185, 129, 0.3)",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#059669"
+              }}>
+                ⚖️ ນ້ຳໜັກທັງໝົດ: {totalWeight.toFixed(2)} kg
+              </div>
+              <div style={{
+                padding: "8px 16px",
+                background: "linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.1) 100%)",
+                borderRadius: "8px",
+                border: "1px solid rgba(251, 146, 60, 0.3)",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#EA580C"
+              }}>
+                📦 ປະລິມານທັງໝົດ: {totalVolume.toFixed(2)} CBM
+              </div>
+              <div style={{
+                padding: "8px 16px",
+                background: "linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 100%)",
+                borderRadius: "8px",
+                border: "1px solid rgba(59, 130, 246, 0.3)",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#2563EB"
+              }}>
+                📊 ຈຳນວນທັງໝົດ: {totalAmount} ຊິ້ນ
+              </div>
             </div>
           </div>
 
@@ -907,6 +1019,32 @@ const TableParcels = () => {
                           textTransform: "uppercase",
                           letterSpacing: "0.05em",
                         }}>
+                          ປະລິມານ (CBM)
+                        </th>
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
+                          ຈຳນວນ
+                        </th>
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
                           ລາຄາ (LAK)
                         </th>
                         <th style={{
@@ -933,7 +1071,20 @@ const TableParcels = () => {
                           textTransform: "uppercase",
                           letterSpacing: "0.05em",
                         }}>
-                          ວັນທີ
+                          ວັນທີຮັບຈາກຈີນ
+                        </th>
+                        <th style={{
+                          padding: "12px 20px",
+                          borderBottom: "2px solid rgba(251, 146, 60, 0.3)",
+                          background: "linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(249, 115, 22, 0.08) 100%)",
+                          textAlign: "left",
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          color: "rgb(55, 65, 81)",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.05em",
+                        }}>
+                          ວັນທີຮັບຈາກລາວ
                         </th>
                       </tr>
                     </thead>
@@ -959,6 +1110,12 @@ const TableParcels = () => {
                             {parcel.weight}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {parcel.volume}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {parcel.amount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {parcel.price}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -967,7 +1124,10 @@ const TableParcels = () => {
                             </span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {parcel.date}
+                            {parcel.dateReceived}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {parcel.dateSent}
                           </td>
                         </tr>
                       ))}

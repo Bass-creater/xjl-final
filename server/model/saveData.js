@@ -1,7 +1,15 @@
 const { Model, DataTypes } = require("sequelize");
 const { sequelize } = require("../db");
 
-class ParcelDetail extends Model {}
+class ParcelDetail extends Model {
+  static associate(models) {
+    ParcelDetail.hasOne(models.SaveTime, {
+      foreignKey: 'id_parcel',
+      sourceKey: 'id_parcel',
+      as: 'saveTime'
+    });
+  }
+}
 
 ParcelDetail.init(
   {
@@ -54,6 +62,10 @@ ParcelDetail.init(
       allowNull: true,
     },
     weight: {
+      type: DataTypes.FLOAT,
+      allowNull: true,
+    },
+    volume: {
       type: DataTypes.FLOAT,
       allowNull: true,
     },
