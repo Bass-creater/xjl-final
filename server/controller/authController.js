@@ -116,14 +116,18 @@ exports.getAllParcels = async (req, res) => {
 
 exports.parcelsWait = async (req, res) => {
   try {
+    console.log("🔍 parcelsWait: Searching for parcels with status 'accepted'");
     const parcelswait = await ParcelDetail.findAll({
-      where: { status: "spread" },
+      where: { status: "accepted" },
     });
 
-    if (!parcelswait) {
+    console.log("📦 Found parcels:", parcelswait.length);
+
+    if (!parcelswait || parcelswait.length === 0) {
+      console.log("❌ No parcels found with status 'accepted'");
       return res
         .status(404)
-        .json({ message: "No parcels found with status 'spread'" });
+        .json({ message: "No parcels found with status 'accepted'" });
     }
     res.status(200).json(parcelswait);
   } catch (error) {
@@ -402,9 +406,10 @@ exports.saveData = async (req, res) => {
         where: { id_parcel: mainParcel.id_parcel },
       });
       if (updated) {
-        await Parcel.destroy({
-          where: { id_parcel: parcel.id_parcel },
-        });
+        // Comment: ปิดการลบ Parcel record เพื่อให้ SaveTime record ยังคงอยู่
+        // await Parcel.destroy({
+        //   where: { id_parcel: parcel.id_parcel },
+        // });
 
         function imageToBase64(imagePath) {
           const image = fs.readFileSync(imagePath);
@@ -716,7 +721,10 @@ exports.saveParcelStatus = async (req, res) => {
 exports.updateBranch = async (req, res) => {
   const { id_parcel, status } = req.body;
 
+  console.log("🔄 updateBranch called with:", { id_parcel, status });
+
   try {
+    // อัปเดต ParcelDetail status
     const reUpdate = await ParcelDetail.update(
       { status },
       {
@@ -725,14 +733,27 @@ exports.updateBranch = async (req, res) => {
         },
       }
     );
+    console.log("📦 ParcelDetail updated:", reUpdate[0], "rows");
 
-    const spreadTime = moment
+    // เช็คว่ามี SaveTime record อยู่หรือไม่
+    const existingSaveTime = await SaveTime.findOne({
+      where: { id_parcel }
+    });
+    console.log("🔍 Existing SaveTime record:", existingSaveTime ? "Found" : "Not Found");
+
+    if (!existingSaveTime) {
+      console.log("❌ SaveTime record not found for id_parcel:", id_parcel);
+      return res.status(404).json({ message: "SaveTime not found for ID parcel: " + id_parcel });
+    }
+
+    const successTime = moment
       .tz("Asia/Vientiane")
       .format("YYYY-MM-DD HH:mm:ss");
+    console.log("⏰ Success time to set:", successTime);
 
-    const spread = await SaveTime.update(
+    const successUpdate = await SaveTime.update(
       {
-        spread: spreadTime,
+        success: successTime,
       },
       {
         where: {
@@ -740,14 +761,19 @@ exports.updateBranch = async (req, res) => {
         },
       }
     );
+    console.log("✅ SaveTime.success updated:", successUpdate[0], "rows");
 
-    if (spread[0] === 0) {
+    if (successUpdate[0] === 0) {
+      console.log("❌ Failed to update SaveTime.success");
       return res.status(404).json({ message: "SaveTime not found ID parcel" });
     }
 
     if (reUpdate[0] === 0) {
+      console.log("❌ Failed to update ParcelDetail");
       return res.status(404).json({ message: "Parcel don't update!" });
     }
+
+    console.log("🎉 updateBranch completed successfully");
     res.status(200).json({ message: "Parcel status updated successfully" });
   } catch (error) {
     console.error("Error updating parcel status:", error);
