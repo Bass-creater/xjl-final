@@ -160,7 +160,7 @@ function Navbar() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Link
-                      to=""
+                      to="https://www.facebook.com/share/1HGNbku58H/?mibextid=wwXIfr"
                       className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
                     >
                       ຄຳນວນຄ່າຂົນສົ່ງ
