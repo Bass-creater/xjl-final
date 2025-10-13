@@ -21,7 +21,7 @@ const ParcelWaitSave = () => {
   const handleSend = async (parcels) => {
     const updateStatus = {
       id_parcel: parcels.id_parcel,
-      status: "201",
+      status: "success",
     };
 
     try {

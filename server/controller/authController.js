@@ -373,49 +373,28 @@ exports.saveData = async (req, res) => {
       const fromValue = existingParcel.from;
 
       const dataExpress = {
-        id_parcel: mainParcel.id_parcel,
-        from: fromValue,
-        status: "spread",
-        type_tel: mainParcel.type_tel,
-        tel: mainParcel.tel,
-        type: mainParcel.type,
-        note: mainParcel.note,
-        branch: mainParcel.branch,
-        typeParcel: detail.typeParcel,
-        width: detail.width,
-        length: detail.length,
-        height: detail.height,
-        weight: detail.weight,
-        amount: detail.amount,
-        price: detail.price,
-        time: detail.time,
+        id_parcel: mainParcel.id_parcel || "-",
+        from: fromValue || "-",
+        status: "accepted",
+        type_tel: mainParcel.type_tel || "-",
+        tel: mainParcel.tel || "-",
+        type: mainParcel.type || "-",
+        note: mainParcel.note || "-",
+        branch: mainParcel.branch || "-",
+        typeParcel: detail.typeParcel || "-",
+        width: detail.width || 0,
+        length: detail.length || 0,
+        height: detail.height || 0,
+        weight: detail.weight || 0,
+        amount: detail.amount || 0,
+        price: detail.price || 0,
+        time: detail.time || new Date().toISOString(),
       };
 
-      try {
-        const branch = dataExpress.branch;
-        const price = dataExpress.price;
-
-        const userBranch = await User.findOne({ branch });
-
-        if (!userBranch) {
-          return res.status(404).json({ message: "ไม่พบสาขานี้ในระบบ" });
-        }
-        const updatedUser = await User.update(
-          { credit: sequelize.literal(`credit - ${price}`) },
-          {
-            where: { branch },
-            returning: true,
-          }
-        );
-
-        if (updatedUser) {
-          console.log("Credit updated successfully", updatedUser);
-        } else {
-          console.log("Credit updated unsuccessfully");
-        }
-      } catch (error) {
-        console.error("Error while updating credit", error);
-      }
+      // ข้ามการหักเครดิตไปก่อน - เก็บเฉพาะการคำนวณราคา
+      console.log("💰 Price calculated:", dataExpress.price);
+      console.log("🏪 Branch/Customer:", dataExpress.branch);
+      console.log("⏭️ Skipping credit deduction for now");
 
       console.log(dataExpress);
 

@@ -145,17 +145,14 @@ function Navbar() {
                   </motion.a>
                 </motion.li>
                 <motion.li variants={itemVariants}>
-                  <motion.div
+                  <motion.a
+                    href="#home"
+                    className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
                     whileHover={{ scale: 1.05, x: 5 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <Link
-                      to="https://www.facebook.com/share/1Au6TyZYpE/?mibextid=LQQJ4d"
-                      className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
-                    >
                       ຕິດຕາມພັດສະດຸ
-                    </Link>
-                  </motion.div>
+                  </motion.a>
                 </motion.li>
                 <motion.li variants={itemVariants}>
                   <motion.div
@@ -163,7 +160,7 @@ function Navbar() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Link
-                      to="https://www.facebook.com/share/1Au6TyZYpE/?mibextid=LQQJ4d"
+                      to=""
                       className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
                     >
                       ຄຳນວນຄ່າຂົນສົ່ງ
@@ -210,21 +207,19 @@ function Navbar() {
               About
             </motion.a>
           </motion.li>
-          <motion.li 
+          <motion.li
             className="list-none"
             variants={itemVariants}
           >
-            <motion.div
+            <motion.a
+              href="#home"
+              onClick={handleScrollToHome}
+              className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Link
-                to="https://www.facebook.com/share/1Au6TyZYpE/?mibextid=LQQJ4d"
-                className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
-              >
                 ຕິດຕາມພັດສະດຸ
-              </Link>
-            </motion.div>
+              </motion.a>
           </motion.li>
           <motion.li 
             className="list-none"
@@ -235,7 +230,7 @@ function Navbar() {
               whileTap={{ scale: 0.95 }}
             >
               <Link
-                to="https://www.facebook.com/share/1Au6TyZYpE/?mibextid=LQQJ4d"
+                to="https://www.facebook.com/share/1HGNbku58H/?mibextid=wwXIfr"
                 className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
               >
                 ຄຳນວນຄ່າຂົນສົ່ງ

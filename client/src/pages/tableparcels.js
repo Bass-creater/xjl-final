@@ -143,6 +143,8 @@ const TableParcels = () => {
     switch (status) {
       case "accepted":
         return "bg-green-100 text-green-800";
+      case "success":
+        return "bg-emerald-100 text-emerald-800";
       case "ສຳເລັດ":
         return "bg-green-100 text-green-800";
       case "ກຳລັງສົ່ງ":
@@ -158,6 +160,19 @@ const TableParcels = () => {
     if (status === "accepted") {
       return (
         <span style={{ fontSize: "20px", fontWeight: "bold" }}>✓</span>
+      );
+    }
+    if (status === "success") {
+      return (
+        <span style={{ 
+          fontSize: "18px", 
+          fontWeight: "bold",
+          display: "flex",
+          alignItems: "center",
+          gap: "2px"
+        }}>
+          📦
+        </span>
       );
     }
     return status;

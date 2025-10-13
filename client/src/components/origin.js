@@ -1,55 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../style/font-style.css";
 import useAuth from "../hooks/useAuth";
 
 const Origin = ({ onParcelChange }) => {
   const { branch } = useAuth();
-  const [branches, setBranches] = useState([]);
   const [parcelData, setParcelData] = useState({
     id_parcel: "",
     type_tel: "",
     tel: "",
-    type: "delivery",
     note: "",
     branch: "",
   });
-
-  useEffect(() => {
-    const listBranch = async () => {
-      try {
-        const response = await fetch(
-          "https://xjllao.com/v1/api/listBranch",
-          {
-            method: "POST",
-          }
-        );
-        const data = await response.json();
-
-        // ตรวจสอบว่า data เป็น array หรือไม่
-        if (Array.isArray(data)) {
-          setBranches(data);
-        } else {
-          console.error("API returned non-array data:", data);
-          setBranches([]);
-        }
-      } catch (error) {
-        console.error("Error fetching branches:", error);
-        setBranches([]);
-      }
-    };
-
-    listBranch();
-  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setParcelData((prevData) => ({ ...prevData, [name]: value }));
     onParcelChange({ ...parcelData, [name]: value });
-  };
-
-  const handleRadioChange = (value) => {
-    setParcelData((prevData) => ({ ...prevData, type: value }));
-    onParcelChange({ ...parcelData, type: value });
   };
 
   return (
@@ -132,30 +98,6 @@ const Origin = ({ onParcelChange }) => {
                 </div>
               </div>
             </div>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-              <label style={{ display: "flex", alignItems: "center" }}>
-                <input
-                  type="radio"
-                  name="type"
-                  value="delivery"
-                  checked={parcelData.type === "delivery"}
-                  onChange={() => handleRadioChange("delivery")}
-                  style={{ marginRight: "5px" }}
-                />{" "}
-                ການຈັດສົ່ງ
-              </label>
-              <label style={{ display: "flex", alignItems: "center" }}>
-                <input
-                  type="radio"
-                  name="type"
-                  value="warehouse"
-                  checked={parcelData.type === "warehouse"}
-                  onChange={() => handleRadioChange("warehouse")}
-                  style={{ marginRight: "5px" }}
-                />{" "}
-                ເອົາຢູ່ສາງ
-              </label>
-            </div>
             <div>
               <label style={labelStyle}>ໝາຍເຫດ :</label>
               <textarea
@@ -188,23 +130,16 @@ const Origin = ({ onParcelChange }) => {
           </div>
           <div style={bodyStyle}>
             <div style={{ marginBottom: "10px" }}>
-              <label style={labelStyle}>ສາຂາ :</label>
-              <select
+              <label style={labelStyle}>ຊື່ລູກຄ້າ :</label>
+              <input
+                type="text"
                 style={inputStyle}
                 onChange={handleInputChange}
                 name="branch"
                 required
                 value={parcelData.branch}
-              >
-                <option value="" disabled>
-                  ເລືອກສາຂາ
-                </option>
-                {Array.isArray(branches) && branches.map((branch, index) => (
-                  <option key={index} value={branch.branch}>
-                    {branch.info}
-                  </option>
-                ))}
-              </select>
+                placeholder="ກະລຸນາກັບຊື່ລູກຄ້າ"
+              />
             </div>
           </div>
         </div>

@@ -315,8 +315,12 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     const checkEmptyFields = Object.values(detailsData).some(
       (value) => value === "" || value === null || value === undefined
     );
-    const checkEmptyParcel = Object.values(parcelData).some(
-      (value) => value === "" || value === null || value === undefined
+    // ยกเว้น note field จากการตรวจสอบ เพราะไม่บังคับกรอก
+    const checkEmptyParcel = Object.entries(parcelData).some(
+      ([key, value]) => {
+        if (key === 'note') return false; // ข้าม note field
+        return value === "" || value === null || value === undefined;
+      }
     );
 
     if (checkEmptyFields || checkEmptyParcel) {
@@ -331,23 +335,9 @@ const DistributionDashboard = ({ onDetailsChange }) => {
     setLoading(true);
 
     try {
-      const checkCredit = await axios.post(
-        "https://xjllao.com/v1/api/checkcredit",
-        { branch: parcelData.branch }
-      );
-
-      const userCredit = checkCredit.data.credit;
-
-      if (userCredit < calculateDiscountedPrice()) {
-        Swal.fire({
-          title: "ບໍ່ພຽງພໍ",
-          text: `ຍອດສິນເຊື່ອໃນສາຂາ ${parcelData.branch} ບໍ່ພຽງພໍບໍ?`,
-          icon: "error",
-        });
-        setLoading(false);
-        return;
-      }
-
+      // ข้ามการตรวจสอบเครดิตไปก่อน - เก็บเฉพาะการคำนวณราคา
+      console.log("💰 Calculated price:", calculateDiscountedPrice());
+      
       const fullData = {
         parcel: parcelData,
         detail: {
@@ -363,7 +353,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
         fullData
       );
 
-      if (response.status === 200 && checkCredit.status === 200) {
+      if (response.status === 200) {
         console.log("Data Save Successfully:", response.data);
         setLoading(false);
         Swal.fire({
