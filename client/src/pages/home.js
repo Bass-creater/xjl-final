@@ -176,7 +176,7 @@ function Home() {
               <a href="#about" className="px-2 sm:px-5 py-1 sm:py-2 text-white hover:text-orange-200 transition-colors">| About</a>
             </li>
             <li>
-              <a href="#home" className="px-2 sm:px-5 py-1 sm:py-2 text-white hover:text-orange-200 transition-colors">| ຕິດຕາມພັດສະດຸ</a>
+              <a href="https://www.facebook.com/share/1HGNbku58H/?mibextid=wwXIfr" className="px-2 sm:px-5 py-1 sm:py-2 text-white hover:text-orange-200 transition-colors">| ຕິດຕາມພັດສະດຸ</a>
             </li>
             <li>
               <a href="https://www.facebook.com/share/1HGNbku58H/?mibextid=wwXIfr">| ຄຳນວນຄ່າຂົນສົ່ງ</a>
