@@ -1365,53 +1365,7 @@ exports.importExcel = async (req, res) => {
 exports.uploadExcel = upload.single('excelFile');
 exports.uploadFile = upload.single('file');
 
-// New Excel import function for parcels_save
-exports.parcelsWait = async (req, res) => {
-  try {
-    const parcels = await ParcelDetail.findAll({
-      attributes: [
-        'id_parcel',
-        'from',
-        'status',
-        'tel',
-        'branch',
-        'typeParcel',
-        'weight',
-        'volume',
-        'amount',
-        'price',
-        'time',
-        'uuid'
-      ],
-      include: [{
-        model: SaveTime,
-        as: 'saveTime',
-        attributes: ['origin', 'acceptorigin'],
-        required: false
-      }],
-      order: [['time', 'DESC']]
-    });
-
-    // Map the data to include saveTime fields at root level
-    const mappedParcels = parcels.map(parcel => {
-      const parcelData = parcel.toJSON();
-      return {
-        ...parcelData,
-        origin: parcelData.saveTime?.origin || null,
-        acceptorigin: parcelData.saveTime?.acceptorigin || null,
-        saveTime: undefined // Remove nested saveTime object
-      };
-    });
-
-    res.status(200).json(mappedParcels);
-  } catch (error) {
-    console.error("Error fetching parcels wait:", error);
-    res.status(500).json({ 
-      message: "An error occurred while fetching parcels", 
-      error: error.message 
-    });
-  }
-};
+// Duplicate function removed - using the correct parcelsWait function above
 
 exports.importExcelToParcelsSave = async (req, res) => {
   try {

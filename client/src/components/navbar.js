@@ -213,7 +213,6 @@ function Navbar() {
           >
             <motion.a
               href="https://www.facebook.com/share/1HGNbku58H/?mibextid=wwXIfr"
-              onClick={handleScrollToHome}
               className="font-bold block py-2 px-3 text-[#ff8c00] rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-orange-600 md:p-0 transition-colors duration-300"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
