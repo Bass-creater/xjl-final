@@ -26,7 +26,7 @@ const TableParcels = () => {
   useEffect(() => {
     const fetchParcels = async () => {
       try {
-        const response = await axios.get("https://xjllao.com/v1/api/parcelswait");
+        const response = await axios.get("https://xjllao.com/v1/api/parcels-table");
         
         // Map API response to match the expected format
         const mappedParcels = response.data.map((parcel, index) => ({

@@ -25,6 +25,7 @@ router.post("/parcel", authControl.idParcel);
 
 router.post("/parcels", authControl.getAllParcels);
 router.get("/parcelswait", authControl.parcelsWait);
+router.get("/parcels-table", authControl.getAllParcelsForTable);
 router.post("/parcels/count", authControl.countParcels);
 router.post("/parcels/countwarehouse", authControl.countParcelsWarehouse);
 router.post("/parcels/countbranch", authControl.countParcelsBranch);

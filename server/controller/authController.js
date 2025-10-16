@@ -1367,6 +1367,57 @@ exports.uploadFile = upload.single('file');
 
 // Duplicate function removed - using the correct parcelsWait function above
 
+exports.getAllParcelsForTable = async (req, res) => {
+  try {
+    console.log("🔍 getAllParcelsForTable: Fetching all parcels from parcels_save table");
+    
+    const parcels = await ParcelDetail.findAll({
+      attributes: [
+        'id_parcel',
+        'from',
+        'status',
+        'tel',
+        'branch',
+        'typeParcel',
+        'weight',
+        'volume',
+        'amount',
+        'price',
+        'time',
+        'uuid'
+      ],
+      include: [{
+        model: SaveTime,
+        as: 'saveTime',
+        attributes: ['origin', 'acceptorigin'],
+        required: false
+      }],
+      order: [['time', 'DESC']]
+    });
+
+    console.log("📦 Found parcels:", parcels.length);
+
+    // Map the data to include saveTime fields at root level
+    const mappedParcels = parcels.map(parcel => {
+      const parcelData = parcel.toJSON();
+      return {
+        ...parcelData,
+        origin: parcelData.saveTime?.origin || null,
+        acceptorigin: parcelData.saveTime?.acceptorigin || null,
+        saveTime: undefined // Remove nested saveTime object
+      };
+    });
+
+    res.status(200).json(mappedParcels);
+  } catch (error) {
+    console.error("Error fetching parcels wait:", error);
+    res.status(500).json({ 
+      message: "An error occurred while fetching parcels", 
+      error: error.message 
+    });
+  }
+};
+
 exports.importExcelToParcelsSave = async (req, res) => {
   try {
     console.log('📁 Import Excel to Parcels Save request received');
