@@ -16,7 +16,6 @@ const TableParcels = () => {
   const [endDate, setEndDate] = useState("");
 
   const storedRole = localStorage.getItem("role");
-  const storedBranch = localStorage.getItem("branch");
 
   // Sidebar states
   const [activePage, setActivePage] = useState("tableparcels");
@@ -1150,69 +1149,422 @@ const TableParcels = () => {
                   </table>
                 </div>
 
-                {/* Pagination */}
+                {/* Enhanced Pagination */}
                 {totalPages > 1 && (
-                  <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                    <div className="flex-1 flex justify-between sm:hidden">
+                  <div style={{
+                    backgroundColor: "white",
+                    padding: "24px 32px",
+                    borderTop: "2px solid rgba(251, 146, 60, 0.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                    gap: "16px",
+                    background: "linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%)"
+                  }}>
+                    {/* Mobile Pagination */}
+                    <div style={{ 
+                      justifyContent: "space-between", 
+                      width: "100%",
+                      display: window.innerWidth <= 640 ? "flex" : "none"
+                    }}>
                       <button
                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
-                        className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          padding: "12px 20px",
+                          background: currentPage === 1 
+                            ? "linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)" 
+                            : "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
+                          color: currentPage === 1 ? "#9ca3af" : "white",
+                          border: "none",
+                          borderRadius: "12px",
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                          transition: "all 0.3s ease",
+                          boxShadow: currentPage === 1 ? "none" : "0 4px 12px rgba(251, 146, 60, 0.3)",
+                          opacity: currentPage === 1 ? 0.5 : 1
+                        }}
+                        onMouseEnter={(e) => {
+                          if (currentPage !== 1) {
+                            e.target.style.transform = "translateY(-2px)";
+                            e.target.style.boxShadow = "0 6px 16px rgba(251, 146, 60, 0.4)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (currentPage !== 1) {
+                            e.target.style.transform = "translateY(0)";
+                            e.target.style.boxShadow = "0 4px 12px rgba(251, 146, 60, 0.3)";
+                          }
+                        }}
                       >
-                        ກ່ອນໜ້າ
+                        ← ກ່ອນໜ້າ
                       </button>
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        padding: "8px 16px",
+                        background: "linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.05) 100%)",
+                        borderRadius: "12px",
+                        border: "1px solid rgba(59, 130, 246, 0.2)"
+                      }}>
+                        <span style={{ fontSize: "14px", fontWeight: "600", color: "#2563EB" }}>
+                          ໜ້າ {currentPage} / {totalPages}
+                        </span>
+                      </div>
                       <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages}
-                        className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{
+                          padding: "12px 20px",
+                          background: currentPage === totalPages 
+                            ? "linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)" 
+                            : "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)",
+                          color: currentPage === totalPages ? "#9ca3af" : "white",
+                          border: "none",
+                          borderRadius: "12px",
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                          transition: "all 0.3s ease",
+                          boxShadow: currentPage === totalPages ? "none" : "0 4px 12px rgba(251, 146, 60, 0.3)",
+                          opacity: currentPage === totalPages ? 0.5 : 1
+                        }}
+                        onMouseEnter={(e) => {
+                          if (currentPage !== totalPages) {
+                            e.target.style.transform = "translateY(-2px)";
+                            e.target.style.boxShadow = "0 6px 16px rgba(251, 146, 60, 0.4)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (currentPage !== totalPages) {
+                            e.target.style.transform = "translateY(0)";
+                            e.target.style.boxShadow = "0 4px 12px rgba(251, 146, 60, 0.3)";
+                          }
+                        }}
                       >
-                        ຕໍ່ໄປ
+                        ຕໍ່ໄປ →
                       </button>
                     </div>
-                    <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                      <div>
-                        <p className="text-sm text-gray-700">
-                          ສະແດງ <span className="font-medium">{indexOfFirstItem + 1}</span> ຫາ{' '}
-                          <span className="font-medium">
+
+                    {/* Desktop Pagination */}
+                    <div style={{ 
+                      alignItems: "center", 
+                      justifyContent: "space-between", 
+                      width: "100%",
+                      display: window.innerWidth > 640 ? "flex" : "none"
+                    }}>
+                      {/* Page Info */}
+                      <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "16px",
+                        padding: "12px 20px",
+                        background: "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%)",
+                        borderRadius: "12px",
+                        border: "1px solid rgba(16, 185, 129, 0.2)"
+                      }}>
+                        <span style={{ fontSize: "16px" }}>📊</span>
+                        <div style={{ fontSize: "14px", fontWeight: "600", color: "#059669" }}>
+                          ສະແດງ <span style={{ fontWeight: "700", color: "#047857" }}>{indexOfFirstItem + 1}</span> ຫາ{' '}
+                          <span style={{ fontWeight: "700", color: "#047857" }}>
                             {Math.min(indexOfLastItem, filteredParcels.length)}
                           </span>{' '}
-                          ຈາກ <span className="font-medium">{filteredParcels.length}</span> ລາຍການ
-                        </p>
+                          ຈາກ <span style={{ fontWeight: "700", color: "#047857" }}>{filteredParcels.length}</span> ລາຍການ
                       </div>
-                      <div>
-                        <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                      </div>
+
+                      {/* Navigation Controls */}
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        {/* First Page */}
+                        <button
+                          onClick={() => setCurrentPage(1)}
+                          disabled={currentPage === 1}
+                          style={{
+                            padding: "10px 12px",
+                            background: currentPage === 1 
+                              ? "linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)" 
+                              : "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                            color: currentPage === 1 ? "#9ca3af" : "white",
+                            border: "none",
+                            borderRadius: "10px",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                            transition: "all 0.3s ease",
+                            boxShadow: currentPage === 1 ? "none" : "0 3px 10px rgba(59, 130, 246, 0.3)",
+                            opacity: currentPage === 1 ? 0.5 : 1
+                          }}
+                          onMouseEnter={(e) => {
+                            if (currentPage !== 1) {
+                              e.target.style.transform = "translateY(-1px)";
+                              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.4)";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (currentPage !== 1) {
+                              e.target.style.transform = "translateY(0)";
+                              e.target.style.boxShadow = "0 3px 10px rgba(59, 130, 246, 0.3)";
+                            }
+                          }}
+                        >
+                          ⏮️
+                        </button>
+
+                        {/* Previous Page */}
                           <button
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                             disabled={currentPage === 1}
-                            className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                            </svg>
+                          style={{
+                            padding: "10px 12px",
+                            background: currentPage === 1 
+                              ? "linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)" 
+                              : "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                            color: currentPage === 1 ? "#9ca3af" : "white",
+                            border: "none",
+                            borderRadius: "10px",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            cursor: currentPage === 1 ? "not-allowed" : "pointer",
+                            transition: "all 0.3s ease",
+                            boxShadow: currentPage === 1 ? "none" : "0 3px 10px rgba(59, 130, 246, 0.3)",
+                            opacity: currentPage === 1 ? 0.5 : 1
+                          }}
+                          onMouseEnter={(e) => {
+                            if (currentPage !== 1) {
+                              e.target.style.transform = "translateY(-1px)";
+                              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.4)";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (currentPage !== 1) {
+                              e.target.style.transform = "translateY(0)";
+                              e.target.style.boxShadow = "0 3px 10px rgba(59, 130, 246, 0.3)";
+                            }
+                          }}
+                        >
+                          ⏪
                           </button>
-                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+
+                        {/* Page Numbers */}
+                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          {(() => {
+                            const maxVisiblePages = 7;
+                            const halfVisible = Math.floor(maxVisiblePages / 2);
+                            let startPage = Math.max(1, currentPage - halfVisible);
+                            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+                            
+                            if (endPage - startPage < maxVisiblePages - 1) {
+                              startPage = Math.max(1, endPage - maxVisiblePages + 1);
+                            }
+
+                            const pages = [];
+                            
+                            // First page + ellipsis
+                            if (startPage > 1) {
+                              pages.push(
                             <button
-                              key={page}
-                              onClick={() => setCurrentPage(page)}
-                              className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                                currentPage === page
-                                  ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                              }`}
-                            >
-                              {page}
+                                  key={1}
+                                  onClick={() => setCurrentPage(1)}
+                                  style={{
+                                    padding: "10px 14px",
+                                    background: "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "10px",
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    transition: "all 0.3s ease",
+                                    boxShadow: "0 3px 10px rgba(107, 114, 128, 0.3)"
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform = "translateY(-1px)";
+                                    e.target.style.boxShadow = "0 4px 12px rgba(107, 114, 128, 0.4)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "translateY(0)";
+                                    e.target.style.boxShadow = "0 3px 10px rgba(107, 114, 128, 0.3)";
+                                  }}
+                                >
+                                  1
                             </button>
-                          ))}
+                              );
+                              
+                              if (startPage > 2) {
+                                pages.push(
+                                  <span key="ellipsis1" style={{ 
+                                    padding: "10px 8px", 
+                                    fontSize: "14px", 
+                                    fontWeight: "600", 
+                                    color: "#6B7280" 
+                                  }}>
+                                    ...
+                                  </span>
+                                );
+                              }
+                            }
+
+                            // Visible pages
+                            for (let i = startPage; i <= endPage; i++) {
+                              pages.push(
+                                <button
+                                  key={i}
+                                  onClick={() => setCurrentPage(i)}
+                                  style={{
+                                    padding: "10px 14px",
+                                    background: currentPage === i 
+                                      ? "linear-gradient(135deg, #FB923C 0%, #F97316 50%, #EA580C 100%)" 
+                                      : "linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%)",
+                                    color: currentPage === i ? "white" : "#374151",
+                                    border: currentPage === i ? "none" : "1px solid #D1D5DB",
+                                    borderRadius: "10px",
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    transition: "all 0.3s ease",
+                                    boxShadow: currentPage === i 
+                                      ? "0 4px 12px rgba(251, 146, 60, 0.4)" 
+                                      : "0 2px 6px rgba(0, 0, 0, 0.1)"
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    if (currentPage !== i) {
+                                      e.target.style.transform = "translateY(-1px)";
+                                      e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
+                                    }
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    if (currentPage !== i) {
+                                      e.target.style.transform = "translateY(0)";
+                                      e.target.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.1)";
+                                    }
+                                  }}
+                                >
+                                  {i}
+                                </button>
+                              );
+                            }
+
+                            // Last page + ellipsis
+                            if (endPage < totalPages) {
+                              if (endPage < totalPages - 1) {
+                                pages.push(
+                                  <span key="ellipsis2" style={{ 
+                                    padding: "10px 8px", 
+                                    fontSize: "14px", 
+                                    fontWeight: "600", 
+                                    color: "#6B7280" 
+                                  }}>
+                                    ...
+                                  </span>
+                                );
+                              }
+                              
+                              pages.push(
+                                <button
+                                  key={totalPages}
+                                  onClick={() => setCurrentPage(totalPages)}
+                                  style={{
+                                    padding: "10px 14px",
+                                    background: "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "10px",
+                                    fontSize: "14px",
+                                    fontWeight: "600",
+                                    cursor: "pointer",
+                                    transition: "all 0.3s ease",
+                                    boxShadow: "0 3px 10px rgba(107, 114, 128, 0.3)"
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform = "translateY(-1px)";
+                                    e.target.style.boxShadow = "0 4px 12px rgba(107, 114, 128, 0.4)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "translateY(0)";
+                                    e.target.style.boxShadow = "0 3px 10px rgba(107, 114, 128, 0.3)";
+                                  }}
+                                >
+                                  {totalPages}
+                                </button>
+                              );
+                            }
+
+                            return pages;
+                          })()}
+                        </div>
+
+                        {/* Next Page */}
                           <button
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                             disabled={currentPage === totalPages}
-                            className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                          >
-                            <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                              <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                            </svg>
+                          style={{
+                            padding: "10px 12px",
+                            background: currentPage === totalPages 
+                              ? "linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)" 
+                              : "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                            color: currentPage === totalPages ? "#9ca3af" : "white",
+                            border: "none",
+                            borderRadius: "10px",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                            transition: "all 0.3s ease",
+                            boxShadow: currentPage === totalPages ? "none" : "0 3px 10px rgba(59, 130, 246, 0.3)",
+                            opacity: currentPage === totalPages ? 0.5 : 1
+                          }}
+                          onMouseEnter={(e) => {
+                            if (currentPage !== totalPages) {
+                              e.target.style.transform = "translateY(-1px)";
+                              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.4)";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (currentPage !== totalPages) {
+                              e.target.style.transform = "translateY(0)";
+                              e.target.style.boxShadow = "0 3px 10px rgba(59, 130, 246, 0.3)";
+                            }
+                          }}
+                        >
+                          ⏩
                           </button>
-                        </nav>
+
+                        {/* Last Page */}
+                        <button
+                          onClick={() => setCurrentPage(totalPages)}
+                          disabled={currentPage === totalPages}
+                          style={{
+                            padding: "10px 12px",
+                            background: currentPage === totalPages 
+                              ? "linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%)" 
+                              : "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                            color: currentPage === totalPages ? "#9ca3af" : "white",
+                            border: "none",
+                            borderRadius: "10px",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+                            transition: "all 0.3s ease",
+                            boxShadow: currentPage === totalPages ? "none" : "0 3px 10px rgba(59, 130, 246, 0.3)",
+                            opacity: currentPage === totalPages ? 0.5 : 1
+                          }}
+                          onMouseEnter={(e) => {
+                            if (currentPage !== totalPages) {
+                              e.target.style.transform = "translateY(-1px)";
+                              e.target.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.4)";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (currentPage !== totalPages) {
+                              e.target.style.transform = "translateY(0)";
+                              e.target.style.boxShadow = "0 3px 10px rgba(59, 130, 246, 0.3)";
+                            }
+                          }}
+                        >
+                          ⏭️
+                        </button>
                       </div>
                     </div>
                   </div>

@@ -69,10 +69,15 @@ const Spread = () => {
   // const [isAllSelected, setIsAllSelected] = useState(false);
 
   const handleSelectAll = () => {
-    if (selectedParcels.size === parcels.length) {
+    // กรองเฉพาะ status "origin"
+    const originParcels = parcels.filter((parcel) => parcel.status === "origin");
+    
+    if (selectedParcels.size === originParcels.length) {
       setSelectedParcels(new Set());
     } else {
-      const allParcelIds = parcels.map((parcel) => parcel.id_parcel);
+      // จำกัดการเลือกไม่เกิน 999 ชิ้น
+      const maxSelection = Math.min(originParcels.length, 999);
+      const allParcelIds = originParcels.slice(0, maxSelection).map((parcel) => parcel.id_parcel);
       setSelectedParcels(new Set(allParcelIds));
     }
   };
