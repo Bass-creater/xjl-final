@@ -18,15 +18,15 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 connectDB();
-app.use(express.static(path.join(__dirname, 'client/public')));
+app.use(express.static(path.join(__dirname, '../client/public')));
 
 app.use("/api", authRoutes);
 
-app.use("/pdf", express.static(path.join(__dirname, "client/public/pdf")));
+app.use("/pdf", express.static(path.join(__dirname, "../client/public/pdf")));
 
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/public/index.html"));
+  res.sendFile(path.join(__dirname, "../client/public/index.html"));
 });
 
 app.get("/", (req, res) => {

@@ -1561,7 +1561,13 @@ exports.importExcelToParcelsSave = async (req, res) => {
     
     const batchUuid = firstParcel.uuid;
     
-    // Check all other rows
+    // Check all other rows and collect warnings
+    const warnings = [];
+    const validData = [];
+    
+    // Add first row to valid data
+    validData.push(processedData[0]);
+    
     for (let i = 1; i < processedData.length; i++) {
       const row = processedData[i];
       const parcel = await Parcel.findOne({
@@ -1572,12 +1578,31 @@ exports.importExcelToParcelsSave = async (req, res) => {
       if (!parcel) {
         errors.push(`Row ${row.row}: Parcel ID ${row.id_parcel} not found in parcels table`);
       } else if (parcel.uuid !== batchUuid) {
-        errors.push(`Row ${row.row}: Parcel ID ${row.id_parcel} has different UUID (${parcel.uuid}) than first row (${batchUuid})`);
+        // Add warning instead of error - continue processing
+        warnings.push(`Row ${row.row}: Parcel ID ${row.id_parcel} has different UUID (${parcel.uuid}) than first row (${batchUuid})`);
+        console.log(`⚠️ UUID mismatch warning: Row ${row.row}, Parcel ${row.id_parcel}, UUID ${parcel.uuid} vs ${batchUuid}`);
+        // Still add to validData even with UUID mismatch - let user decide
+        validData.push(row);
+      } else {
+        // UUID matches, add to valid data
+        validData.push(row);
       }
     }
     
-    // If there are errors, don't proceed with bulk insert
+    // Debug logging
+    console.log('🔍 Validation Results:', {
+      totalRows: processedData.length,
+      errorsCount: errors.length,
+      warningsCount: warnings.length,
+      validDataCount: validData.length,
+      errors: errors,
+      warnings: warnings
+    });
+    
+    // If there are critical errors (missing parcels), don't proceed
+    // Only stop if there are missing parcels, not UUID mismatches
     if (errors.length > 0) {
+      console.log('❌ Critical errors found (missing parcels), stopping import:', errors);
       return res.status(400).json({
         message: "Validation failed",
         errors,
@@ -1585,6 +1610,21 @@ exports.importExcelToParcelsSave = async (req, res) => {
         total_rows: processedData.length
       });
     }
+    
+    // Log warnings if any
+    if (warnings.length > 0) {
+      console.log('⚠️ UUID mismatch warnings found, but continuing import:', warnings.length);
+    }
+    
+    // Use validData instead of processedData for further processing
+    const dataToProcess = validData;
+    
+    console.log('📊 Processing summary:', {
+      totalRows: processedData.length,
+      validRows: dataToProcess.length,
+      warningsCount: warnings.length,
+      errorsCount: errors.length
+    });
     
     // Get from value from parcels table
     const fromValue = firstParcel.from || "China"; // ใช้ค่า from จาก parcels table
@@ -1596,7 +1636,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
     });
     
     // Check for duplicates in parcels_save table
-    const parcelIds = processedData.map(row => row.id_parcel);
+    const parcelIds = dataToProcess.map(row => row.id_parcel);
     console.log('🔍 Checking duplicates for parcel IDs:', parcelIds);
     
     const existingParcels = await ParcelDetail.findAll({
@@ -1611,7 +1651,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
     const existingIds = new Set(existingParcels.map(p => p.id_parcel));
     
     // Filter out duplicates - skip silently
-    const uniqueData = processedData.filter(row => {
+    const uniqueData = dataToProcess.filter(row => {
       const isDuplicate = existingIds.has(row.id_parcel);
       if (isDuplicate) {
         console.log(`⚠️ Skipping duplicate parcel ID in database: ${row.id_parcel}`);
@@ -1620,9 +1660,9 @@ exports.importExcelToParcelsSave = async (req, res) => {
     });
     
     console.log('🔍 Unique data after filtering:', {
-      originalCount: processedData.length,
+      originalCount: dataToProcess.length,
       uniqueCount: uniqueData.length,
-      duplicatesSkipped: processedData.length - uniqueData.length
+      duplicatesSkipped: dataToProcess.length - uniqueData.length
     });
     
     // If all parcels are duplicates, return success with message
@@ -1631,7 +1671,9 @@ exports.importExcelToParcelsSave = async (req, res) => {
         message: "All parcels already exist in parcels_save table - no new data imported",
         batch_uuid: batchUuid,
         total_rows: processedData.length,
-        duplicates_skipped: processedData.length,
+        valid_rows: dataToProcess.length,
+        warnings: warnings,
+        duplicates_skipped: dataToProcess.length,
         imported_count: 0
       });
     }
@@ -1702,8 +1744,11 @@ exports.importExcelToParcelsSave = async (req, res) => {
       message: "Import to parcels_save completed successfully",
       batch_uuid: batchUuid,
       imported_count: insertedRecords.length,
-      duplicates_skipped: processedData.length - uniqueData.length,
+      duplicates_skipped: dataToProcess.length - uniqueData.length,
       total_rows: processedData.length,
+      valid_rows: dataToProcess.length,
+      warnings: warnings,
+      uuid_mismatch_count: warnings.length,
       imported_records: insertedRecords.map(record => ({
         id_parcel: record.id_parcel,
         branch: record.branch,
