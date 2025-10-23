@@ -1578,11 +1578,11 @@ exports.importExcelToParcelsSave = async (req, res) => {
       if (!parcel) {
         errors.push(`Row ${row.row}: Parcel ID ${row.id_parcel} not found in parcels table`);
       } else if (parcel.uuid !== batchUuid) {
-        // Add warning instead of error - continue processing
-        warnings.push(`Row ${row.row}: Parcel ID ${row.id_parcel} has different UUID (${parcel.uuid}) than first row (${batchUuid})`);
-        console.log(`⚠️ UUID mismatch warning: Row ${row.row}, Parcel ${row.id_parcel}, UUID ${parcel.uuid} vs ${batchUuid}`);
-        // Still add to validData even with UUID mismatch - let user decide
-        validData.push(row);
+        // Add warning and skip this parcel - don't process
+        warnings.push(`Row ${row.row}: Parcel ID ${row.id_parcel} has different UUID (${parcel.uuid}) than first row (${batchUuid}) - SKIPPED`);
+        console.log(`⚠️ UUID mismatch warning: Row ${row.row}, Parcel ${row.id_parcel}, UUID ${parcel.uuid} vs ${batchUuid} - SKIPPED`);
+        // Skip this parcel - don't add to validData
+        continue;
       } else {
         // UUID matches, add to valid data
         validData.push(row);
@@ -1749,6 +1749,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
       valid_rows: dataToProcess.length,
       warnings: warnings,
       uuid_mismatch_count: warnings.length,
+      uuid_mismatch_skipped: warnings.length, // จำนวนที่ข้ามเนื่องจาก UUID ไม่ตรงกัน
       imported_records: insertedRecords.map(record => ({
         id_parcel: record.id_parcel,
         branch: record.branch,
