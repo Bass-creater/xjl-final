@@ -218,7 +218,12 @@ const DistributionDashboard = ({ onDetailsChange }) => {
       );
 
       if (response.status === 200) {
-        const { batch_uuid, imported_count, duplicates_skipped, imported_records } = response.data;
+        const { batch_uuid, imported_count, imported_records, warnings, errors } = response.data;
+        
+        // นับจำนวน warnings และ errors รวมกัน
+        const warningsCount = warnings ? warnings.length : 0;
+        const errorsCount = errors ? errors.length : 0;
+        const totalSkipped = warningsCount + errorsCount;
         
         // สร้าง HTML สำหรับแสดงผลแบบสวยงาม
         let htmlContent = `
@@ -237,7 +242,7 @@ const DistributionDashboard = ({ onDetailsChange }) => {
               </div>
               <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); 
                           padding: 15px; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
-                <div style="font-size: 24px; font-weight: 800; color: #F59E0B; margin-bottom: 5px;">${duplicates_skipped || 0}</div>
+                <div style="font-size: 24px; font-weight: 800; color: #F59E0B; margin-bottom: 5px;">${totalSkipped}</div>
                 <div style="font-size: 14px; color: #D97706; font-weight: 600;">ข้ามข้อมูลซ้ำ</div>
               </div>
             </div>
@@ -262,6 +267,74 @@ const DistributionDashboard = ({ onDetailsChange }) => {
                           padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(30, 64, 175, 0.2); 
                           font-size: 12px; font-weight: 600; color: #1E3A8A; text-align: center;">
                 ${record.id_parcel}
+              </div>
+            `;
+          });
+          
+          htmlContent += `
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        // แสดงรายการ Warnings (เลขซ้ำในไฟล์)
+        if (warnings && warnings.length > 0) {
+          htmlContent += `
+            <div style="margin-bottom: 20px;">
+              <h3 style="color: #F59E0B; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">⚠️</span>
+                เลข Tracking ที่ซ้ำในไฟล์ (${warnings.length} รายการ)
+              </h3>
+              <div style="max-height: 200px; overflow-y: auto; background: rgba(245, 158, 11, 0.05); 
+                          border-radius: 8px; padding: 10px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+          `;
+          
+          warnings.forEach(warning => {
+            // Extract tracking number from warning message
+            const trackingMatch = warning.match(/Parcel ID (\S+)/);
+            const tracking = trackingMatch ? trackingMatch[1] : 'N/A';
+            htmlContent += `
+              <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); 
+                          padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.3); 
+                          font-size: 12px;">
+                <span style="font-weight: 600; color: #D97706;">${tracking}</span>
+                <span style="color: #92400E; font-size: 11px;"> - ซ้ำในไฟล์</span>
+              </div>
+            `;
+          });
+          
+          htmlContent += `
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        // แสดงรายการ Errors (เลขซ้ำในฐานข้อมูล)
+        if (errors && errors.length > 0) {
+          htmlContent += `
+            <div style="margin-bottom: 20px;">
+              <h3 style="color: #F59E0B; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">⚠️</span>
+                เลข Tracking ที่ซ้ำในฐานข้อมูล (${errors.length} รายการ)
+              </h3>
+              <div style="max-height: 200px; overflow-y: auto; background: rgba(239, 68, 68, 0.05); 
+                          border-radius: 8px; padding: 10px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+          `;
+          
+          errors.forEach(error => {
+            // Extract tracking number from error message
+            const trackingMatch = error.match(/Parcel ID (\S+)/);
+            const tracking = trackingMatch ? trackingMatch[1] : 'N/A';
+            htmlContent += `
+              <div style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.05) 100%); 
+                          padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(245, 158, 11, 0.3); 
+                          font-size: 12px;">
+                <span style="font-weight: 600; color: #D97706;">${tracking}</span>
+                <span style="color: #92400E; font-size: 11px;"> - มีในฐานข้อมูลแล้ว</span>
               </div>
             `;
           });
