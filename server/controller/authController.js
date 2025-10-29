@@ -1540,6 +1540,7 @@ exports.importExcelToParcelsSave = async (req, res) => {
     
     // Check all rows in parcels table
     const errors = [];
+    const validationErrors = []; // เก็บ errors สำหรับแสดงผล
     const validData = [];
     
     for (let i = 0; i < processedData.length; i++) {
@@ -1550,6 +1551,12 @@ exports.importExcelToParcelsSave = async (req, res) => {
       });
       
       if (!parcel) {
+        // แสดงเลข tracking และเหตุผล
+        validationErrors.push({
+          row: row.row,
+          tracking: row.id_parcel,
+          reason: "ไม่มีในฐานข้อมูล parcels (ยังไม่ได้ import จากฝั่งจีน)"
+        });
         errors.push(`Row ${row.row}: Parcel ID ${row.id_parcel} not found in parcels table`);
       } else {
         // Parcel exists, add to valid data
@@ -1560,18 +1567,20 @@ exports.importExcelToParcelsSave = async (req, res) => {
     // Debug logging
     console.log('🔍 Validation Results:', {
       totalRows: processedData.length,
-      errorsCount: errors.length,
+      errorsCount: validationErrors.length,
       validDataCount: validData.length,
       errors: errors
     });
     
-    // If there are critical errors (missing parcels), don't proceed
-    if (errors.length > 0) {
-      console.log('❌ Critical errors found (missing parcels), stopping import:', errors);
+    // ถ้าไม่มี validData เลย ไม่ต้อง import
+    if (validData.length === 0) {
+      console.log('❌ No valid data found, all parcels are missing');
       return res.status(400).json({
-        message: "Validation failed",
-        errors,
-        total_rows: processedData.length
+        message: "ไม่มีข้อมูลที่สามารถ import ได้",
+        errors: validationErrors,
+        validation_errors: validationErrors,
+        total_rows: processedData.length,
+        valid_rows: 0
       });
     }
     
@@ -1698,12 +1707,19 @@ exports.importExcelToParcelsSave = async (req, res) => {
     // Clean up uploaded file
     fs.unlinkSync(filePath);
     
+    // สร้าง response message
+    let message = "Import to parcels_save completed successfully";
+    if (validationErrors.length > 0) {
+      message = `Import สำเร็จ แต่มี ${validationErrors.length} รายการที่ไม่สามารถ import ได้`;
+    }
+    
     res.status(200).json({
-      message: "Import to parcels_save completed successfully",
+      message: message,
       imported_count: insertedRecords.length,
       duplicates_skipped: dataToProcess.length - uniqueData.length,
       total_rows: processedData.length,
       valid_rows: dataToProcess.length,
+      validation_errors: validationErrors, // เพิ่ม validation_errors
       imported_records: insertedRecords.map(record => ({
         id_parcel: record.id_parcel,
         branch: record.branch,

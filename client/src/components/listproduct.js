@@ -219,7 +219,10 @@ const Listproduct = () => {
       );
 
       if (response.status === 200) {
-        const { batch_uuid, imported_count, duplicates_skipped, imported_records, warnings, uuid_mismatch_skipped } = response.data;
+        const { batch_uuid, imported_count, duplicates_skipped, imported_records, warnings, uuid_mismatch_skipped, validation_errors } = response.data;
+        
+        // นับจำนวน validation errors
+        const validationErrorsCount = validation_errors ? validation_errors.length : 0;
         
         // สร้าง HTML สำหรับแสดงผลแบบสวยงาม
         let htmlContent = `
@@ -230,7 +233,7 @@ const Listproduct = () => {
               <p style="color: #6B7280; margin: 8px 0 0 0; font-size: 14px;">Batch UUID: ${batch_uuid}</p>
             </div>
             
-            <div style="display: grid; grid-template-columns: ${uuid_mismatch_skipped > 0 ? '1fr 1fr 1fr' : '1fr 1fr'}; gap: 20px; margin-bottom: 20px;">
+            <div style="display: grid; grid-template-columns: ${uuid_mismatch_skipped > 0 || validationErrorsCount > 0 ? '1fr 1fr 1fr' : '1fr 1fr'}; gap: 20px; margin-bottom: 20px;">
               <div style="background: linear-gradient(135deg, rgba(0, 123, 255, 0.1) 0%, rgba(0, 86, 179, 0.05) 100%); 
                           padding: 15px; border-radius: 12px; border: 1px solid rgba(0, 123, 255, 0.2);">
                 <div style="font-size: 24px; font-weight: 800; color: #007bff; margin-bottom: 5px;">${imported_count}</div>
@@ -241,7 +244,14 @@ const Listproduct = () => {
                 <div style="font-size: 24px; font-weight: 800; color: #F59E0B; margin-bottom: 5px;">${duplicates_skipped || 0}</div>
                 <div style="font-size: 14px; color: #D97706; font-weight: 600;">ข้ามข้อมูลซ้ำ</div>
               </div>
-              ${uuid_mismatch_skipped > 0 ? `
+              ${validationErrorsCount > 0 ? `
+              <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%); 
+                          padding: 15px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <div style="font-size: 24px; font-weight: 800; color: #EF4444; margin-bottom: 5px;">${validationErrorsCount}</div>
+                <div style="font-size: 14px; color: #DC2626; font-weight: 600;">ไม่พบในฐานข้อมูล</div>
+              </div>
+              ` : ''}
+              ${uuid_mismatch_skipped > 0 && validationErrorsCount === 0 ? `
               <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%); 
                           padding: 15px; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2);">
                 <div style="font-size: 24px; font-weight: 800; color: #EF4444; margin-bottom: 5px;">${uuid_mismatch_skipped}</div>
@@ -270,6 +280,42 @@ const Listproduct = () => {
                           padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.2); 
                           font-size: 12px; font-weight: 500; color: #DC2626; margin-bottom: 5px;">
                 ${warning}
+              </div>
+            `;
+          });
+          
+          htmlContent += `
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        // แสดงรายการ Validation Errors (เลข tracking ที่ไม่มีในฐานข้อมูล)
+        if (validation_errors && validation_errors.length > 0) {
+          htmlContent += `
+            <div style="margin-bottom: 20px;">
+              <h3 style="color: #EF4444; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">❌</span>
+                เลข Tracking ที่ไม่มีในฐานข้อมูล (${validation_errors.length} รายการ)
+              </h3>
+              <div style="max-height: 200px; overflow-y: auto; background: rgba(239, 68, 68, 0.05); 
+                          border-radius: 8px; padding: 10px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+          `;
+          
+          validation_errors.forEach(error => {
+            htmlContent += `
+              <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%); 
+                          padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.3); 
+                          font-size: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                  <span style="font-weight: 700; color: #DC2626;">Row ${error.row}:</span>
+                  <span style="font-weight: 600; color: #991B1B;">${error.tracking}</span>
+                </div>
+                <div style="font-size: 11px; color: #7F1D1D; padding-left: 16px;">
+                  💡 ${error.reason}
+                </div>
               </div>
             `;
           });
@@ -341,17 +387,74 @@ const Listproduct = () => {
       }
     } catch (error) {
       console.error("Import Error:", error);
-      let errorMessage = error?.response?.data?.message || "An error occurred while importing the file";
       
-      if (error?.response?.data?.errors) {
-        errorMessage += "\n\nErrors:\n" + error.response.data.errors.join('\n');
+      // จัดการกรณีที่มี validation_errors
+      if (error?.response?.data?.validation_errors && error.response.data.validation_errors.length > 0) {
+        const { validation_errors, message } = error.response.data;
+        
+        let htmlContent = `
+          <div style="text-align: center; font-family: 'Inter', sans-serif;">
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 48px; margin-bottom: 10px;">❌</div>
+              <h2 style="color: #EF4444; margin: 0; font-size: 24px; font-weight: 700;">${message || "Import Failed"}</h2>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+              <h3 style="color: #EF4444; font-size: 16px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">❌</span>
+                เลข Tracking ที่ไม่มีในฐานข้อมูล (${validation_errors.length} รายการ)
+              </h3>
+              <div style="max-height: 300px; overflow-y: auto; background: rgba(239, 68, 68, 0.05); 
+                          border-radius: 8px; padding: 10px; border: 1px solid rgba(239, 68, 68, 0.2);">
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+        `;
+        
+        validation_errors.forEach(error => {
+          htmlContent += `
+            <div style="background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%); 
+                        padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.3); 
+                        font-size: 12px;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="font-weight: 700; color: #DC2626;">Row ${error.row}:</span>
+                <span style="font-weight: 600; color: #991B1B;">${error.tracking}</span>
+              </div>
+              <div style="font-size: 11px; color: #7F1D1D; padding-left: 16px;">
+                💡 ${error.reason}
+              </div>
+            </div>
+          `;
+        });
+        
+        htmlContent += `
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        Swal.fire({
+          title: "",
+          html: htmlContent,
+          icon: "error",
+          width: "600px",
+          showConfirmButton: true,
+          confirmButtonText: "ตกลง",
+          confirmButtonColor: "#EF4444",
+        });
+      } else {
+        // Error case ปกติ
+        let errorMessage = error?.response?.data?.message || "An error occurred while importing the file";
+        
+        if (error?.response?.data?.errors) {
+          errorMessage += "\n\nErrors:\n" + error.response.data.errors.join('\n');
+        }
+        
+        Swal.fire({
+          title: "Import Failed",
+          text: errorMessage,
+          icon: "error",
+        });
       }
-      
-      Swal.fire({
-        title: "Import Failed",
-        text: errorMessage,
-        icon: "error",
-      });
     } finally {
       setImportLoading(false);
     }
