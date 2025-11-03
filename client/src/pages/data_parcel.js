@@ -77,7 +77,7 @@ function Data_parcel() {
                 </svg>
 
                 <strong id="start">
-                  ສາງໄດ້ຮັບສິນຄ້າແລ້ວ
+                ສາງຈີນໄດ້ຮັບສິນຄ້າແລ້ວ
                   {result.origin && (
                     <div className="statusTime">{result.origin}</div>
                   )}
